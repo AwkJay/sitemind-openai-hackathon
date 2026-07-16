@@ -1,0 +1,14 @@
+# Secrets — never commit. LANGFUSE_*, ANTHROPIC_API_KEY, OPENAI_API_KEY live here.
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Runtime-generated, not source. Eval report JSONs are deliberately NOT
+# ignored — they're the evidence behind every metric claimed in PROGRESS.md.
+data/traces/
