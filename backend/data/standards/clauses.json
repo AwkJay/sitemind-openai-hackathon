@@ -1,0 +1,245 @@
+{
+  "_note": "REAL Indian Standard clauses, fetched verbatim from the manak digitised-standards library. These are the ground truth for every compliance citation. Do NOT edit the text. verify_url opens the source clause.",
+  "clauses": [
+    {
+      "key": "IS456_26.4.2.2",
+      "standard": "IS 456:2000",
+      "title": "Nominal Cover to Meet Durability Requirement",
+      "clause": "26.4.2.2",
+      "text": "For footings minimum cover shall be 50 mm.",
+      "verify_url": "http://gaudi.local/manak/#is456_2000/clause:26.4.2",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS456_26.4.2.1",
+      "standard": "IS 456:2000",
+      "title": "Nominal Cover to Meet Durability Requirement (Columns)",
+      "clause": "26.4.2.1",
+      "text": "However for a longitudinal reinforcing bar in a column nominal cover shall in any case not be less than 40 mm, or less than the diameter of such bar. In the case of columns of minimum dimension of 200 mm or under, whose reinforcing bars do not exceed 12 mm, a nominal cover of 25 mm may be used.",
+      "verify_url": "http://gaudi.local/manak/#is456_2000/clause:26.4.2",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS456_8.2.8",
+      "standard": "IS 456:2000",
+      "title": "Concrete in Sea-water",
+      "clause": "8.2.8",
+      "text": "Concrete in sea-water or exposed directly along the sea-coast shall be at least M 20 Grade in the case of plain concrete and M 30 in case of reinforced concrete. The use of slag or pozzolana cement is advantageous under such conditions.",
+      "verify_url": "http://gaudi.local/manak/#is456_2000/clause:8.2.8",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS456_8.2.4.1",
+      "standard": "IS 456:2000",
+      "title": "Maximum free water-cement ratio / minimum cement content",
+      "clause": "8.2.4.1",
+      "text": "The free water-cement ratio is an important factor in governing the durability of concrete and should always be the lowest value. Appropriate values for minimum cement content and the maximum free water-cement ratio are given in Table 5 for different exposure conditions.",
+      "verify_url": "http://gaudi.local/manak/#is456_2000/clause:8.2.4.1",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS456_12.3.2",
+      "standard": "IS 456:2000",
+      "title": "Nominal cover tolerance",
+      "clause": "12.3.2",
+      "text": "The actual concrete cover should not deviate from the required nominal cover by +10 mm and -0 mm.",
+      "verify_url": "http://gaudi.local/manak/#is456_2000/clause:12.3.2",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS456_26.5.3.1",
+      "standard": "IS 456:2000",
+      "title": "Column longitudinal reinforcement",
+      "clause": "26.5.3.1",
+      "text": "The cross-sectional area of longitudinal reinforcement, shall be not less than 0.8 percent nor more than 6 percent of the gross cross-sectional area of the column. Where bars from the columns below have to be lapped with those in the column under consideration, the percentage of steel shall usually not exceed 4 percent.",
+      "verify_url": "http://gaudi.local/manak/#is456_2000/clause:26.5.3.1",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS456_23.2",
+      "standard": "IS 456:2000",
+      "title": "Control of Deflection",
+      "clause": "23.2",
+      "text": "The final deflection due to all loads including the effects of temperature, creep and shrinkage and measured from the as-cast level of the supports of floors, roofs and all other horizontal members, should not normally exceed span/250. The deflection including the effects of temperature, creep and shrinkage occurring after erection of partitions and the application of finishes should not normally exceed span/350 or 20 mm whichever is less.",
+      "verify_url": "http://gaudi.local/manak/#is456_2000/clause:23.2",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS875_5.3",
+      "standard": "IS 875 (Part 3):2015",
+      "title": "Design Wind Speed (Vz)",
+      "clause": "5.3",
+      "text": "The basic wind speed for any site shall be obtained from Fig. 1 and shall be modified to include the following effects to get design wind speed Vz at any height Z: (a) Risk level, (b) Terrain roughness and height of structure, (c) Local topography, and (d) Importance factor for the cyclonic region. Vz = Vb·k1·k2·k3·k4.",
+      "verify_url": "http://gaudi.local/manak/#is875_part3_2015/clause:5.3",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS1893_7.2.3",
+      "standard": "IS 1893 (Part 1):2016",
+      "title": "Importance Factor (I)",
+      "clause": "7.2.3",
+      "text": "In estimating design lateral force VB of buildings, the importance factor I shall be taken as per Table 8. Table 8: Important service and community buildings or structures, lifeline and emergency buildings (for example, hospital buildings, telephone exchange buildings, television/radio station buildings, metro rail station buildings), power station buildings, and fire station buildings — I = 1.5. Residential or commercial buildings with occupancy more than 200 persons — I = 1.2. All other buildings — I = 1.0. NOTE 1: Owners and design engineers of buildings or structures may choose values of importance factor I more than those mentioned above.",
+      "verify_url": "http://gaudi.local/manak/#is1893_part1_2016/clause:7.2.3",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS1893_6.4.2",
+      "standard": "IS 1893 (Part 1):2016",
+      "title": "Design Horizontal Seismic Coefficient (Ah)",
+      "clause": "6.4.2",
+      "text": "The design horizontal seismic coefficient Ah for a structure shall be determined by Ah = (Z/2)(Sa/g)/(R/I), where Z = seismic zone factor given in Table 3; I = importance factor given in IS 1893 (Parts 1 to 5) for the corresponding structures — when not specified, the minimum values of I shall be: (a) 1.5 for critical and lifeline structures; (b) 1.2 for business continuity structures; and (c) 1.0 for the rest; R = response reduction factor.",
+      "verify_url": "http://gaudi.local/manak/#is1893_part1_2016/clause:6.4.2",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS456_26.5.1.1",
+      "standard": "IS 456:2000",
+      "title": "Tension Reinforcement & Nominal Cover for Durability (Table 16)",
+      "clause": "26.5.1.1",
+      "text": "Minimum reinforcement — the minimum area of tension reinforcement shall be not less than that given by As/(bd) = 0.85/fy. Maximum reinforcement — the maximum area of tension reinforcement shall not exceed 0.04 bD. Table 16 — Nominal Cover to Meet Durability Requirements (nominal concrete cover not less than): Mild 20 mm, Moderate 30 mm, Severe 45 mm, Very severe 50 mm, Extreme 75 mm. NOTE 3: For exposure 'severe' and 'very severe', a reduction of 5 mm may be made where concrete grade is M35 and above.",
+      "verify_url": "http://gaudi.local/manak/#is456_2000/clause:26.5.1.1",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS456_26.5.3.2",
+      "standard": "IS 456:2000",
+      "title": "Transverse Reinforcement — Pitch of Lateral Ties",
+      "clause": "26.5.3.2",
+      "text": "Pitch — the pitch of transverse reinforcement shall be not more than the least of the following distances: (i) the least lateral dimension of the compression member; (ii) sixteen times the smallest diameter of the longitudinal reinforcement bar to be tied; and (iii) 300 mm.",
+      "verify_url": "http://gaudi.local/manak/#is456_2000/clause:26.5.3.2",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS875_5.4",
+      "standard": "IS 875 (Part 3):2015",
+      "title": "Design Wind Pressure (pz)",
+      "clause": "5.4",
+      "text": "The wind pressure at any height above mean ground level shall be obtained by the relationship pz = 0.6 Vz^2, where pz = wind pressure in N/m2 at height z, and Vz = design wind speed in m/s at height z. The design wind pressure pd can be obtained as pd = Kd·Ka·Kc·pz, where Kd = wind directionality factor, Ka = area averaging factor and Kc = combination factor.",
+      "verify_url": "http://gaudi.local/manak/#is875_part3_2015/clause:5.4",
+      "domain": "structural",
+      "source_type": "manak_verified"
+    },
+    {
+      "key": "IS732_1989_E-2.1.5b",
+      "standard": "IS 732:1989 (Third Revision)",
+      "title": "Insulation Resistance of Wiring Installation",
+      "clause": "E-2.1.5(b)",
+      "text": "The insulation resistance in megohms of an installation measured as in (a) shall not be less than 50 divided by the number of points on the circuit, provided that the whole installation need not be required to have an insulation resistance greater than one megohm.",
+      "verify_url": "https://archive.org/details/gov.in.is.732.1989",
+      "domain": "electrical",
+      "source_type": "primary_scan_ocr"
+    },
+    {
+      "key": "IS732_1989_E-2.1.6",
+      "standard": "IS 732:1989 (Third Revision)",
+      "title": "Earthing — Tests on Completion",
+      "clause": "E-2.1.6",
+      "text": "For checking the efficiency of earthing the following tests are done: a) The earth resistance of each electrode shall be measured. b) The earth resistance of earthing grid shall be measured. c) All electrodes shall be connected to the grid and the earth resistance of the entire earthing system shall be measured. These tests shall preferably be done during the summer months.",
+      "verify_url": "https://archive.org/details/gov.in.is.732.1989",
+      "domain": "electrical",
+      "source_type": "primary_scan_ocr"
+    },
+    {
+      "key": "IS732_1989_5.1.3.2_RCD",
+      "standard": "IS 732:1989 (Third Revision)",
+      "title": "RCD Rated Residual Operating Current — Socket Outlet Circuits",
+      "clause": "5.1.3.2 (sub-item letter uncertain in this 1989 scan — parent clause number confirmed, list-item glyph not OCR-legible)",
+      "text": "Where the measure is used in a household or similar installation forming part of a TT system or where the earthing is not effective, every socket outlet circuit shall be protected by a residual current device having a rated residual operating current not exceeding 30 mA.",
+      "verify_url": "https://archive.org/details/gov.in.is.732.1989",
+      "domain": "electrical",
+      "source_type": "primary_scan_ocr"
+    },
+    {
+      "key": "IS3043_1987_22.2.3",
+      "standard": "IS 3043:1987 (First Revision)",
+      "title": "Earth Grid Continuity Resistance",
+      "clause": "22.2.3",
+      "text": "The continuity resistance of the earth return path through the earth grid should be maintained as low as possible and in no case greater than one ohm.",
+      "verify_url": "https://archive.org/details/gov.in.is.3043.1987",
+      "domain": "electrical",
+      "source_type": "primary_scan_ocr"
+    },
+    {
+      "key": "IS3043_1987_22.2.1",
+      "standard": "IS 3043:1987 (First Revision)",
+      "title": "Earthing Conductor Size — Switchboard Interconnection (HRC-Fuse-Protected)",
+      "clause": "22.2.1",
+      "text": "For interconnecting switchboards protected by HRC fuses to this earth grid, the size of interconnection need not be more than 75 mm2 copper or its equivalent.",
+      "verify_url": "https://archive.org/details/gov.in.is.3043.1987",
+      "domain": "electrical",
+      "source_type": "primary_scan_ocr"
+    },
+    {
+      "key": "CEA_2010_41xii",
+      "standard": "CEA (Measures Relating to Safety and Electric Supply) Regulations, 2010",
+      "title": "Earthing of Generator/Transformer/Apparatus Frames (250-650V)",
+      "clause": "41(xii)",
+      "text": "The frame of every generator, stationary motor, portable motor, and the metallic parts, not intended as conductors, of all transformers and any other apparatus used for regulating or controlling electricity, and all electricity consuming apparatus, of voltage exceeding 250 V but not exceeding 650 V shall be earthed by the owner by two separate and distinct connections with earth.",
+      "verify_url": "https://cea.nic.in/regulations-category/measures-relating-to-safety-and-electric-supply/?lang=en",
+      "domain": "electrical",
+      "source_type": "primary_native_pdf"
+    },
+    {
+      "key": "CEA_2010_41xiii",
+      "standard": "CEA (Measures Relating to Safety and Electric Supply) Regulations, 2010",
+      "title": "Earthing of Generator/Transformer Neutral Point",
+      "clause": "41(xiii)",
+      "text": "The neutral point of every generator and transformer shall be earthed by connecting it to the earthing system by not less than two separate and distinct connections.",
+      "verify_url": "https://cea.nic.in/regulations-category/measures-relating-to-safety-and-electric-supply/?lang=en",
+      "domain": "electrical",
+      "source_type": "primary_native_pdf"
+    },
+    {
+      "key": "IS8623_1_1993_4.1.2",
+      "standard": "IS 8623 (Part 1):1993 (identical to IEC 439-1:1985)",
+      "title": "Rated Insulation Voltage vs Rated Operational Voltage (LV Switchgear/Controlgear Assemblies)",
+      "clause": "4.1.2",
+      "text": "The maximum rated operational voltage of any circuit of the ASSEMBLY shall not exceed its rated insulation voltage. It is assumed that the operational voltage of any circuit of an ASSEMBLY will not, even temporarily, exceed 110% of its rated insulation voltage.",
+      "verify_url": "https://archive.org/details/gov.in.is.8623.1.1993",
+      "domain": "electrical",
+      "source_type": "primary_scan_ocr"
+    },
+    {
+      "key": "IS8623_1_1993_5.1",
+      "standard": "IS 8623 (Part 1):1993 (identical to IEC 439-1:1985)",
+      "title": "Nameplate Information Required for LV Switchgear/Controlgear Assemblies",
+      "clause": "5.1",
+      "text": "Each ASSEMBLY shall be provided with one or more plates, marked in a durable manner... Information specified under Items a) and b) shall be given on the nameplate: a) the manufacturer's name or trade mark; b) type designation or identification number or other means of identification making it possible to obtain relevant information from the manufacturer. Information from Items c) to o) may, where applicable, be given on the nameplates, in the relevant documents, the circuit diagrams or in the manufacturer's list or catalogues: ...g) rated operational voltages; h) rated insulation voltages; ...i) rated current of each circuit (if applicable).",
+      "verify_url": "https://archive.org/details/gov.in.is.8623.1.1993",
+      "domain": "electrical",
+      "source_type": "primary_scan_ocr"
+    },
+    {
+      "key": "IS732_2019_4.2.11.5.3",
+      "standard": "IS 732:2019 (Fourth Revision) — Code of Practice for Electrical Wiring Installations",
+      "title": "RCD Fault Protection — Touch-Voltage Limit for TT Systems",
+      "clause": "4.2.11.5.3",
+      "text": "Where a residual current protective device (RCD) is used for fault protection, the following conditions shall be fulfilled: a) the disconnection time as required by 4.2.11.3.2.2 or 4.2.11.3.2.4, and b) RA x I(delta n) <= 50 V, where RA = the sum of the resistance (in ohm) of the earth electrode and the protective conductor for the exposed conductive-parts, and I(delta n) = the rated residual operating current of the RCD.",
+      "verify_url": "https://www.bis.gov.in",
+      "domain": "electrical",
+      "source_type": "primary_native_pdf"
+    },
+    {
+      "key": "IS732_2019_Table15",
+      "standard": "IS 732:2019 (Fourth Revision) — Code of Practice for Electrical Wiring Installations",
+      "title": "Minimum Values of Insulation Resistance by Nominal Circuit Voltage",
+      "clause": "Table 15 (Cl 6.2.3.3)",
+      "text": "Table 15 Minimum Values of Insulation Resistance (Clauses 6.2.3.3 and 6.2.3.4): Nominal Circuit Voltage / Test Voltage d.c. / Insulation Resistance -- SELV and PELV: 250 V, > 0.5 Mohm; Up to and including 500 V, including FELV: 500 V, > 1.0 Mohm; Above 500 V: 1000 V, > 1.0 Mohm. The insulation resistance, measured with the test voltage indicated in Table 15, is satisfactory if each circuit, with the appliances disconnected, has an insulation resistance not less than the appropriate value given in Table 15.",
+      "verify_url": "https://www.bis.gov.in",
+      "domain": "electrical",
+      "source_type": "primary_native_pdf"
+    }
+  ]
+}
