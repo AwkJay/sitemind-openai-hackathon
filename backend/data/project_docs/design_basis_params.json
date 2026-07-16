@@ -1,0 +1,154 @@
+[
+  {
+    "id": "DBP-01",
+    "element": "Footing F-12",
+    "element_type": "footing",
+    "param": "nominal_cover",
+    "value": 30,
+    "unit": "mm",
+    "context": {
+      "exposure": "severe",
+      "marine": true,
+      "city_basic_vb": 50
+    },
+    "source_quote": "Nominal cover to reinforcement for transformer-yard footing F-12 is specified as 30 mm.",
+    "source_location": "General Note 5"
+  },
+  {
+    "id": "DBP-02",
+    "element": "Column C-08",
+    "element_type": "column",
+    "param": "nominal_cover",
+    "value": 45,
+    "unit": "mm",
+    "context": {
+      "exposure": "severe",
+      "marine": false,
+      "city_basic_vb": 50
+    },
+    "source_quote": "Nominal cover to longitudinal reinforcement for primary column C-08 is specified as 45 mm.",
+    "source_location": "General Note 6"
+  },
+  {
+    "id": "DBP-03",
+    "element": "Transformer-yard RCC (raft/footings/plinths)",
+    "element_type": "general",
+    "param": "concrete_grade",
+    "value": 25,
+    "unit": "MPa",
+    "context": {
+      "exposure": "severe",
+      "marine": true,
+      "city_basic_vb": 50
+    },
+    "source_quote": "Concrete grade for all marine/transformer-yard RCC (rafts, footings and plinths in the transformer and DRUPS yard) is specified as M25.",
+    "source_location": "General Note 7"
+  },
+  {
+    "id": "DBP-04",
+    "element": "Severe-exposure structural concrete (mix design)",
+    "element_type": "general",
+    "param": "wc_ratio",
+    "value": 0.55,
+    "unit": "ratio",
+    "context": {
+      "exposure": "severe",
+      "marine": true,
+      "city_basic_vb": 50
+    },
+    "source_quote": "The free water-cement ratio for severe-exposure structural concrete is specified as 0.55.",
+    "source_location": "General Note 8"
+  },
+  {
+    "id": "DBP-05",
+    "element": "Column C-08",
+    "element_type": "column",
+    "param": "long_steel_pct",
+    "value": 0.6,
+    "unit": "%",
+    "context": {
+      "exposure": "severe",
+      "marine": false,
+      "city_basic_vb": 50
+    },
+    "source_quote": "Longitudinal reinforcement for column C-08 is provided at 0.6 percent of the gross cross-sectional area of the column.",
+    "source_location": "General Note 9"
+  },
+  {
+    "id": "DBP-06",
+    "element": "Data-centre buildings (global seismic basis)",
+    "element_type": "general",
+    "param": "importance_factor",
+    "value": 1.0,
+    "unit": "factor",
+    "context": {
+      "exposure": "severe",
+      "marine": false,
+      "city_basic_vb": 50
+    },
+    "source_quote": "The seismic Importance Factor I is adopted as 1.0 for the data-centre buildings (Seismic Zone III, Z = 0.16).",
+    "source_location": "General Note 11"
+  },
+  {
+    "id": "DBP-07",
+    "element": "Roof cladding & lateral system (wind basis)",
+    "element_type": "general",
+    "param": "design_wind_speed",
+    "value": 50,
+    "unit": "m/s",
+    "context": {
+      "exposure": "severe",
+      "marine": true,
+      "city_basic_vb": 50
+    },
+    "source_quote": "Design wind speed for the Chennai site is taken as 50 m/s basic wind speed (IS 875 Part 3 Zone, cyclonic east coast, k4 applied).",
+    "source_location": "General Note 13"
+  },
+  {
+    "id": "DBP-08",
+    "element": "White-space suspended slab (typical bay)",
+    "element_type": "slab",
+    "param": "span_depth_ratio",
+    "value": 24,
+    "unit": "ratio",
+    "context": {
+      "exposure": "severe",
+      "marine": false,
+      "city_basic_vb": 50,
+      "limit": 26
+    },
+    "source_quote": "The span-to-effective-depth ratio for the typical white-space suspended slab is 24, against a permissible limit of 26.",
+    "source_location": "General Note 15"
+  },
+  {
+    "id": "DBP-09",
+    "element": "Column C-08",
+    "element_type": "column",
+    "param": "tie_spacing",
+    "value": 300,
+    "unit": "mm",
+    "context": {
+      "exposure": "severe",
+      "marine": false,
+      "least_lateral_dim": 450,
+      "long_bar_dia": 16
+    },
+    "source_quote": "Lateral ties for primary column C-08 (450 mm square, 16 mm longitudinal bars) are detailed at 300 mm centres throughout.",
+    "source_location": "General Note 10"
+  },
+  {
+    "id": "DBP-10",
+    "element": "Roof cladding & lateral system (wind basis)",
+    "element_type": "general",
+    "param": "design_wind_pressure",
+    "value": 1500,
+    "unit": "N/m2",
+    "context": {
+      "exposure": "severe",
+      "marine": true,
+      "design_wind_speed_vz": 50
+    },
+    "source_quote": "The design wind pressure pz for the roof cladding is taken as 1.5 kN/m2 (1500 N/m2) at the design wind speed Vz of 50 m/s.",
+    "source_location": "General Note 14"
+  }
+]
