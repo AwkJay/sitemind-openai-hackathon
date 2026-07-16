@@ -1,0 +1,41 @@
+{"param": {"element_type": "footing", "param": "nominal_cover", "value": 30}, "text": "Footing nominal cover 30 mm.", "label": "VIOLATION", "gold_clause": "26.4.2.2"}
+{"param": {"element_type": "footing", "param": "nominal_cover", "value": 40}, "text": "Footing nominal cover 40 mm.", "label": "VIOLATION", "gold_clause": "26.4.2.2"}
+{"param": {"element_type": "footing", "param": "nominal_cover", "value": 50}, "text": "Footing nominal cover 50 mm.", "label": "COMPLIANT", "gold_clause": "26.4.2.2"}
+{"param": {"element_type": "footing", "param": "nominal_cover", "value": 60}, "text": "Footing nominal cover 60 mm.", "label": "COMPLIANT", "gold_clause": "26.4.2.2"}
+{"param": {"element_type": "footing", "param": "nominal_cover", "value": 49}, "text": "Footing nominal cover 49 mm.", "label": "VIOLATION", "gold_clause": "26.4.2.2"}
+{"param": {"element_type": "column", "param": "nominal_cover", "value": 25}, "text": "Column nominal cover 25 mm.", "label": "VIOLATION", "gold_clause": "26.4.2.1"}
+{"param": {"element_type": "column", "param": "nominal_cover", "value": 40}, "text": "Column nominal cover 40 mm.", "label": "COMPLIANT", "gold_clause": "26.4.2.1"}
+{"param": {"element_type": "column", "param": "nominal_cover", "value": 45}, "text": "Column nominal cover 45 mm.", "label": "COMPLIANT", "gold_clause": "26.4.2.1"}
+{"param": {"element_type": "column", "param": "nominal_cover", "value": 35}, "text": "Column nominal cover 35 mm.", "label": "VIOLATION", "gold_clause": "26.4.2.1"}
+{"param": {"param": "wc_ratio", "exposure": "severe", "value": 0.4}, "text": "Free water-cement ratio 0.4 for severe exposure.", "label": "COMPLIANT", "gold_clause": "8.2.4.1"}
+{"param": {"param": "wc_ratio", "exposure": "severe", "value": 0.45}, "text": "Free water-cement ratio 0.45 for severe exposure.", "label": "COMPLIANT", "gold_clause": "8.2.4.1"}
+{"param": {"param": "wc_ratio", "exposure": "severe", "value": 0.5}, "text": "Free water-cement ratio 0.5 for severe exposure.", "label": "VIOLATION", "gold_clause": "8.2.4.1"}
+{"param": {"param": "wc_ratio", "exposure": "severe", "value": 0.55}, "text": "Free water-cement ratio 0.55 for severe exposure.", "label": "VIOLATION", "gold_clause": "8.2.4.1"}
+{"param": {"param": "wc_ratio", "exposure": "mild", "value": 0.55}, "text": "Free water-cement ratio 0.55 for mild exposure.", "label": "NOT_APPLICABLE", "gold_clause": null}
+{"param": {"param": "wc_ratio", "exposure": "mild", "value": 0.6}, "text": "Free water-cement ratio 0.6 for mild exposure.", "label": "NOT_APPLICABLE", "gold_clause": null}
+{"param": {"param": "concrete_grade", "marine": true, "grade_mpa": 20, "value": 20}, "text": "Marine RCC grade M20.", "label": "VIOLATION", "gold_clause": "8.2.8"}
+{"param": {"param": "concrete_grade", "marine": true, "grade_mpa": 25, "value": 25}, "text": "Marine RCC grade M25.", "label": "VIOLATION", "gold_clause": "8.2.8"}
+{"param": {"param": "concrete_grade", "marine": true, "grade_mpa": 30, "value": 30}, "text": "Marine RCC grade M30.", "label": "COMPLIANT", "gold_clause": "8.2.8"}
+{"param": {"param": "concrete_grade", "marine": true, "grade_mpa": 35, "value": 35}, "text": "Marine RCC grade M35.", "label": "COMPLIANT", "gold_clause": "8.2.8"}
+{"param": {"param": "concrete_grade", "marine": false, "grade_mpa": 20, "value": 20}, "text": "Internal RCC grade M20.", "label": "NOT_APPLICABLE", "gold_clause": null}
+{"param": {"param": "concrete_grade", "marine": false, "grade_mpa": 25, "value": 25}, "text": "Internal RCC grade M25.", "label": "NOT_APPLICABLE", "gold_clause": null}
+{"param": {"element_type": "column", "param": "long_steel_pct", "value": 0.6}, "text": "Column longitudinal steel 0.6 percent.", "label": "VIOLATION", "gold_clause": "26.5.3.1"}
+{"param": {"element_type": "column", "param": "long_steel_pct", "value": 0.8}, "text": "Column longitudinal steel 0.8 percent.", "label": "COMPLIANT", "gold_clause": "26.5.3.1"}
+{"param": {"element_type": "column", "param": "long_steel_pct", "value": 2.0}, "text": "Column longitudinal steel 2.0 percent.", "label": "COMPLIANT", "gold_clause": "26.5.3.1"}
+{"param": {"element_type": "column", "param": "long_steel_pct", "value": 6.5}, "text": "Column longitudinal steel 6.5 percent.", "label": "VIOLATION", "gold_clause": "26.5.3.1"}
+{"param": {"param": "span_depth_ratio", "value": 18, "limit": 20}, "text": "Span-to-depth ratio 18 (limit 20).", "label": "COMPLIANT", "gold_clause": "23.2"}
+{"param": {"param": "span_depth_ratio", "value": 20, "limit": 20}, "text": "Span-to-depth ratio 20 (limit 20).", "label": "COMPLIANT", "gold_clause": "23.2"}
+{"param": {"param": "span_depth_ratio", "value": 24, "limit": 20}, "text": "Span-to-depth ratio 24 (limit 20).", "label": "VIOLATION", "gold_clause": "23.2"}
+{"param": {"param": "span_depth_ratio", "value": 26, "limit": 20}, "text": "Span-to-depth ratio 26 (limit 20).", "label": "VIOLATION", "gold_clause": "23.2"}
+{"param": {"param": "design_wind_speed", "value": 39, "city_basic_vb": 50}, "text": "Design wind speed 39 m/s (Chennai basic 50).", "label": "VIOLATION", "gold_clause": "5.3"}
+{"param": {"param": "design_wind_speed", "value": 50, "city_basic_vb": 50}, "text": "Design wind speed 50 m/s (Chennai basic 50).", "label": "COMPLIANT", "gold_clause": "5.3"}
+{"param": {"param": "design_wind_speed", "value": 55, "city_basic_vb": 50}, "text": "Design wind speed 55 m/s (Chennai basic 50).", "label": "COMPLIANT", "gold_clause": "5.3"}
+{"param": {"param": "cover_deviation", "value": -2}, "text": "Cover deviation -2 mm from nominal.", "label": "VIOLATION", "gold_clause": "12.3.2"}
+{"param": {"param": "cover_deviation", "value": 0}, "text": "Cover deviation 0 mm from nominal.", "label": "COMPLIANT", "gold_clause": "12.3.2"}
+{"param": {"param": "cover_deviation", "value": 8}, "text": "Cover deviation 8 mm from nominal.", "label": "COMPLIANT", "gold_clause": "12.3.2"}
+{"param": {"param": "cover_deviation", "value": 12}, "text": "Cover deviation 12 mm from nominal.", "label": "VIOLATION", "gold_clause": "12.3.2"}
+{"param": {"param": "misc", "value": 0}, "text": "Concrete slump 75 mm.", "label": "NOT_APPLICABLE", "gold_clause": null}
+{"param": {"param": "misc", "value": 0}, "text": "Curing period 7 days.", "label": "NOT_APPLICABLE", "gold_clause": null}
+{"param": {"param": "misc", "value": 0}, "text": "Formwork stripped after 24 hours.", "label": "NOT_APPLICABLE", "gold_clause": null}
+{"param": {"param": "misc", "value": 0}, "text": "Aggregate size 20 mm nominal.", "label": "NOT_APPLICABLE", "gold_clause": null}
+{"param": {"param": "misc", "value": 0}, "text": "Rebar grade Fe-550D.", "label": "NOT_APPLICABLE", "gold_clause": null}
