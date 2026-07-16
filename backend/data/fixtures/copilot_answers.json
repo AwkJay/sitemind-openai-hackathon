@@ -1,0 +1,110 @@
+{
+  "transformer-yard-footing-grade-cover": {
+    "answer": "For transformer-yard footings (e.g. F-12) in Chennai's severe coastal exposure, the design basis currently specifies M25 with 30 mm cover — both non-conforming. IS 456 requires RCC in/near sea-water to be at least M30 (Cl 8.2.8) and footing cover to be at least 50 mm (Cl 26.4.2.2). The footings should be M30 (M35 recommended) with 50 mm nominal cover.",
+    "sources": [
+      {
+        "label": "IS 456:2000 Cl 8.2.8",
+        "detail": "RCC in/near sea-water shall be at least M30.",
+        "verify_url": "http://gaudi.local/manak/#is456_2000/clause:8.2.8"
+      },
+      {
+        "label": "IS 456:2000 Cl 26.4.2.2",
+        "detail": "For footings minimum cover shall be 50 mm.",
+        "verify_url": "http://gaudi.local/manak/#is456_2000/clause:26.4.2"
+      },
+      {
+        "label": "Design Basis Note 5 & 7",
+        "detail": "Specifies 30 mm cover and M25 for transformer-yard RCC."
+      },
+      {
+        "label": "SUB-0142 R1",
+        "detail": "Foundation shop drawing for footing F-12 — Revise & Resubmit."
+      }
+    ]
+  },
+  "open-rfis-marine-cooling-rcc": {
+    "answer": "There are open RFIs on the marine RCC: RFI-CIV-072 questions M25 vs M30 for the marine/transformer-yard RCC (links to IS 456 Cl 8.2.8 and SUB-0142), RFI-CIV-073 questions the 30 mm cover to footing F-12, and RFI-CIV-074 questions the 0.55 w/c ratio for severe exposure. All three are currently Open and tied to the same coastal-durability compliance issue.",
+    "sources": [
+      {
+        "label": "RFI-CIV-072 (Open)",
+        "detail": "M25 vs M30 for marine/transformer-yard RCC."
+      },
+      {
+        "label": "RFI-CIV-073 (Open)",
+        "detail": "Nominal cover to footing F-12."
+      },
+      {
+        "label": "RFI-CIV-074 (Open)",
+        "detail": "w/c ratio 0.55 for severe-exposure concrete."
+      }
+    ]
+  },
+  "design-wind-speed-chennai": {
+    "answer": "The design basis adopts a basic wind speed of 50 m/s for the Chennai site (cyclonic east coast, k4 applied), which is consistent with IS 875 (Part 3):2015. The design wind speed Vz = Vb·k1·k2·k3·k4 must not fall below this city basic value. The 50 m/s basis is conforming.",
+    "sources": [
+      {
+        "label": "IS 875 (Part 3):2015 Cl 5.3",
+        "detail": "Vz = Vb·k1·k2·k3·k4; includes cyclonic k4.",
+        "verify_url": "http://gaudi.local/manak/#is875_part3_2015/clause:5.3"
+      },
+      {
+        "label": "Design Basis Note 13",
+        "detail": "Design wind speed taken as 50 m/s (cyclonic, k4)."
+      }
+    ]
+  },
+  "m30-vs-m35-severe-exposure-seen-before": {
+    "answer": "Yes — this exact question was resolved before. RFI-CIV-061 (Closed) asked whether to upgrade the severe-exposure raft from M30 to M35, and the resolution was to upgrade to M35 to improve chloride resistance at the coastal site. The same precedent supports upgrading the current M25 marine RCC (now under RFI-CIV-072) to at least M30, ideally M35.",
+    "sources": [
+      {
+        "label": "RFI-CIV-061 (Closed)",
+        "detail": "M30 vs M35 for severe exposure raft — upgraded to M35."
+      },
+      {
+        "label": "IS 456:2000 Cl 8.2.4.1",
+        "detail": "Free w/c ratio / cement content governed by exposure (Table 5).",
+        "verify_url": "http://gaudi.local/manak/#is456_2000/clause:8.2.4.1"
+      }
+    ],
+    "seen_before": {
+      "rfi_id": "RFI-CIV-061",
+      "summary": "M30 vs M35 for severe-exposure raft at the coastal Chennai site.",
+      "resolution": "Upgraded to M35 to improve chloride resistance for severe coastal exposure."
+    }
+  },
+  "which-submittals-non-conforming": {
+    "answer": "Three submittals are non-conforming against real IS 456 clauses: SUB-0142 (footing F-12 — 30 mm cover vs 50 mm required, and M25 vs M30 marine RCC), MOS-0210 (severe-exposure mix at w/c 0.55 vs 0.45 max), and SUB-0156 (column C-08 at 0.6% longitudinal steel vs 0.8% minimum). All three are in Revise & Resubmit / Pending status pending correction.",
+    "sources": [
+      {
+        "label": "SUB-0142 R1 (C – Revise & Resubmit)",
+        "detail": "30 mm cover & M25 — violates IS456 26.4.2.2 / 8.2.8."
+      },
+      {
+        "label": "MOS-0210 R0 (C – Revise & Resubmit)",
+        "detail": "w/c 0.55 — violates IS456 8.2.4.1 / Table 5."
+      },
+      {
+        "label": "SUB-0156 R0 (Pending)",
+        "detail": "0.6% column steel — violates IS456 26.5.3.1."
+      }
+    ]
+  },
+  "importance-factor-data-centre": {
+    "answer": "A Tier-III/IV data centre is arguably a lifeline facility. IS 1893 (Part 1):2016 Cl 7.2.3 Table 8 lists power-station and telephone-exchange buildings at I = 1.5, and Note 1 lets the owner adopt a higher I. The design basis currently uses I = 1.0 (advisory flag); SiteMind recommends adopting I = 1.5 for the mission-critical blocks — confirm with the EOR.",
+    "sources": [
+      {
+        "label": "IS 1893 (Part 1):2016 Cl 7.2.3 + Table 8",
+        "detail": "Lifeline/critical buildings take I = 1.5; Note 1 permits higher I.",
+        "verify_url": "http://gaudi.local/manak/#is1893_part1_2016/clause:7.2.3"
+      },
+      {
+        "label": "Design Basis Note 11",
+        "detail": "Adopts I = 1.0 (Zone III, Z = 0.16)."
+      },
+      {
+        "label": "RFI-STR-068 (Open)",
+        "detail": "Questions whether I = 1.5 should be adopted for the DC."
+      }
+    ]
+  }
+}

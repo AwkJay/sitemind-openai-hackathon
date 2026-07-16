@@ -1,0 +1,34 @@
+{
+  "DBP-01": {
+    "finding": "The structural design basis specifies 30 mm nominal cover to reinforcement for transformer-yard footing F-12.",
+    "why_it_matters": "30 mm cover in a severe coastal (chloride-laden) exposure accelerates rebar corrosion, shortening the service life of a foundation carrying a 2.5 MVA transformer — a single-point uptime risk for a concurrently-maintainable Tier-III DC.",
+    "corrective_action": "Revise the design basis and shop drawing SUB-0142 to 50 mm nominal cover for footing F-12 and re-issue for approval before casting."
+  },
+  "DBP-03": {
+    "finding": "Marine/transformer-yard RCC (rafts, footings and plinths) is specified at grade M25.",
+    "why_it_matters": "Concrete in or near sea-water must be at least M30 for reinforced concrete; M25 leaves insufficient density and cover-quality to resist chloride ingress at a coastal site, risking premature durability failure of power-block foundations.",
+    "corrective_action": "Upgrade the marine/transformer-yard RCC grade to a minimum of M30 (M35 recommended per the precedent in RFI-CIV-061) and revise the mix design and BoQ."
+  },
+  "DBP-04": {
+    "finding": "The free water-cement ratio for severe-exposure structural concrete is specified as 0.55.",
+    "why_it_matters": "Table 5 caps the free w/c ratio for severe exposure to limit chloride and moisture ingress; 0.55 produces a more permeable matrix that undermines the durability and 50-year design life expected of mission-critical infrastructure.",
+    "corrective_action": "Revise the mix design (MOS-0210) to a maximum free w/c ratio of 0.45 for severe exposure and re-submit the method statement."
+  },
+  "DBP-05": {
+    "finding": "Column C-08 is detailed with 0.6 percent longitudinal reinforcement of the gross cross-sectional area.",
+    "why_it_matters": "Below the 0.8 percent minimum, the column has inadequate reserve capacity and ductility for the seismic and equipment loads of a data hall, reducing structural robustness under the design earthquake.",
+    "corrective_action": "Increase column C-08 longitudinal steel to at least 0.8 percent of the gross section and revise reinforcement drawing SUB-0156 before fabrication."
+  },
+  "DBP-06": {
+    "finding": "The seismic design adopts Importance Factor I = 1.0 for the data-centre buildings.",
+    "why_it_matters": "IS 1893 Table 8 places lifeline/critical facilities (power stations, telephone exchanges) at I = 1.5, and Note 1 lets the owner adopt a higher I. A Tier-III data centre is a textbook modern lifeline facility, so I = 1.0 may under-design the lateral system relative to its true criticality.",
+    "corrective_action": "Review the seismic basis with the EOR and consider adopting I = 1.5 for the mission-critical blocks; document the agreed value in the design basis.",
+    "recommendation": "Recommend adopting Importance Factor I = 1.5 for the data-centre buildings, treating the Tier-III facility as a lifeline structure.",
+    "confirm_with": "Engineer of Record (EOR) — IS 1893 Pt1:2016 Cl 7.2.3 Note 1 permits a higher I at the owner's/engineer's discretion."
+  },
+  "DBP-09": {
+    "finding": "Lateral ties for primary column C-08 (450 mm square, 16 mm longitudinal bars) are detailed at 300 mm centres.",
+    "why_it_matters": "IS 456 Cl 26.5.3.2 caps tie pitch at the least of the column's least lateral dimension, 16x the smallest longitudinal bar diameter (16 x 16 = 256 mm), and 300 mm — here 256 mm governs. Ties at 300 mm leave the bars under-restrained against buckling under the seismic and equipment loads of a data hall.",
+    "corrective_action": "Reduce the lateral-tie pitch for column C-08 to 256 mm (the binding 16x bar-diameter limit) or closer, and re-issue reinforcement drawing SUB-0156 before fabrication."
+  }
+}
