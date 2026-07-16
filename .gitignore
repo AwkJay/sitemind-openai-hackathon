@@ -1,0 +1,86 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.venv/
+venv/
+ENV/
+env/
+
+# FastAPI / Backend
+.env
+.env.local
+.env*.local
+*.log
+instance/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / Frontend
+node_modules/
+npm-debug.log
+npm-error.log
+yarn-error.log
+.next/
+out/
+.turbo/
+dist/
+build/
+.env.local
+.env.production.local
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+.DS_Store
+Thumbs.db
+.trashes
+.AppleDouble
+.LSOverride
+
+# Project specific
+.env
+.env.local
+*.csv.bak
+*.json.bak
+.langfuse_traces/
+lru_cache/
+
+# Internal build/process docs — not for the public repo
+PROGRESS.md
+DEMO_STORY.md
+docs/TELEPROMPTER.md
+docs/DECK_OUTLINE.md
+docs/CODEX_SETUP.md
+docs/BUSINESS_IMPACT.md
+docs/codes.txt
+docs/archive/
+docs/deck/
+
+# Stray session-transcript exports (never meant to be committed)
+[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-*.txt
