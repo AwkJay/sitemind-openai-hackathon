@@ -1,0 +1,133 @@
+{
+  "n_documents": 14,
+  "n_planted_params": 11,
+  "extraction": {
+    "true_positives": 11,
+    "false_negatives_missed": 0,
+    "false_positives_fabricated": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+  },
+  "abstention": {
+    "correct_abstentions": 59,
+    "total_opportunities": 59,
+    "accuracy": 1.0
+  },
+  "always_abstain_types_note": "design_wind_speed / design_wind_pressure / tie_spacing are hardcoded to always abstain regardless of document content (['design_wind_pressure', 'design_wind_speed', 'tie_spacing']) \u2014 not scored per-document here since the behaviour never varies by input; verified once in unit tests.",
+  "method": "Held-out mini-documents with deliberately different phrasing than ingest.py's own regex/docstrings, including adversarial decoys (trigger word present, no valid value) that must NOT be extracted. A false-positive extraction (fabricating a value not in the text) is scored separately and is the metric that matters most for the no-hallucination claim.",
+  "per_case": [
+    {
+      "id": "cover-footing-1",
+      "expected": 1,
+      "correctly_extracted": 1,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 4
+    },
+    {
+      "id": "cover-column-1",
+      "expected": 2,
+      "correctly_extracted": 2,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 3
+    },
+    {
+      "id": "cover-no-element",
+      "expected": 0,
+      "correctly_extracted": 0,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 5
+    },
+    {
+      "id": "grade-marine-1",
+      "expected": 1,
+      "correctly_extracted": 1,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 4
+    },
+    {
+      "id": "grade-internal-1",
+      "expected": 1,
+      "correctly_extracted": 1,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 4
+    },
+    {
+      "id": "wc-moderate-1",
+      "expected": 1,
+      "correctly_extracted": 1,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 4
+    },
+    {
+      "id": "wc-no-ratio",
+      "expected": 0,
+      "correctly_extracted": 0,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 5
+    },
+    {
+      "id": "steel-column-1",
+      "expected": 1,
+      "correctly_extracted": 1,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 4
+    },
+    {
+      "id": "steel-beam-no-match",
+      "expected": 0,
+      "correctly_extracted": 0,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 5
+    },
+    {
+      "id": "importance-1",
+      "expected": 1,
+      "correctly_extracted": 1,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 4
+    },
+    {
+      "id": "importance-none",
+      "expected": 0,
+      "correctly_extracted": 0,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 5
+    },
+    {
+      "id": "mixed-realistic-1",
+      "expected": 3,
+      "correctly_extracted": 3,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 2
+    },
+    {
+      "id": "decoy-cover-charge",
+      "expected": 0,
+      "correctly_extracted": 0,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 5
+    },
+    {
+      "id": "decoy-grade-unrelated",
+      "expected": 0,
+      "correctly_extracted": 0,
+      "missed": 0,
+      "false_positive_extractions": 0,
+      "correct_abstentions": 5
+    }
+  ]
+}
