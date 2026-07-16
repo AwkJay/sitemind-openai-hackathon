@@ -1,0 +1,200 @@
+{
+  "n_cases": 32,
+  "n_pass": 32,
+  "accuracy": 1.0,
+  "results": [
+    {
+      "case": "ir-pass-n50-exact-boundary",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ir-fail-n50-just-under",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ir-pass-n100-boundary",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ir-fail-n100-below-required",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ir-pass-n10-capped-requirement",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ir-fail-n10-below-capped-requirement",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ir-pass-n2-heavily-capped",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ir-fail-n2-below-capped-requirement",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "rcd-pass-standard-30ma",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "rcd-pass-well-under",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "rcd-fail-over-rated-100ma",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "rcd-fail-just-over-boundary",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "rcd-not-applicable-wrong-circuit-type",
+      "expected_conforms": null,
+      "got": "NOT_APPLICABLE",
+      "pass": true
+    },
+    {
+      "case": "earth-grid-pass-boundary",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "earth-grid-pass-well-under",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "earth-grid-fail-over-boundary",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "frame-earth-pass-two",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "frame-earth-pass-more-than-two",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "frame-earth-fail-single-connection",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "neutral-earth-pass-two",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "neutral-earth-fail-single-connection",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "rcd-touch-pass-typical-30ma",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "rcd-touch-pass-exact-boundary-100ma",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "rcd-touch-fail-just-over-boundary-30ma",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "rcd-touch-pass-exact-boundary-500ma",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "rcd-touch-fail-500ma-high-earth-resistance",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ins-table15-selv-pass",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ins-table15-selv-fail-at-boundary",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ins-table15-up-to-500v-pass",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ins-table15-up-to-500v-fail-at-boundary",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ins-table15-above-500v-pass",
+      "expected_conforms": true,
+      "got": "CONFORMS",
+      "pass": true
+    },
+    {
+      "case": "ins-table15-above-500v-fail-below",
+      "expected_conforms": false,
+      "got": "NON_CONFORMS",
+      "pass": true
+    }
+  ],
+  "note": "Correctness check on the deterministic threshold arithmetic for the 2 electrical checks (IS 732:1989, primary_scan_ocr). Does not re-verify OCR transcription accuracy of the underlying clause text (done manually, see PROGRESS.md). Separate from run_eval.py's structural n=41 \u2014 never blended."
+}
