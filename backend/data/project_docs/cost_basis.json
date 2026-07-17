@@ -1,0 +1,13 @@
+{
+  "_note": "REPRESENTATIVE synthetic cost data — order-of-magnitude figures modelled on typical Indian data-centre EPC BOQ line items and standard-form (e.g. FIDIC-style) liquidated-damages rates, NOT any real project's actual costs or contract terms. Used only to make the cost-at-risk FORMULA in app/cost_risk.py demonstrable end-to-end; the formula and the live inputs it multiplies (project_impact_days, cost_premium_pct, open-NCR count) are real computed values, not invented. See README 'What's REAL vs REPRESENTATIVE'.",
+  "daily_delay_rate_inr": 350000,
+  "equipment_base_cost_inr": {
+    "DRUPS 2.5MW": 180000000,
+    "LV switchgear 4000A": 45000000,
+    "Busway 4000A": 18000000,
+    "Chiller plant": 90000000,
+    "CRAH 150kW": 12000000,
+    "Raised access floor": 8000000
+  },
+  "default_equipment_base_cost_inr": 20000000
+}

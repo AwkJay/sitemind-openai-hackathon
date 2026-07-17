@@ -1,0 +1,66 @@
+{
+  "n_cases": 9,
+  "n_pass": 9,
+  "accuracy": 1.0,
+  "method": "Held-out synthetic input cases constructed directly against the pure formula functions in app/cost_risk.py (schedule_delay_cost_from, expedite_premium_cost_from, rework_exposure_from) \u2014 not the live demo dataset. Verifies each cost-at-risk formula term computes correctly across edge cases (zero inputs, multi-item aggregation, a zero-percent premium correctly contributing zero cost). This is a correctness check on the formula, not a claim that the daily-delay-rate or per-item base-cost assumptions in cost_basis.json are empirically validated against real project cost history \u2014 none exists to backtest against; every rate is stated in CostRiskComponent.basis for the user to defend or revise on stage.",
+  "schedule_delay_cases": [
+    {
+      "id": "schedule-zero-days",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    },
+    {
+      "id": "schedule-typical",
+      "pass": true,
+      "got": 35350000,
+      "expected": 35350000
+    },
+    {
+      "id": "schedule-different-rate",
+      "pass": true,
+      "got": 5000000,
+      "expected": 5000000
+    }
+  ],
+  "rework_exposure_cases": [
+    {
+      "id": "rework-zero-ncrs",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    },
+    {
+      "id": "rework-six-ncrs",
+      "pass": true,
+      "got": 9000000,
+      "expected": 9000000
+    }
+  ],
+  "expedite_premium_cases": [
+    {
+      "id": "expedite-no-items",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    },
+    {
+      "id": "expedite-single-item",
+      "pass": true,
+      "got": 9900000,
+      "expected": 9900000
+    },
+    {
+      "id": "expedite-multi-item",
+      "pass": true,
+      "got": 90900000,
+      "expected": 90900000
+    },
+    {
+      "id": "expedite-zero-pct-still-zero-cost",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    }
+  ]
+}
