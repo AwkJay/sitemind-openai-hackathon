@@ -1,0 +1,4 @@
+# Optional — real Langfuse tracing (app/langfuse_sink.py). Core demo needs NONE
+# of this; trace.py's local provenance log works with zero dependencies.
+# Install only if LANGFUSE_SECRET_KEY/LANGFUSE_PUBLIC_KEY are set in backend/.env.
+langfuse==4.13.0
