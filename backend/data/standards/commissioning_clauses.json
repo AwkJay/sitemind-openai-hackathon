@@ -1,0 +1,82 @@
+{
+  "_note": "PARTIAL, CROSS-SOURCE CORPUS — NOT the same integrity bar as clauses.json (manak). Values below describe ASHRAE TC9.9 'Thermal Guidelines for Data Processing Environments' (5th ed., 2021) Class A1/A2 envelopes. The primary ASHRAE book is commercially sold, not freely fetchable, and was NOT independently verified against a single primary document. These values are compiled from (a) one official ASHRAE-hosted free white paper covering the power-equipment section, cross-checked against (b) several independent secondary technical publications that converge on the same numbers. Every row carries source_type='cross_source_unverified' on its Citation so the UI/API can never present it as equivalent to a manak-verified clause. Scope: cooling/thermal envelope ONLY (temperature + a simplified relative-humidity band) — no electrical, fire, or DG-set commissioning coverage. See sitemind/docs/codes.txt for what's still needed to build the electrical/fire slice of this pillar.",
+  "known_simplification": "ASHRAE's actual humidity criterion is a combined dew-point + RH% envelope (e.g. allowable A1/A2 minimum is 'the higher of -12C dew point or 8% RH', not a flat RH% floor). This corpus reduces that to a simplified RH%-only range because commissioning test logs typically report RH%, not dew point. A test record passing the simplified RH check is NOT a guarantee it would pass the true dew-point criterion — stated here, and repeated in the UI/quality-package banner.",
+  "sources_checked": [
+    "https://www.ashrae.org/file%20library/technical%20resources/bookstore/ashrae_tc0909_power_white_paper_22_june_2016_revised.pdf (official ASHRAE, free, power-equipment section only — does not itself contain the full A1-A4 envelope table)",
+    "https://www.cky.com.tw/en/insights/ashrae-tc9-datacenter-thermal-guidelines (secondary, A1-A4 table)",
+    "https://attom.tech/wp-content/uploads/2023/10/ASHRAE%E2%80%99s-Data-Center-Thermal-Guidelines-Air-cooled-Evolution.pdf (secondary)",
+    "https://www.scribd.com/document/772495809/ASHRAE-TC-9-9-Reference-Card-2021-Equipment-Thermal-Guidelines-for-Data-Processing-Environments (secondary, reference card)"
+  ],
+  "clauses": [
+    {
+      "key": "ASHRAE_TC99_RECOMMENDED_TEMP",
+      "standard": "ASHRAE TC9.9 (5th ed., 2021), cross-source compiled",
+      "clause": "Table 1 — Recommended envelope (Classes A1-A4)",
+      "text": "Recommended dry-bulb temperature range for IT equipment inlet air, all classes A1-A4: 18.0-27.0 degC (64.4-80.6 degF).",
+      "verify_url": "https://www.cky.com.tw/en/insights/ashrae-tc9-datacenter-thermal-guidelines",
+      "source_type": "cross_source_unverified",
+      "equipment_class": "ALL",
+      "envelope": "recommended",
+      "parameter": "temperature",
+      "min_value": 18.0,
+      "max_value": 27.0,
+      "unit": "degC"
+    },
+    {
+      "key": "ASHRAE_TC99_A1_ALLOWABLE_TEMP",
+      "standard": "ASHRAE TC9.9 (5th ed., 2021), cross-source compiled",
+      "clause": "Table 1 — Allowable envelope, Class A1",
+      "text": "Allowable dry-bulb temperature range for Class A1 (enterprise servers): 15.0-32.0 degC (59-89.6 degF).",
+      "verify_url": "https://www.cky.com.tw/en/insights/ashrae-tc9-datacenter-thermal-guidelines",
+      "source_type": "cross_source_unverified",
+      "equipment_class": "A1",
+      "envelope": "allowable",
+      "parameter": "temperature",
+      "min_value": 15.0,
+      "max_value": 32.0,
+      "unit": "degC"
+    },
+    {
+      "key": "ASHRAE_TC99_A2_ALLOWABLE_TEMP",
+      "standard": "ASHRAE TC9.9 (5th ed., 2021), cross-source compiled",
+      "clause": "Table 1 — Allowable envelope, Class A2",
+      "text": "Allowable dry-bulb temperature range for Class A2 (volume servers): 10.0-35.0 degC (50-95 degF).",
+      "verify_url": "https://www.cky.com.tw/en/insights/ashrae-tc9-datacenter-thermal-guidelines",
+      "source_type": "cross_source_unverified",
+      "equipment_class": "A2",
+      "envelope": "allowable",
+      "parameter": "temperature",
+      "min_value": 10.0,
+      "max_value": 35.0,
+      "unit": "degC"
+    },
+    {
+      "key": "ASHRAE_TC99_RECOMMENDED_RH",
+      "standard": "ASHRAE TC9.9 (5th ed., 2021), cross-source compiled, SIMPLIFIED",
+      "clause": "Table 1 — Recommended envelope (Classes A1-A4), humidity (simplified)",
+      "text": "Recommended humidity envelope (true criterion: dew point -9 to 15 degC DP, max 60% RH). SIMPLIFIED here to a flat relative-humidity range of 20-60% RH non-condensing for a test log that reports RH% only — the low end (20%) is this corpus's own practical floor, not an ASHRAE-stated number; the 60% max IS the ASHRAE-stated recommended ceiling.",
+      "verify_url": "https://www.cky.com.tw/en/insights/ashrae-tc9-datacenter-thermal-guidelines",
+      "source_type": "cross_source_unverified",
+      "equipment_class": "ALL",
+      "envelope": "recommended",
+      "parameter": "relative_humidity",
+      "min_value": 20.0,
+      "max_value": 60.0,
+      "unit": "%RH"
+    },
+    {
+      "key": "ASHRAE_TC99_A1A2_ALLOWABLE_RH",
+      "standard": "ASHRAE TC9.9 (5th ed., 2021), cross-source compiled, SIMPLIFIED",
+      "clause": "Table 1 — Allowable envelope, Classes A1/A2, humidity (simplified)",
+      "text": "Allowable humidity envelope for Classes A1/A2 (true criterion: min is the higher of -12 degC DP or 8% RH; max is 17 degC DP for A1 / 21 degC DP for A2, both capped at 80% RH). SIMPLIFIED here to a flat relative-humidity range of 8-80% RH non-condensing.",
+      "verify_url": "https://www.cky.com.tw/en/insights/ashrae-tc9-datacenter-thermal-guidelines",
+      "source_type": "cross_source_unverified",
+      "equipment_class": "A1_A2",
+      "envelope": "allowable",
+      "parameter": "relative_humidity",
+      "min_value": 8.0,
+      "max_value": 80.0,
+      "unit": "%RH"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+test_id,system,parameter,measured_value,unit,timestamp,location_zone,equipment_class
+CT-001,cooling,supply_air_temp,22.5,degC,2026-06-28T09:00:00Z,White Space Zone A,A1
+CT-002,cooling,supply_air_temp,30.5,degC,2026-06-28T09:05:00Z,White Space Zone B,A1
+CT-003,cooling,supply_air_temp,34.0,degC,2026-06-28T09:10:00Z,White Space Zone C,A1
+CT-004,cooling,relative_humidity,48.0,%RH,2026-06-28T09:15:00Z,White Space Zone A,A1
+CT-005,cooling,relative_humidity,88.0,%RH,2026-06-28T09:20:00Z,White Space Zone D,A1
+CT-006,power,voltage,415.0,V,2026-06-28T09:25:00Z,LV Board 1,A1

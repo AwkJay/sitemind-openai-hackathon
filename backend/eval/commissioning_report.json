@@ -1,0 +1,106 @@
+{
+  "n_cases": 14,
+  "n_pass": 14,
+  "accuracy": 1.0,
+  "results": [
+    {
+      "case": "temp-pass-recommended",
+      "expected": "PASS",
+      "got": "PASS",
+      "pass": true,
+      "ncr_generated": false
+    },
+    {
+      "case": "temp-pass-lower-boundary",
+      "expected": "PASS",
+      "got": "PASS",
+      "pass": true,
+      "ncr_generated": false
+    },
+    {
+      "case": "temp-pass-upper-boundary",
+      "expected": "PASS",
+      "got": "PASS",
+      "pass": true,
+      "ncr_generated": false
+    },
+    {
+      "case": "temp-out-of-recommended-a1",
+      "expected": "OUT_OF_RECOMMENDED_BUT_WITHIN_ALLOWABLE",
+      "got": "OUT_OF_RECOMMENDED_BUT_WITHIN_ALLOWABLE",
+      "pass": true,
+      "ncr_generated": true
+    },
+    {
+      "case": "temp-fail-above-allowable-a1",
+      "expected": "FAIL",
+      "got": "FAIL",
+      "pass": true,
+      "ncr_generated": true
+    },
+    {
+      "case": "temp-fail-below-allowable-a1",
+      "expected": "FAIL",
+      "got": "FAIL",
+      "pass": true,
+      "ncr_generated": true
+    },
+    {
+      "case": "temp-out-of-recommended-a2",
+      "expected": "OUT_OF_RECOMMENDED_BUT_WITHIN_ALLOWABLE",
+      "got": "OUT_OF_RECOMMENDED_BUT_WITHIN_ALLOWABLE",
+      "pass": true,
+      "ncr_generated": true
+    },
+    {
+      "case": "temp-fail-above-allowable-a2",
+      "expected": "FAIL",
+      "got": "FAIL",
+      "pass": true,
+      "ncr_generated": true
+    },
+    {
+      "case": "rh-pass-recommended",
+      "expected": "PASS",
+      "got": "PASS",
+      "pass": true,
+      "ncr_generated": false
+    },
+    {
+      "case": "rh-out-of-recommended",
+      "expected": "OUT_OF_RECOMMENDED_BUT_WITHIN_ALLOWABLE",
+      "got": "OUT_OF_RECOMMENDED_BUT_WITHIN_ALLOWABLE",
+      "pass": true,
+      "ncr_generated": true
+    },
+    {
+      "case": "rh-fail-above-allowable",
+      "expected": "FAIL",
+      "got": "FAIL",
+      "pass": true,
+      "ncr_generated": true
+    },
+    {
+      "case": "rh-fail-below-allowable",
+      "expected": "FAIL",
+      "got": "FAIL",
+      "pass": true,
+      "ncr_generated": true
+    },
+    {
+      "case": "not-checkable-power-system",
+      "expected": "NOT_CHECKABLE",
+      "got": "NOT_CHECKABLE",
+      "pass": true,
+      "ncr_generated": false
+    },
+    {
+      "case": "not-checkable-unmapped-cooling-param",
+      "expected": "NOT_CHECKABLE",
+      "got": "NOT_CHECKABLE",
+      "pass": true,
+      "ncr_generated": false
+    }
+  ],
+  "note": "Correctness check on the deterministic PASS/allowable/FAIL threshold logic against a hand-built answer key. Does NOT validate the underlying ASHRAE envelope numbers themselves against a primary source \u2014 those are cross_source_unverified, see commissioning_clauses.json."
+}
