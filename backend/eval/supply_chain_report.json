@@ -1,0 +1,123 @@
+{
+  "n_cases": 8,
+  "n_pass": 8,
+  "accuracy": 1.0,
+  "method": "Held-out synthetic milestone/alternative scenarios constructed directly against the pure functions in app/supply_chain.py (delay propagation, root-cause attribution, alternative viability) \u2014 not the demo dataset. Verifies the deterministic arithmetic is correct across edge cases (early delivery, tier-2 root cause, non-cumulative delay semantics, fully-delivered shipments, exact-boundary alternative viability). This is a correctness check on the logic, not a claim of predictive accuracy against real project outcomes (no real historical delivery data exists to backtest against).",
+  "milestone_cases": [
+    {
+      "id": "all-on-time",
+      "pass": true,
+      "checks": {
+        "days_at_risk": [
+          true,
+          0,
+          0
+        ],
+        "root_cause": [
+          true,
+          null,
+          null
+        ],
+        "current_stage": [
+          true,
+          "dispatched",
+          "dispatched"
+        ]
+      }
+    },
+    {
+      "id": "early-delivery-never-negative",
+      "pass": true,
+      "checks": {
+        "days_at_risk": [
+          true,
+          0,
+          0
+        ],
+        "root_cause": [
+          true,
+          null,
+          null
+        ],
+        "current_stage": [
+          true,
+          "ordered",
+          "ordered"
+        ]
+      }
+    },
+    {
+      "id": "tier2-slip-is-root-cause",
+      "pass": true,
+      "checks": {
+        "days_at_risk": [
+          true,
+          15,
+          15
+        ],
+        "root_cause_tier": [
+          true,
+          "tier2 customs clearance slipped 25d (tier-2 sub-supplier)",
+          "tier-2"
+        ],
+        "root_cause_stage": [
+          true,
+          "tier2 customs clearance slipped 25d (tier-2 sub-supplier)",
+          "tier2_customs_clearance"
+        ]
+      }
+    },
+    {
+      "id": "delay-is-latest-checkpoint-not-cumulative",
+      "pass": true,
+      "checks": {
+        "days_at_risk": [
+          true,
+          0,
+          0
+        ],
+        "current_delay": [
+          true,
+          10,
+          10
+        ]
+      }
+    },
+    {
+      "id": "fully-delivered-no-projection",
+      "pass": true,
+      "checks": {
+        "current_stage": [
+          true,
+          "arrived_at_site",
+          "arrived_at_site"
+        ],
+        "all_projected_none": [
+          true,
+          true,
+          true
+        ]
+      }
+    }
+  ],
+  "alternative_cases": [
+    {
+      "id": "alt-boundary-exact",
+      "pass": true,
+      "viable": true,
+      "expected": true
+    },
+    {
+      "id": "alt-one-day-over",
+      "pass": true,
+      "viable": false,
+      "expected": false
+    },
+    {
+      "id": "alt-comfortably-viable",
+      "pass": true,
+      "viable": true,
+      "expected": true
+    }
+  ]
+}

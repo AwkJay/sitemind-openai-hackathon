@@ -1,0 +1,116 @@
+{
+  "_note": "REPRESENTATIVE synthetic data, modeled on real Indian/global manufacturing-hub geography for the equipment categories named in the brief (UPS/DRUPS, switchgear, chillers, busway). Coordinates are real city coordinates; supplier names are fictional. Shipments extend the procurement_item/lead_time_days/vendor_status fields already in schedule.csv rather than duplicating a disconnected data source — wbs_id links each shipment back to the schedule activity it feeds.",
+  "shipments": [
+    {
+      "id": "SHP-001",
+      "procurement_item": "DRUPS 2.5MW",
+      "wbs_id": "DC1-04-EL-020",
+      "tier1_supplier": {"name": "Ashoka Power Systems", "role": "DRUPS assembly & FAT", "city": "Pune", "country": "India", "lat": 18.5204, "lon": 73.8567},
+      "tier2_suppliers": [
+        {"name": "Hanzhou Cell Works", "component": "Li-ion battery cell modules", "city": "Shanghai", "country": "China", "lat": 31.2304, "lon": 121.4737}
+      ],
+      "milestones": [
+        {"stage": "ordered", "tier": 1, "planned_day": 35, "actual_day": 35},
+        {"stage": "tier2_dispatched", "tier": 2, "planned_day": 60, "actual_day": 60},
+        {"stage": "tier2_customs_clearance", "tier": 2, "planned_day": 75, "actual_day": 130},
+        {"stage": "tier2_delivered_to_tier1", "tier": 2, "planned_day": 85, "actual_day": 140},
+        {"stage": "tier1_in_production", "tier": 1, "planned_day": 100, "actual_day": 155},
+        {"stage": "tier1_dispatched", "tier": 1, "planned_day": 140, "actual_day": null},
+        {"stage": "in_transit", "tier": 1, "planned_day": 150, "actual_day": null},
+        {"stage": "arrived_at_site", "tier": 1, "planned_day": 165, "actual_day": null}
+      ],
+      "alternatives": [
+        {"supplier": "Meridian DRUPS India", "city": "Bengaluru", "country": "India", "lat": 12.9716, "lon": 77.5946, "lead_time_days": 200, "cost_premium_pct": 18},
+        {"supplier": "NordPower EU", "city": "Hamburg", "country": "Germany", "lat": 53.5511, "lon": 9.9937, "lead_time_days": 240, "cost_premium_pct": 31},
+        {"supplier": "Uptime Bridge Rentals (interim containerized DRUPS)", "city": "Mumbai", "country": "India", "lat": 19.0760, "lon": 72.8777, "lead_time_days": 30, "cost_premium_pct": 45}
+      ]
+    },
+    {
+      "id": "SHP-002",
+      "procurement_item": "LV switchgear 4000A",
+      "wbs_id": "DC1-04-EL-030",
+      "declared_spec": {"rated_operational_voltage_v": 415, "rated_insulation_voltage_v": 1000},
+      "tier1_supplier": {"name": "Kavery Switchgear Ltd", "role": "LV panel assembly & type-test", "city": "Bengaluru", "country": "India", "lat": 12.9716, "lon": 77.5946},
+      "tier2_suppliers": [
+        {"name": "Rheinmetall Breaker Components", "component": "Air circuit breakers (4000A frame)", "city": "Stuttgart", "country": "Germany", "lat": 48.7758, "lon": 9.1829}
+      ],
+      "milestones": [
+        {"stage": "ordered", "tier": 1, "planned_day": 65, "actual_day": 65},
+        {"stage": "tier2_dispatched", "tier": 2, "planned_day": 90, "actual_day": 90},
+        {"stage": "tier2_customs_clearance", "tier": 2, "planned_day": 100, "actual_day": 100},
+        {"stage": "tier2_delivered_to_tier1", "tier": 2, "planned_day": 108, "actual_day": 108},
+        {"stage": "tier1_in_production", "tier": 1, "planned_day": 115, "actual_day": 135},
+        {"stage": "tier1_dispatched", "tier": 1, "planned_day": 190, "actual_day": null},
+        {"stage": "in_transit", "tier": 1, "planned_day": 198, "actual_day": null},
+        {"stage": "arrived_at_site", "tier": 1, "planned_day": 205, "actual_day": null}
+      ],
+      "alternatives": [
+        {"supplier": "Sundaram Electricals", "city": "Chennai", "country": "India", "lat": 13.0827, "lon": 80.2707, "lead_time_days": 130, "cost_premium_pct": 9},
+        {"supplier": "Vellore Panel Distributors (ex-stock unit)", "city": "Chennai", "country": "India", "lat": 13.0827, "lon": 80.2707, "lead_time_days": 35, "cost_premium_pct": 22}
+      ]
+    },
+    {
+      "id": "SHP-003",
+      "procurement_item": "Busway 4000A",
+      "wbs_id": "DC1-04-EL-050",
+      "tier1_supplier": {"name": "Vaigai Busbar Fabricators", "role": "Busway fabrication (local)", "city": "Chennai", "country": "India", "lat": 13.0827, "lon": 80.2707},
+      "tier2_suppliers": [
+        {"name": "Konkan Copper Traders", "component": "Copper busbar stock", "city": "Mumbai", "country": "India", "lat": 19.0760, "lon": 72.8777}
+      ],
+      "milestones": [
+        {"stage": "ordered", "tier": 1, "planned_day": 150, "actual_day": 150},
+        {"stage": "tier2_dispatched", "tier": 2, "planned_day": 160, "actual_day": 166},
+        {"stage": "tier2_delivered_to_tier1", "tier": 2, "planned_day": 165, "actual_day": 174},
+        {"stage": "tier1_in_production", "tier": 1, "planned_day": 170, "actual_day": null},
+        {"stage": "tier1_dispatched", "tier": 1, "planned_day": 195, "actual_day": null},
+        {"stage": "arrived_at_site", "tier": 1, "planned_day": 205, "actual_day": null}
+      ],
+      "alternatives": [
+        {"supplier": "Godavari Busbar Works", "city": "Hyderabad", "country": "India", "lat": 17.3850, "lon": 78.4867, "lead_time_days": 45, "cost_premium_pct": 12}
+      ]
+    },
+    {
+      "id": "SHP-004",
+      "procurement_item": "Chiller plant",
+      "wbs_id": "DC1-04-ME-010",
+      "tier1_supplier": {"name": "Neelkanth Thermal Systems", "role": "Chiller skid assembly", "city": "Pune", "country": "India", "lat": 18.5204, "lon": 73.8567},
+      "tier2_suppliers": [],
+      "milestones": [
+        {"stage": "ordered", "tier": 1, "planned_day": 90, "actual_day": 90},
+        {"stage": "tier1_in_production", "tier": 1, "planned_day": 110, "actual_day": 110},
+        {"stage": "tier1_dispatched", "tier": 1, "planned_day": 165, "actual_day": 163},
+        {"stage": "in_transit", "tier": 1, "planned_day": 172, "actual_day": 170},
+        {"stage": "arrived_at_site", "tier": 1, "planned_day": 178, "actual_day": null}
+      ],
+      "alternatives": []
+    },
+    {
+      "id": "SHP-005",
+      "procurement_item": "CRAH 150kW",
+      "wbs_id": "DC1-04-ME-020",
+      "tier1_supplier": {"name": "Coromandel Coolair", "role": "CRAH unit manufacture", "city": "Bengaluru", "country": "India", "lat": 12.9716, "lon": 77.5946},
+      "tier2_suppliers": [],
+      "milestones": [
+        {"stage": "ordered", "tier": 1, "planned_day": 130, "actual_day": 130},
+        {"stage": "tier1_in_production", "tier": 1, "planned_day": 155, "actual_day": 155},
+        {"stage": "tier1_dispatched", "tier": 1, "planned_day": 205, "actual_day": null},
+        {"stage": "arrived_at_site", "tier": 1, "planned_day": 215, "actual_day": null}
+      ],
+      "alternatives": []
+    },
+    {
+      "id": "SHP-006",
+      "procurement_item": "Raised access floor",
+      "wbs_id": "DC1-03-AF-030",
+      "tier1_supplier": {"name": "Marina Floor Systems", "role": "Anti-static access-floor panels", "city": "Chennai", "country": "India", "lat": 13.0827, "lon": 80.2707},
+      "tier2_suppliers": [],
+      "milestones": [
+        {"stage": "ordered", "tier": 1, "planned_day": 90, "actual_day": 90},
+        {"stage": "tier1_in_production", "tier": 1, "planned_day": 110, "actual_day": 108},
+        {"stage": "tier1_dispatched", "tier": 1, "planned_day": 165, "actual_day": null},
+        {"stage": "arrived_at_site", "tier": 1, "planned_day": 178, "actual_day": null}
+      ],
+      "alternatives": []
+    }
+  ]
+}
