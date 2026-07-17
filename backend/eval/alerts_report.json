@@ -1,0 +1,78 @@
+{
+  "n_cases": 11,
+  "n_pass": 11,
+  "accuracy": 1.0,
+  "alert_warning_days_threshold": 4,
+  "alert_critical_days_threshold": 14,
+  "method": "Held-out synthetic cases constructed directly against the pure _alert_severity() and _detected_at_day() functions in app/supply_chain.py \u2014 not the live demo dataset. Verifies severity-tiering at exact threshold boundaries (not just comfortably inside each band) and that detected_at_day finds the FIRST slipped milestone, not the largest or a later one. This is a correctness check on the alerting logic; 'alerting timeliness' itself is a real computed lead-time (advance_warning_days = TODAY_DAY - detected_at_day), never asserted.",
+  "severity_cases": [
+    {
+      "id": "info-floor",
+      "pass": true,
+      "got": "INFO",
+      "expected": "INFO"
+    },
+    {
+      "id": "info-just-under-warning",
+      "pass": true,
+      "got": "INFO",
+      "expected": "INFO"
+    },
+    {
+      "id": "warning-at-floor",
+      "pass": true,
+      "got": "WARNING",
+      "expected": "WARNING"
+    },
+    {
+      "id": "warning-just-under-critical",
+      "pass": true,
+      "got": "WARNING",
+      "expected": "WARNING"
+    },
+    {
+      "id": "critical-just-over-threshold",
+      "pass": true,
+      "got": "CRITICAL",
+      "expected": "CRITICAL"
+    },
+    {
+      "id": "critical-on-critical-path-even-if-1-day",
+      "pass": true,
+      "got": "CRITICAL",
+      "expected": "CRITICAL"
+    },
+    {
+      "id": "critical-zero-days-but-on-path",
+      "pass": true,
+      "got": "CRITICAL",
+      "expected": "CRITICAL"
+    }
+  ],
+  "detected_day_cases": [
+    {
+      "id": "no-slip-returns-none",
+      "pass": true,
+      "got": null,
+      "expected": null
+    },
+    {
+      "id": "first-slip-not-largest-slip",
+      "pass": true,
+      "got": 12,
+      "expected": 12
+    },
+    {
+      "id": "tier2-slip-detected-before-later-tier1-actuals",
+      "pass": true,
+      "got": 55,
+      "expected": 55
+    },
+    {
+      "id": "ahead-of-schedule-not-a-slip",
+      "pass": true,
+      "got": null,
+      "expected": null
+    }
+  ]
+}
