@@ -1,0 +1,12 @@
+# Optional LLM backends — install only the one you use. Core demo needs NONE of these
+# (LLM_PROVIDER=offline). See docs/CODEX_SETUP.md.
+
+# Codex SDK — drives a local Codex agent authenticated via ChatGPT login (no API key).
+# Requires the Codex CLI installed and `codex login` completed on this machine.
+openai-codex
+
+# OpenAI API backend (alternative to codex; needs OPENAI_API_KEY)
+# openai>=1.40
+
+# Anthropic API backend (needs ANTHROPIC_API_KEY)
+# anthropic>=0.39
