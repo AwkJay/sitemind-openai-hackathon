@@ -1,0 +1,199 @@
+{
+  "n_cases": 13,
+  "n_pass": 13,
+  "accuracy": 1.0,
+  "overtime_recoverable_threshold_pct": 30.0,
+  "method": "Held-out synthetic cases constructed directly against the three pure agent functions in app/agents/mitigation.py, using synthetic Shipment/row/cpm objects (the procurement agent takes an injected shipments list specifically so this eval never touches the live demo dataset). Verifies each agent's viable/non-viable verdict and days_recovered arithmetic across edge cases (shipment not at risk, alt caps at days_at_risk vs predicted_slip, zero/negative float, elapsed planning window, over/under the overtime-recoverable threshold). This is a correctness check on each agent's grounded computation, not a claim that the RECOMMENDED action is optimal project-management advice \u2014 every option states its own real inputs so a PM can judge it.",
+  "procurement_alternative_cases": [
+    {
+      "id": "no-matching-shipment",
+      "pass": true,
+      "checks": {
+        "viable": [
+          true,
+          false,
+          false
+        ],
+        "days_recovered": [
+          true,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "shipment-not-at-risk",
+      "pass": true,
+      "checks": {
+        "viable": [
+          true,
+          false,
+          false
+        ],
+        "days_recovered": [
+          true,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "at-risk-no-viable-alt",
+      "pass": true,
+      "checks": {
+        "viable": [
+          true,
+          false,
+          false
+        ],
+        "days_recovered": [
+          true,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "at-risk-viable-alt-caps-at-days-at-risk",
+      "pass": true,
+      "checks": {
+        "viable": [
+          true,
+          true,
+          true
+        ],
+        "days_recovered": [
+          true,
+          5,
+          5
+        ],
+        "cost_premium_pct": [
+          true,
+          10.0,
+          10
+        ]
+      }
+    },
+    {
+      "id": "at-risk-viable-alt-caps-at-predicted-slip",
+      "pass": true,
+      "checks": {
+        "viable": [
+          true,
+          true,
+          true
+        ],
+        "days_recovered": [
+          true,
+          3,
+          3
+        ],
+        "cost_premium_pct": [
+          true,
+          15.0,
+          15
+        ]
+      }
+    }
+  ],
+  "resequencing_float_cases": [
+    {
+      "id": "zero-float-not-viable",
+      "pass": true,
+      "got": [
+        false,
+        0
+      ],
+      "expected": [
+        false,
+        0
+      ]
+    },
+    {
+      "id": "negative-float-not-viable",
+      "pass": true,
+      "got": [
+        false,
+        0
+      ],
+      "expected": [
+        false,
+        0
+      ]
+    },
+    {
+      "id": "float-fully-covers-slip",
+      "pass": true,
+      "got": [
+        true,
+        5
+      ],
+      "expected": [
+        true,
+        5
+      ]
+    },
+    {
+      "id": "float-partially-covers-slip",
+      "pass": true,
+      "got": [
+        true,
+        5
+      ],
+      "expected": [
+        true,
+        5
+      ]
+    }
+  ],
+  "resource_recovery_cases": [
+    {
+      "id": "zero-slip-not-applicable",
+      "pass": true,
+      "got": [
+        false,
+        0
+      ],
+      "expected": [
+        false,
+        0
+      ]
+    },
+    {
+      "id": "window-already-elapsed",
+      "pass": true,
+      "got": [
+        false,
+        0
+      ],
+      "expected": [
+        false,
+        0
+      ]
+    },
+    {
+      "id": "under-threshold-viable",
+      "pass": true,
+      "got": [
+        true,
+        4
+      ],
+      "expected": [
+        true,
+        4
+      ]
+    },
+    {
+      "id": "over-threshold-not-viable-partial-recovery",
+      "pass": true,
+      "got": [
+        false,
+        6
+      ],
+      "expected": [
+        false,
+        6
+      ]
+    }
+  ]
+}
