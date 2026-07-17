@@ -1,0 +1,269 @@
+{
+  "retrieval_floor": {
+    "n": 12,
+    "chosen_floor": 0.25,
+    "accuracy_at_chosen_floor": 1.0,
+    "sweep": [
+      {
+        "threshold": 0.1,
+        "accuracy": 0.667
+      },
+      {
+        "threshold": 0.15,
+        "accuracy": 0.75
+      },
+      {
+        "threshold": 0.2,
+        "accuracy": 0.917
+      },
+      {
+        "threshold": 0.25,
+        "accuracy": 1.0
+      },
+      {
+        "threshold": 0.3,
+        "accuracy": 1.0
+      },
+      {
+        "threshold": 0.35,
+        "accuracy": 1.0
+      },
+      {
+        "threshold": 0.4,
+        "accuracy": 1.0
+      },
+      {
+        "threshold": 0.45,
+        "accuracy": 1.0
+      },
+      {
+        "threshold": 0.5,
+        "accuracy": 1.0
+      },
+      {
+        "threshold": 0.55,
+        "accuracy": 1.0
+      },
+      {
+        "threshold": 0.6,
+        "accuracy": 0.917
+      },
+      {
+        "threshold": 0.65,
+        "accuracy": 0.75
+      },
+      {
+        "threshold": 0.7,
+        "accuracy": 0.75
+      },
+      {
+        "threshold": 0.75,
+        "accuracy": 0.667
+      }
+    ],
+    "cases": [
+      {
+        "question": "What grade of concrete should be used for reinforced sections built near the sea?",
+        "expect_hit": true,
+        "top_similarity": 0.7872
+      },
+      {
+        "question": "How much concrete cover do foundations need in a corrosive coastal environment?",
+        "expect_hit": true,
+        "top_similarity": 0.566
+      },
+      {
+        "question": "Should the seismic importance factor be higher for a critical, always-on facility?",
+        "expect_hit": true,
+        "top_similarity": 0.6199
+      },
+      {
+        "question": "What's the maximum water-to-cement ratio allowed for concrete in harsh marine exposure?",
+        "expect_hit": true,
+        "top_similarity": 0.7363
+      },
+      {
+        "question": "Is the design wind speed tied to the local basic wind speed for the city?",
+        "expect_hit": true,
+        "top_similarity": 0.6321
+      },
+      {
+        "question": "What's the allowed steel percentage in a column's longitudinal reinforcement?",
+        "expect_hit": true,
+        "top_similarity": 0.8718
+      },
+      {
+        "question": "What's the best pizza topping in Chennai?",
+        "expect_hit": false,
+        "top_similarity": 0.1659
+      },
+      {
+        "question": "asdkjaslkdj random gibberish gjkgh 12345",
+        "expect_hit": false,
+        "top_similarity": 0.1774
+      },
+      {
+        "question": "How do I reset my email password?",
+        "expect_hit": false,
+        "top_similarity": 0.0936
+      },
+      {
+        "question": "What's the weather like on Mars today?",
+        "expect_hit": false,
+        "top_similarity": 0.2134
+      },
+      {
+        "question": "Recommend a good movie to watch tonight.",
+        "expect_hit": false,
+        "top_similarity": 0.0602
+      },
+      {
+        "question": "Who won the last World Cup final?",
+        "expect_hit": false,
+        "top_similarity": 0.1204
+      }
+    ]
+  },
+  "seen_before_floor": {
+    "n": 9,
+    "chosen_floor": 0.25,
+    "accuracy_at_chosen_floor": 1.0,
+    "sweep": [
+      {
+        "threshold": 0.2,
+        "accuracy": 0.889
+      },
+      {
+        "threshold": 0.25,
+        "accuracy": 1.0
+      },
+      {
+        "threshold": 0.3,
+        "accuracy": 1.0
+      },
+      {
+        "threshold": 0.35,
+        "accuracy": 1.0
+      },
+      {
+        "threshold": 0.4,
+        "accuracy": 1.0
+      },
+      {
+        "threshold": 0.45,
+        "accuracy": 1.0
+      },
+      {
+        "threshold": 0.5,
+        "accuracy": 0.889
+      },
+      {
+        "threshold": 0.55,
+        "accuracy": 0.667
+      },
+      {
+        "threshold": 0.6,
+        "accuracy": 0.667
+      },
+      {
+        "threshold": 0.65,
+        "accuracy": 0.556
+      },
+      {
+        "threshold": 0.7,
+        "accuracy": 0.444
+      },
+      {
+        "threshold": 0.75,
+        "accuracy": 0.444
+      },
+      {
+        "threshold": 0.8,
+        "accuracy": 0.333
+      },
+      {
+        "threshold": 0.85,
+        "accuracy": 0.333
+      }
+    ],
+    "cases": [
+      {
+        "question": "Has anyone already asked whether we should bump the raft concrete grade up for better resistance to chloride attack near the coast?",
+        "expect_id": "RFI-CIV-061",
+        "top_match_id": "RFI-CIV-061",
+        "top_match_is_expected": true,
+        "top_similarity": 0.5484
+      },
+      {
+        "question": "Was a question already raised about verifying the allowable soil bearing pressure at foundation level against the geotech report?",
+        "expect_id": "RFI-CIV-055",
+        "top_match_id": "RFI-CIV-055",
+        "top_match_is_expected": true,
+        "top_similarity": 0.5025
+      },
+      {
+        "question": "Did someone already ask about the height of the raised access floor in the white space?",
+        "expect_id": "RFI-ARC-031",
+        "top_match_id": "RFI-ARC-031",
+        "top_match_is_expected": true,
+        "top_similarity": 0.6564
+      },
+      {
+        "question": "Has the chilled-water supply temperature for the cooling units already been confirmed somewhere in this project?",
+        "expect_id": "RFI-MEP-090",
+        "top_match_id": "RFI-MEP-090",
+        "top_match_is_expected": true,
+        "top_similarity": 0.4637
+      },
+      {
+        "question": "Is there already an answer on whether the roof fasteners can handle cyclone-strength wind uplift?",
+        "expect_id": "RFI-ARC-035",
+        "top_match_id": "RFI-ARC-035",
+        "top_match_is_expected": true,
+        "top_similarity": 0.6305
+      },
+      {
+        "question": "Was the pour sequencing / construction joint location for the big raft slab already resolved?",
+        "expect_id": "RFI-CIV-066",
+        "top_match_id": "RFI-CIV-066",
+        "top_match_is_expected": true,
+        "top_similarity": 0.7822
+      },
+      {
+        "question": "What's the procedure for commissioning the fire suppression system?",
+        "expect_id": null,
+        "top_match_id": "RFI-ARC-031",
+        "top_match_is_expected": null,
+        "top_similarity": 0.183
+      },
+      {
+        "question": "Has anyone asked about the elevator maintenance contract terms?",
+        "expect_id": null,
+        "top_match_id": "RFI-CIV-055",
+        "top_match_is_expected": null,
+        "top_similarity": 0.2485
+      },
+      {
+        "question": "What's the warranty period on the roofing membrane?",
+        "expect_id": null,
+        "top_match_id": "RFI-ARC-035",
+        "top_match_is_expected": null,
+        "top_similarity": 0.1905
+      }
+    ]
+  },
+  "deployed_floors": {
+    "retrieval_floor": 0.4,
+    "retrieval_floor_accuracy": 1.0,
+    "seen_before_floor": 0.35,
+    "seen_before_floor_accuracy": 1.0,
+    "note": "The sweep's chosen_floor is the first threshold hitting max accuracy (narrowest margin). The deployed floors above are the midpoint of the full accuracy-1.0 plateau's underlying similarity gap \u2014 more robust to a slightly different question, same accuracy on this labeled set."
+  },
+  "benchmark": {
+    "corpus_size": 50,
+    "corpus_embed_ms": 1796.8,
+    "single_query_embed_ms": 22.9,
+    "note": "corpus_embed_ms is a one-time cost (cached via lru_cache in _index()); single_query_embed_ms is the per-question cost paid on every /copilot/ask call."
+  },
+  "total_runtime_s": 25.83
+}

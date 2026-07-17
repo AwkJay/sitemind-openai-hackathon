@@ -1,0 +1,104 @@
+{
+  "n_cases": 12,
+  "n_pass": 12,
+  "accuracy": 1.0,
+  "method": "Held-out synthetic rows and small synthetic dependency graphs, independent of the real schedule.csv, verifying the deterministic rule arithmetic (vendor-slip formulas, progress-lag threshold, monsoon-window check) and the CPM re-computation used for project_impact_days (float correctly absorbs a non-critical slip; a critical-path slip passes through 1:1; a slip exceeding available float moves the finish by exactly the excess). This is a correctness check on the logic, NOT a claim that the schedule pillar's predictions have been validated against real historical project delays \u2014 SiteMind has no real historical delivery data to backtest against (same limitation stated in run_supply_chain_eval.py).",
+  "cases": [
+    {
+      "id": "vendor-slipping",
+      "pass": true,
+      "got": [
+        13,
+        30
+      ],
+      "expected": [
+        13,
+        30
+      ]
+    },
+    {
+      "id": "vendor-late",
+      "pass": true,
+      "got": [
+        20,
+        30
+      ],
+      "expected": [
+        20,
+        30
+      ]
+    },
+    {
+      "id": "vendor-on-track-no-fire",
+      "pass": true,
+      "got": null,
+      "expected": null
+    },
+    {
+      "id": "progress-lag-fires-at-20pts",
+      "pass": true,
+      "got": 20,
+      "expected": "> 0"
+    },
+    {
+      "id": "progress-lag-no-fire-under-threshold",
+      "pass": true,
+      "got": null,
+      "expected": null
+    },
+    {
+      "id": "monsoon-window-fires",
+      "pass": true,
+      "got": [
+        true,
+        [
+          "Weather-sensitive activity scheduled during the monsoon window"
+        ]
+      ],
+      "expected": [
+        true,
+        "a monsoon driver present"
+      ]
+    },
+    {
+      "id": "non-monsoon-month-not-flagged",
+      "pass": true,
+      "got": false,
+      "expected": false
+    },
+    {
+      "id": "no-drivers-returns-none",
+      "pass": true,
+      "got": null,
+      "expected": null
+    },
+    {
+      "id": "linear-chain-critical-slip-passes-through",
+      "pass": true,
+      "got": 5,
+      "expected": 5
+    },
+    {
+      "id": "float-absorbs-noncritical-slip",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    },
+    {
+      "id": "slip-exceeding-float-moves-finish-by-excess",
+      "pass": true,
+      "got": 5,
+      "expected": 5
+    },
+    {
+      "id": "downstream-direct-successors",
+      "pass": true,
+      "got": [
+        "Task B"
+      ],
+      "expected": [
+        "Task B"
+      ]
+    }
+  ]
+}
