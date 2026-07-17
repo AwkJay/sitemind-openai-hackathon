@@ -1,0 +1,80 @@
+{
+  "n_cases": 12,
+  "n_pass": 12,
+  "accuracy": 1.0,
+  "results": [
+    {
+      "case": "match-standard-lv-415-1000",
+      "expected": "MATCH",
+      "got": "MATCH",
+      "pass": true
+    },
+    {
+      "case": "match-boundary-equal",
+      "expected": "MATCH",
+      "got": "MATCH",
+      "pass": true
+    },
+    {
+      "case": "match-well-under",
+      "expected": "MATCH",
+      "got": "MATCH",
+      "pass": true
+    },
+    {
+      "case": "mismatch-op-exceeds-insulation",
+      "expected": "MISMATCH",
+      "got": "MISMATCH",
+      "pass": true
+    },
+    {
+      "case": "mismatch-just-over-boundary",
+      "expected": "MISMATCH",
+      "got": "MISMATCH",
+      "pass": true
+    },
+    {
+      "case": "missing-both-fields",
+      "expected": "SPEC_NOT_PROVIDED",
+      "got": "SPEC_NOT_PROVIDED",
+      "pass": true
+    },
+    {
+      "case": "missing-insulation-voltage-only",
+      "expected": "SPEC_NOT_PROVIDED",
+      "got": "SPEC_NOT_PROVIDED",
+      "pass": true
+    },
+    {
+      "case": "missing-operational-voltage-only",
+      "expected": "SPEC_NOT_PROVIDED",
+      "got": "SPEC_NOT_PROVIDED",
+      "pass": true
+    },
+    {
+      "case": "not-applicable-drups",
+      "expected": "NOT_APPLICABLE",
+      "got": "NOT_APPLICABLE",
+      "pass": true
+    },
+    {
+      "case": "not-applicable-chiller",
+      "expected": "NOT_APPLICABLE",
+      "got": "NOT_APPLICABLE",
+      "pass": true
+    },
+    {
+      "case": "not-applicable-busway",
+      "expected": "NOT_APPLICABLE",
+      "got": "NOT_APPLICABLE",
+      "pass": true
+    },
+    {
+      "case": "not-applicable-access-floor",
+      "expected": "NOT_APPLICABLE",
+      "got": "NOT_APPLICABLE",
+      "pass": true
+    }
+  ],
+  "note": "Correctness check on the deterministic MATCH/MISMATCH/SPEC_NOT_PROVIDED/NOT_APPLICABLE logic in app/supply_chain.py's _equipment_spec_check(), grounded in IS 8623-1:1993 Cl 4.1.2 (primary_scan_ocr). Separate from run_supply_chain_eval.py's logistics eval (n=8) and every other pillar eval \u2014 never blended."
+}
