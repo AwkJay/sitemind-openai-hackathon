@@ -1,0 +1,116 @@
+{
+  "n_cases": 12,
+  "n_pass": 12,
+  "accuracy": 1.0,
+  "method": "Held-out synthetic input cases constructed directly against the pure formula functions in app/impact.py (compliance_impact, _schedule_impact_from, _supply_chain_impact_from, _commissioning_impact_from) \u2014 not the live demo dataset. Verifies the arithmetic composing the platform-wide ROI ticker is correct across edge cases (zero-issue pillars, flags with no critical-path impact, mixed FAIL/within-allowable commissioning). This is a correctness check on the formula and its aggregation, not a claim that the underlying per-unit assumptions (hours/Rs per issue) are empirically validated against real project history \u2014 none exists to backtest against; every constant is stated in PillarImpact.basis for the user to defend or revise on stage.",
+  "cases": [
+    {
+      "id": "compliance-zero",
+      "pass": true,
+      "hours_saved": 0,
+      "expected_hours": 0,
+      "inr_saved": 0,
+      "expected_inr": 0,
+      "basis_nonempty": true
+    },
+    {
+      "id": "compliance-six",
+      "pass": true,
+      "hours_saved": 120,
+      "expected_hours": 120,
+      "inr_saved": 9000000,
+      "expected_inr": 9000000,
+      "basis_nonempty": true
+    },
+    {
+      "id": "compliance-large",
+      "pass": true,
+      "hours_saved": 500,
+      "expected_hours": 500,
+      "inr_saved": 37500000,
+      "expected_inr": 37500000,
+      "basis_nonempty": true
+    },
+    {
+      "id": "schedule-zero-flags",
+      "pass": true,
+      "hours_saved": 0,
+      "expected_hours": 0,
+      "inr_saved": 0,
+      "expected_inr": 0,
+      "basis_nonempty": true
+    },
+    {
+      "id": "schedule-flags-no-critical-impact",
+      "pass": true,
+      "hours_saved": 20,
+      "expected_hours": 20,
+      "inr_saved": 0,
+      "expected_inr": 0,
+      "basis_nonempty": true
+    },
+    {
+      "id": "schedule-typical",
+      "pass": true,
+      "hours_saved": 52,
+      "expected_hours": 52,
+      "inr_saved": 5050000,
+      "expected_inr": 5050000,
+      "basis_nonempty": true
+    },
+    {
+      "id": "supply-chain-none-at-risk",
+      "pass": true,
+      "hours_saved": 0,
+      "expected_hours": 0,
+      "inr_saved": 0,
+      "expected_inr": 0,
+      "basis_nonempty": true
+    },
+    {
+      "id": "supply-chain-typical",
+      "pass": true,
+      "hours_saved": 12,
+      "expected_hours": 12,
+      "inr_saved": 750000,
+      "expected_inr": 750000,
+      "basis_nonempty": true
+    },
+    {
+      "id": "commissioning-all-pass",
+      "pass": true,
+      "hours_saved": 0,
+      "expected_hours": 0,
+      "inr_saved": 0,
+      "expected_inr": 0,
+      "basis_nonempty": true
+    },
+    {
+      "id": "commissioning-fail-only",
+      "pass": true,
+      "hours_saved": 24,
+      "expected_hours": 24,
+      "inr_saved": 900000,
+      "expected_inr": 900000,
+      "basis_nonempty": true
+    },
+    {
+      "id": "commissioning-within-allowable-only",
+      "pass": true,
+      "hours_saved": 8,
+      "expected_hours": 8,
+      "inr_saved": 0,
+      "expected_inr": 0,
+      "basis_nonempty": true
+    },
+    {
+      "id": "commissioning-mixed",
+      "pass": true,
+      "hours_saved": 18,
+      "expected_hours": 18,
+      "inr_saved": 600000,
+      "expected_inr": 600000,
+      "basis_nonempty": true
+    }
+  ]
+}
