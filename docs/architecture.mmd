@@ -1,0 +1,118 @@
+flowchart LR
+    subgraph Client["Browser — Next.js Command Center"]
+        direction TB
+        UI_OV["Overview\nROI ticker + Cost-at-Risk"]
+        UI_CO["Compliance"]
+        UI_CP["Copilot"]
+        UI_SC["Schedule"]
+        UI_SU["Supply Chain\n+ linked-evidence chips + alerts"]
+        UI_CX["Commissioning QA"]
+        UI_KG["Knowledge Graph"]
+    end
+
+    subgraph Backend["FastAPI backend"]
+        direction TB
+        API_ING["POST /compliance/ingest"]
+        API_CHK["POST /compliance/check (+ SSE stream)"]
+        API_AB["GET /compliance/action-brief"]
+        API_CP["POST /copilot/ask"]
+        API_SD["GET /schedule/risks, /gantt"]
+        API_SU["GET /supply-chain/shipments, /risks, /map, /alerts"]
+        API_CX["POST /commissioning/ingest"]
+        API_OV["GET /overview"]
+        API_CR["GET /cost-risk"]
+        API_TR["GET /trace"]
+        API_EV["GET /eval/report"]
+        API_CLK["GET/POST /clock, /clock/advance, /clock/reset"]
+        API_META["GET /supply-chain/meta"]
+    end
+
+    subgraph Logic["Deterministic decision layer — Python, never the LLM"]
+        direction TB
+        INGEST["ingest.py\nregex extraction + mandatory abstention"]
+        CHECKS["checks.py\nthreshold rules vs real clauses\n(structural + electrical domains)"]
+        CPM["schedule.py\nCPM + leading-indicator rules"]
+        MITIGATE["agents/mitigation.py\n3 specialist agents + coordinator —\nreal multi-agent mitigation options"]
+        SCLOGIC["supply_chain.py\ndelay propagation + alternative viability\n+ equipment-spec check + alert log"]
+        CXLOGIC["commissioning.py\nthreshold vs thermal envelope\n(cooling-only slice)"]
+        LINKS["evidence_links.py\nRFI/activity resolver — real\nwbs_id join, never hardcoded"]
+        IMPACT["impact.py\nper-pillar hours/Rs, documented\nassumptions, computed not asserted"]
+        COSTRISK["cost_risk.py\ndeterministic cost-at-risk =\nschedule + expedite + rework"]
+        CLOCK["clock.py\nsimulated demo day (added 07-03) —\nadvancing it clears every downstream\ncache so numbers genuinely recompute"]
+    end
+
+    subgraph LLM["llm.py — pluggable, PROSE ONLY (never the pass/fail decision)"]
+        direction LR
+        OFFLINE["offline (default)\ncached fixtures"]
+        CODEX["codex\nChatGPT login SDK — ~185s/call,\nsingle demo beat only"]
+        OPENAI["openai API"]
+        ANTHROPIC["anthropic API"]
+    end
+
+    subgraph Data["backend/data/ — REPRESENTATIVE synthetic corpus, stated as such"]
+        direction TB
+        CLAUSES["standards/clauses.json\nREAL verbatim IS 456/875/1893/732/\n3043/CEA/8623 + cooling-envelope text"]
+        PROJDOCS["project_docs/*.json,csv\nDBR, RFI log, cost_basis.json"]
+        SCHED["schedule/schedule.csv\n33 activities + procurement fields"]
+        SUPPLY["project_docs/supply_chain.json\n6 shipments, real hub geography"]
+        CXLOG["project_docs/sample_commissioning_log.csv\ncooling test records"]
+        TRACES["traces/*.json\nlocal provenance log"]
+        LIVEUP["project_docs/live_upload_samples/*.docx\n(added 07-03) 2 real docs for live\ndemo upload — sentences hand-verified\nagainst ingest.py's regex before writing"]
+    end
+
+    subgraph Manak["manak MCP — build-time only, not a runtime dependency"]
+        MCP[("Real digitised IS/IRC/IRS text\n(structural) fetched + cached")]
+    end
+
+    subgraph Trace["Provenance — always on, optionally mirrored"]
+        LOCALTRACE["trace.py — local JSON log"]
+        LANGFUSE["langfuse_sink.py — real Langfuse\nproject when keys set"]
+    end
+
+    subgraph Evals["backend/eval/ — THIRTEEN separate held-out metrics, never blended into one number"]
+        direction LR
+        E1["run_eval.py — structural"]
+        E2["run_extraction_eval.py"]
+        E3["run_electrical_eval.py"]
+        E4["run_equipment_spec_eval.py"]
+        E5["run_supply_chain_eval.py"]
+        E6["run_schedule_eval.py"]
+        E7["run_copilot_eval.py"]
+        E8["run_commissioning_eval.py"]
+        E9["run_impact_eval.py"]
+        E10["run_cost_risk_eval.py"]
+        E11["run_mitigation_eval.py (added 07-03)"]
+        E12["run_alerts_eval.py (added 07-03)"]
+        E13["run_hybrid_retrieval_eval.py (added 07-03)"]
+    end
+
+    Client -- "REST + SSE" --> Backend
+    API_ING --> INGEST --> PROJDOCS
+    INGEST -. "same pipeline, new file" .-> LIVEUP
+    API_CHK --> CHECKS --> CLAUSES
+    CHECKS -. "prose only" .-> LLM
+    API_CP -. "prose only" .-> LLM
+    API_SD --> CPM --> SCHED
+    API_SD --> MITIGATE
+    MITIGATE --> SCLOGIC
+    API_SU --> SCLOGIC --> SUPPLY
+    API_META --> SCLOGIC
+    SCLOGIC --> LINKS --> PROJDOCS
+    SCLOGIC --> SCHED
+    API_CX --> CXLOGIC --> CLAUSES
+    CXLOGIC --> CXLOG
+    API_AB --> CHECKS
+    API_OV --> IMPACT
+    API_CR --> COSTRISK
+    IMPACT --> CPM
+    IMPACT --> SCLOGIC
+    IMPACT --> CXLOGIC
+    COSTRISK --> CPM
+    COSTRISK --> SCLOGIC
+    COSTRISK --> PROJDOCS
+    API_CLK --> CLOCK
+    CLOCK -. "current_day(), cache-cleared on advance" .-> CPM
+    CLOCK -. "current_day(), cache-cleared on advance" .-> SCLOGIC
+    Backend --> LOCALTRACE --> LANGFUSE
+    MCP -. "verbatim fetch, cached at build time" .-> CLAUSES
+    Evals -. "score" .-> Logic
