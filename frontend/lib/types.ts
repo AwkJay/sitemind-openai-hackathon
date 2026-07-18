@@ -4,9 +4,10 @@ export type Severity = "LOW" | "MEDIUM" | "HIGH" | "ADVISORY";
 export type NcrStatus = "OPEN" | "CLOSED";
 
 // Mirrors backend/app/schemas.py Citation.source_type — the honest provenance
-// disclosure. "manak_verified" is the default/gold standard; the other three
-// are non-manak primary-source extractions, each with a different reliability
-// caveat, and must never be presented as equivalent to a manak citation.
+// disclosure. "manak_verified" (displayed to users as "Codebook") is the
+// default/gold standard; the other three are non-Codebook primary-source
+// extractions, each with a different reliability caveat, and must never be
+// presented as equivalent to a Codebook citation.
 export type SourceType =
   | "manak_verified"
   | "cross_source_unverified"
@@ -440,7 +441,7 @@ export interface ActionBrief {
 // ── Commissioning QA (Pillar 5, cooling-only slice) ─────────────────────────
 // Mirrors backend/app/schemas.py. The envelope corpus is cross_source_unverified
 // (see Citation.source_type) — every finding/package must show that limitation,
-// never presented as manak-grade.
+// never presented as Codebook-grade.
 
 export type CommissioningVerdict =
   | "PASS"
@@ -478,4 +479,87 @@ export interface CommissioningIngestResult {
   parsed: number;
   parse_errors: string[];
   package: QualityPackage;
+}
+
+// ── Knowledge Base (Phase 3 standalone retrieval package,
+// backend/app/retrieval/) ────────────────────────────────────────────────────
+// Deliberately independent of the SourceType above (mirrors
+// backend/app/retrieval/models.py, which is itself deliberately independent of
+// schemas.py — see IMPROVEMENTS.md PHASE 3). "company_uploaded" is the only
+// tag the package currently returns; "manak_indexed" / "sitemind_indexed" are
+// Phase 3b's planned read-only cross-corpus tags — the UI must keep working
+// whether or not those exist yet, and must not crash on any other
+// unrecognized string either, since this is not a closed union on the wire.
+export type RetrievalSourceType = "company_uploaded" | "manak_indexed" | "sitemind_indexed" | string;
+
+export interface RetrievalCitation {
+  chunk_id: string;
+  document_id: string;
+  filename: string;
+  heading?: string | null;
+  breadcrumb?: string | null;
+  text: string;
+  source_type: RetrievalSourceType;
+  score: number;
+}
+
+export interface RetrievalQueryResult {
+  question: string;
+  corpus_name: string;
+  abstained: boolean;
+  floor: number;
+  citations: RetrievalCitation[];
+}
+
+export interface RetrievalIngestManifest {
+  document_id: string;
+  corpus_name: string;
+  filename: string;
+  chunk_count: number;
+  structured: boolean;
+  provenance_tag: string;
+}
+
+export interface RetrievalCorpusSummary {
+  corpus_name: string;
+  document_count: number;
+  chunk_count: number;
+  source: string;
+  provenance_tag?: string | null;
+}
+
+// ── Codebook (standards-service, a separate MCP-serving process; SiteMind's
+// backend is an MCP *client* of it — backend/app/codebook_router.py, gated
+// behind CODEBOOK_ENABLED) ──────────────────────────────────────────────────
+// Codebook's 4 MCP tools (standards-service/app/mcp_server.py) each return
+// ONE human-readable text block, not a structured payload — see
+// backend/app/codebook_client.py's module docstring for why (mcp==1.9.4 has
+// no structured_output passthrough, and re-parsing prose into fields
+// client-side would risk silently drifting from what Codebook actually
+// said). These types mirror codebook_client.py's returned dicts exactly: a
+// `text` field carrying the real rendered block, plus whatever the caller
+// already knows about the call (query/corpus/ids) — never a guessed
+// structured breakdown of the prose.
+export interface CodebookCorporaResult {
+  text: string;
+}
+
+export interface CodebookSearchResult {
+  query: string;
+  corpus_name: string | null;
+  k: number;
+  text: string;
+}
+
+export interface CodebookClauseResult {
+  document_id: string;
+  chunk_id: string;
+  text: string;
+}
+
+export interface CodebookCheckResult {
+  document_path: string;
+  corpus_name: string;
+  k: number;
+  text: string;
 }

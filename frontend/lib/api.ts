@@ -21,6 +21,10 @@ import {
 } from "./mocks";
 import type {
   ActionBrief,
+  CodebookCheckResult,
+  CodebookClauseResult,
+  CodebookCorporaResult,
+  CodebookSearchResult,
   CommissioningIngestResult,
   ComplianceResult,
   Confidence,
@@ -31,6 +35,9 @@ import type {
   KgGraph,
   NCR,
   OverviewStats,
+  RetrievalCorpusSummary,
+  RetrievalIngestManifest,
+  RetrievalQueryResult,
   RFIAnswer,
   RiskItem,
   Shipment,
@@ -427,4 +434,252 @@ async function simulateStream(
   if (isCancelled()) return;
   await delay(220);
   handlers.onResult(mockComplianceFor(documentId));
+}
+
+// ── Knowledge Base (Phase 3 standalone retrieval package,
+// backend/app/retrieval/, mounted only when RETRIEVAL_ENABLED=1) ───────────
+// No mock fallback anywhere here: this reads a real uploaded document / a
+// real query index. If the backend doesn't have the routes mounted at all
+// (RETRIEVAL_ENABLED=0 → every route 404s) or is unreachable, callers must
+// see a clear "not enabled" / "unreachable" state — never a silent fake
+// result, per this project's integrity rules.
+export type RetrievalAvailability = "checking" | "available" | "disabled" | "unreachable";
+
+export class RetrievalUnavailableError extends Error {}
+
+export async function getRetrievalCorpora(): Promise<{
+  corpora: RetrievalCorpusSummary[];
+  availability: RetrievalAvailability;
+}> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    const res = await fetch(`${API_URL}/api/retrieval/corpora`, {
+      signal: ctrl.signal,
+      cache: "no-store",
+    });
+    clearTimeout(t);
+    if (res.status === 404) return { corpora: [], availability: "disabled" };
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as RetrievalCorpusSummary[];
+    return { corpora: data, availability: "available" };
+  } catch {
+    return { corpora: [], availability: "unreachable" };
+  }
+}
+
+export async function uploadKnowledgeBaseDocument(
+  corpusName: string,
+  file: File,
+): Promise<RetrievalIngestManifest> {
+  const form = new FormData();
+  form.append("corpus_name", corpusName);
+  form.append("file", file);
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}/api/retrieval/upload`, { method: "POST", body: form });
+  } catch {
+    throw new RetrievalUnavailableError(
+      "Backend unreachable — Knowledge Base upload needs the live SiteMind API, so there is no offline fallback for this action.",
+    );
+  }
+  if (res.status === 404) {
+    throw new RetrievalUnavailableError(
+      "Knowledge Base is not enabled on this backend (RETRIEVAL_ENABLED is off).",
+    );
+  }
+  if (!res.ok) {
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail ?? `Upload failed (HTTP ${res.status})`);
+  }
+  return (await res.json()) as RetrievalIngestManifest;
+}
+
+export async function queryKnowledgeBase(
+  corpusName: string,
+  question: string,
+  k = 4,
+): Promise<RetrievalQueryResult> {
+  let res: Response;
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    res = await fetch(`${API_URL}/api/retrieval/query`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ corpus_name: corpusName, question, k }),
+      signal: ctrl.signal,
+      cache: "no-store",
+    });
+    clearTimeout(t);
+  } catch {
+    throw new RetrievalUnavailableError(
+      "Backend unreachable — Knowledge Base query needs the live SiteMind API, so there is no offline fallback for this action.",
+    );
+  }
+  if (res.status === 404) {
+    throw new RetrievalUnavailableError(
+      "Knowledge Base is not enabled on this backend (RETRIEVAL_ENABLED is off).",
+    );
+  }
+  if (!res.ok) {
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail ?? `Query failed (HTTP ${res.status})`);
+  }
+  return (await res.json()) as RetrievalQueryResult;
+}
+
+// ── Codebook (standards-service REST facade, backend/app/codebook_router.py,
+// mounted only when CODEBOOK_ENABLED=1) ─────────────────────────────────────
+// SiteMind's backend is an MCP *client* of Codebook here — every route below
+// proxies exactly one Codebook MCP tool call and returns its raw text block.
+// Two distinct "off" states, both surfaced honestly rather than crashing:
+//   - CODEBOOK_ENABLED=0 on this backend → the whole router isn't mounted →
+//     every route 404s (same as RETRIEVAL_ENABLED's pattern).
+//   - CODEBOOK_ENABLED=1 but Codebook's own process (standards-service,
+//     port 8010) is unreachable → codebook_router.py's `_call` translates
+//     that into a clean HTTP 503 (see codebook_client.CodebookUnavailable).
+// A network failure reaching SiteMind's own backend at all collapses into
+// the same "unreachable" bucket as a 503 — from the browser's point of view
+// there is nothing actionable to distinguish "your API is down" from
+// "Codebook is down"; both mean the same features are unusable right now.
+export type CodebookAvailability = "checking" | "available" | "disabled" | "unreachable";
+
+export class CodebookUnavailableError extends Error {}
+
+export async function getCodebookCorpora(): Promise<{
+  result: CodebookCorporaResult | null;
+  availability: CodebookAvailability;
+}> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    const res = await fetch(`${API_URL}/api/codebook/corpora`, {
+      signal: ctrl.signal,
+      cache: "no-store",
+    });
+    clearTimeout(t);
+    if (res.status === 404) return { result: null, availability: "disabled" };
+    if (res.status === 503) return { result: null, availability: "unreachable" };
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as CodebookCorporaResult;
+    return { result: data, availability: "available" };
+  } catch {
+    return { result: null, availability: "unreachable" };
+  }
+}
+
+export async function searchCodebook(
+  query: string,
+  corpus?: string,
+  k = 5,
+): Promise<CodebookSearchResult> {
+  const params = new URLSearchParams({ q: query, k: String(k) });
+  if (corpus?.trim()) params.set("corpus", corpus.trim());
+  let res: Response;
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    res = await fetch(`${API_URL}/api/codebook/search?${params.toString()}`, {
+      signal: ctrl.signal,
+      cache: "no-store",
+    });
+    clearTimeout(t);
+  } catch {
+    throw new CodebookUnavailableError(
+      "Backend unreachable — Codebook search needs the live SiteMind API, so there is no offline fallback for this action.",
+    );
+  }
+  if (res.status === 404) {
+    throw new CodebookUnavailableError(
+      "Codebook is not enabled on this backend (CODEBOOK_ENABLED is off).",
+    );
+  }
+  if (res.status === 503) {
+    const detail = await res.json().catch(() => null);
+    throw new CodebookUnavailableError(
+      detail?.detail ?? "Codebook's own service (standards-service) is unreachable.",
+    );
+  }
+  if (!res.ok) {
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail ?? `Search failed (HTTP ${res.status})`);
+  }
+  return (await res.json()) as CodebookSearchResult;
+}
+
+export async function getCodebookClause(
+  docId: string,
+  chunkId: string,
+): Promise<CodebookClauseResult> {
+  let res: Response;
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    res = await fetch(
+      `${API_URL}/api/codebook/clause/${encodeURIComponent(docId)}/${encodeURIComponent(chunkId)}`,
+      { signal: ctrl.signal, cache: "no-store" },
+    );
+    clearTimeout(t);
+  } catch {
+    throw new CodebookUnavailableError(
+      "Backend unreachable — fetching a clause needs the live SiteMind API, so there is no offline fallback for this action.",
+    );
+  }
+  if (res.status === 404) {
+    throw new CodebookUnavailableError(
+      "Codebook is not enabled on this backend (CODEBOOK_ENABLED is off).",
+    );
+  }
+  if (res.status === 503) {
+    const detail = await res.json().catch(() => null);
+    throw new CodebookUnavailableError(
+      detail?.detail ?? "Codebook's own service (standards-service) is unreachable.",
+    );
+  }
+  if (!res.ok) {
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail ?? `Clause lookup failed (HTTP ${res.status})`);
+  }
+  return (await res.json()) as CodebookClauseResult;
+}
+
+export async function checkDocumentAgainstCodebook(
+  documentPath: string,
+  corpusName: string,
+  k = 3,
+): Promise<CodebookCheckResult> {
+  let res: Response;
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    res = await fetch(`${API_URL}/api/codebook/check`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ document_path: documentPath, corpus_name: corpusName, k }),
+      signal: ctrl.signal,
+      cache: "no-store",
+    });
+    clearTimeout(t);
+  } catch {
+    throw new CodebookUnavailableError(
+      "Backend unreachable — checking a document needs the live SiteMind API, so there is no offline fallback for this action.",
+    );
+  }
+  if (res.status === 404) {
+    throw new CodebookUnavailableError(
+      "Codebook is not enabled on this backend (CODEBOOK_ENABLED is off).",
+    );
+  }
+  if (res.status === 503) {
+    const detail = await res.json().catch(() => null);
+    throw new CodebookUnavailableError(
+      detail?.detail ?? "Codebook's own service (standards-service) is unreachable.",
+    );
+  }
+  if (!res.ok) {
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail ?? `Check failed (HTTP ${res.status})`);
+  }
+  return (await res.json()) as CodebookCheckResult;
 }

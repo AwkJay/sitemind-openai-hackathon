@@ -14,6 +14,8 @@ import {
   Settings,
   Truck,
   ThermometerSun,
+  Library,
+  BookMarked,
 } from "lucide-react";
 import {
   API_URL,
@@ -54,6 +56,8 @@ const NAV = [
   { href: "/supply-chain", label: "Supply Chain", icon: Truck },
   { href: "/commissioning", label: "Commissioning QA", icon: ThermometerSun },
   { href: "/graph", label: "Knowledge Graph", icon: Share2 },
+  { href: "/knowledge-base", label: "Knowledge Base", icon: Library },
+  { href: "/codebook", label: "Codebook", icon: BookMarked },
 ];
 
 function Brand() {
