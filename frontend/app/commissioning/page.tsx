@@ -92,9 +92,9 @@ export default function CommissioningPage() {
   return (
     <div>
       <PageHeader
-        eyebrow="Pillar 5 · Commissioning QA Copilot (cooling-only slice)"
+        eyebrow="Commissioning QA Copilot (cooling-only slice)"
         title="Commissioning QA"
-        subtitle="Upload a real cooling test log; it's checked deterministically against the ASHRAE TC9.9 thermal envelope and compiled into an as-commissioned quality package."
+        subtitle="For the commissioning manager — upload a real cooling test log; it's checked deterministically against the ASHRAE TC9.9 thermal envelope and compiled into an as-commissioned quality package."
       />
 
       <Card className="mb-5 px-5 py-4">

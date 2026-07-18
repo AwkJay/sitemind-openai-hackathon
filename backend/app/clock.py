@@ -41,12 +41,13 @@ def _clear_downstream_caches() -> None:
     """Every lru_cache(maxsize=1) whose result depends on 'today'. Lazy imports
     only — schedule.py and supply_chain.py both import current_day() from here,
     so a top-level import back into them would be circular."""
-    from . import schedule, supply_chain
+    from . import schedule, supply_chain, timeline
 
     schedule.risks.cache_clear()
     supply_chain.shipments.cache_clear()
     supply_chain.risks.cache_clear()
     supply_chain.alerts.cache_clear()
+    timeline.all_events.cache_clear()
 
 
 def set_offset(days: int) -> int:

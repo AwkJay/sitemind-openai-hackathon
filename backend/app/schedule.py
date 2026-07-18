@@ -19,7 +19,7 @@ from functools import lru_cache
 import networkx as nx
 from fastapi import APIRouter
 
-from . import clock
+from . import clock, schedule_factors
 from .agents.mitigation import generate_mitigation_options
 from .data_loader import load_schedule
 from .schemas import RiskItem
@@ -177,11 +177,32 @@ def _assess(row: dict, on_critical: bool, cpm: dict) -> RiskItem | None:
         drivers.append(f"Progress {pct}% lags planned {expected:.0f}% (~{behind}d behind)")
         predicted_slip = max(predicted_slip, behind)
 
-    # Rule 3: weather-sensitive activity scheduled in monsoon.
+    # Rule 3: weather-sensitive activity scheduled in monsoon (legacy, uncited
+    # June-November proxy). Left unchanged -- eval/run_schedule_eval.py imports
+    # _in_monsoon directly and asserts this exact behaviour (13-eval regression).
     weather = str(row.get("weather_sensitive")).strip().lower() in ("true", "1", "yes")
     if weather and _in_monsoon(row) and pct < 100:
         drivers.append("Weather-sensitive activity scheduled during the monsoon window")
         predicted_slip = max(predicted_slip, 5)
+
+    # Rule 4 (P1a): weather, cited to the real IMD NE-monsoon normal window --
+    # a separate, precise, citable check alongside Rule 3 (see
+    # schedule_factors.py's module docstring for why it doesn't replace it).
+    if pct < 100:
+        weather_drivers, weather_slip = schedule_factors.weather_driver(row, PROJECT_START)
+        if weather_drivers:
+            drivers.extend(weather_drivers)
+            predicted_slip = max(predicted_slip, weather_slip)
+
+    # Rule 5 (P1b): workforce availability, cited to the Pongal festival window
+    # (backend/data/project_docs/workforce_calendar.json). Honestly dormant on
+    # the bundled schedule -- see schedule_factors.py -- because the only rows
+    # whose window overlaps the window are already 100% complete.
+    if pct < 100:
+        workforce_drivers, workforce_slip = schedule_factors.workforce_driver(row, PROJECT_START)
+        if workforce_drivers:
+            drivers.extend(workforce_drivers)
+            predicted_slip = max(predicted_slip, workforce_slip)
 
     if not drivers:
         return None
@@ -210,6 +231,8 @@ def _mitigation(row: dict, vendor: str, drivers: list[str]) -> str:
         )
     if any("monsoon" in d for d in drivers):
         return "Re-window the weather-sensitive work or add temporary weather protection to hold the date."
+    if any("labour-availability" in d for d in drivers):
+        return "Pre-mobilise a contingency crew or re-window non-critical labour-intensive tasks around the festival dip."
     return "Add resources / overtime to recover the lagging progress and protect the critical path."
 
 
@@ -232,8 +255,14 @@ def get_risks() -> list[RiskItem]:
 
 @router.get("/gantt")
 def get_gantt() -> list[dict]:
+    """Baseline bar is always [start_day, start_day+duration_days] (the planned
+    dates, untouched). For at-risk activities only, `predicted_slip_days` and
+    `drivers` are joined in directly from `risks()` — the SAME numbers already
+    shown in the risk cards below the chart, never recomputed — so the frontend
+    can render a ghost baseline-vs-predicted overlay with a named cause, proving
+    the "flags slips weeks before the baseline does" claim on the chart itself."""
     cpm = _cpm()
-    at_risk_ids = {r.wbs_id for r in risks()}
+    risk_by_id = {r.wbs_id: r for r in risks()}
     return [
         {
             "wbs_id": row["wbs_id"],
@@ -242,7 +271,70 @@ def get_gantt() -> list[dict]:
             "start_day": _to_int(row.get("planned_start_day")),
             "duration_days": _to_int(row.get("duration_days"), 1),
             "on_critical_path": row["wbs_id"] in cpm["critical"],
-            "at_risk": row["wbs_id"] in at_risk_ids,
+            "at_risk": row["wbs_id"] in risk_by_id,
+            "predicted_slip_days": (
+                risk_by_id[row["wbs_id"]].predicted_slip_days if row["wbs_id"] in risk_by_id else 0
+            ),
+            "drivers": (
+                risk_by_id[row["wbs_id"]].drivers if row["wbs_id"] in risk_by_id else []
+            ),
         }
         for row in cpm["rows"]
     ]
+
+
+@router.get("/methodology")
+def get_methodology() -> dict:
+    """Discloses the 4 brief-named Predictive Schedule Risk Engine inputs and
+    exactly how each is grounded — procurement status/lead times (Rule 1, no
+    external citation needed, it's the project's own vendor-status field),
+    workforce availability (Rule 5, Pongal window, honestly dormant on the
+    bundled schedule) and weather (Rule 4, real IMD NE-monsoon citation).
+    Surfaced in-product on the Schedule page's methodology panel."""
+    year = PROJECT_START.year
+    m_start, m_end = schedule_factors.monsoon_window(year)
+    w_start, w_end = schedule_factors.workforce_window(year)
+    citation = schedule_factors.monsoon_citation()
+    live_risks = risks()
+    weather_firing = [
+        r.wbs_id for r in live_risks if any("NE-monsoon window" in d for d in r.drivers)
+    ]
+    workforce_firing = [
+        r.wbs_id for r in live_risks if any("labour-availability window" in d for d in r.drivers)
+    ]
+    return {
+        "inputs": [
+            {"input": "procurement status", "status": "covered", "note": "Rule 1 — vendor_status field (slipping/late) on schedule.csv."},
+            {"input": "lead times", "status": "covered", "note": "Rule 1 — lead_time_days field on schedule.csv."},
+            {
+                "input": "workforce availability",
+                "status": "covered",
+                "note": f"Rule 5 — {schedule_factors.workforce_festival_name()} labour-availability window "
+                f"({w_start.isoformat()} to {w_end.isoformat()}), assumed "
+                f"{schedule_factors.workforce_availability_factor():.0%} availability (REPRESENTATIVE assumption). "
+                + (
+                    f"Currently firing on {len(workforce_firing)} activity(ies): {', '.join(workforce_firing)}."
+                    if workforce_firing
+                    else "Not currently firing — the only bundled activities whose window overlaps mid-January "
+                    "(early site-mobilisation work) are already 100% complete; the rule is built and held-out "
+                    "tested (eval/run_workforce_eval.py), not force-fit onto the live demo dataset."
+                ),
+            },
+            {
+                "input": "weather",
+                "status": "covered",
+                "note": f"Rule 4 — real IMD Northeast Monsoon normal window for Coastal Tamil Nadu "
+                f"({m_start.isoformat()} to {m_end.isoformat()}), a planning-grade climatological window, "
+                "not a forecast. "
+                + (
+                    f"Currently firing on {len(weather_firing)} activity(ies): {', '.join(weather_firing)}."
+                    if weather_firing
+                    else "Not currently firing on the bundled schedule."
+                ),
+            },
+        ],
+        "monsoon_citation": citation.model_dump() if citation else None,
+        "monsoon_window": {"start": m_start.isoformat(), "end": m_end.isoformat()},
+        "workforce_window": {"start": w_start.isoformat(), "end": w_end.isoformat()},
+        "workforce_availability_factor": schedule_factors.workforce_availability_factor(),
+    }

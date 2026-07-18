@@ -1,0 +1,9 @@
+{
+  "_note": "REPRESENTATIVE synthetic assumption, same honesty tier as cost_basis.json -- NOT a measured labour statistic. Pongal (Tamil Nadu's harvest festival, mid-January) is a real, well-documented calendar fact that drives a genuine construction-labour migration dip in Chennai as site workers travel to native districts. The WINDOW below is a calendar fact; the DIP MAGNITUDE (availability_factor) is a conservative, documented assumption chosen for this demo, not a cited statistic.",
+  "festival": "Pongal (Tamil Nadu harvest festival)",
+  "window_month_start": 1,
+  "window_day_start": 8,
+  "window_month_end": 1,
+  "window_day_end": 21,
+  "availability_factor": 0.6
+}

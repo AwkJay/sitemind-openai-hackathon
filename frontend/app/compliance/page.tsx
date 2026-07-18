@@ -118,9 +118,9 @@ export default function CompliancePage() {
   return (
     <div>
       <PageHeader
-        eyebrow="Pillar 1 · Automated code compliance"
+        eyebrow="Automated Code Compliance"
         title="Compliance Check"
-        subtitle="Select a document, run the agent, and watch it cite the exact IS clause for every finding."
+        subtitle="For the QA/QC manager — select a document, run the agent, and watch it cite the exact IS clause for every finding."
       />
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[320px_1fr]">
@@ -131,6 +131,17 @@ export default function CompliancePage() {
             <span className="font-mono text-xs text-text-lo">
               {docs?.length ?? "—"} docs
             </span>
+          </div>
+
+          {/* Legend for the A–E chip codes below — real AEC submittal-review
+              status codes (A=Approved ... E=For Information), previously shown
+              as a bare letter with no explanation anywhere on the page. */}
+          <div className="flex flex-wrap gap-x-3 gap-y-1 border-b border-line px-4 py-2 font-mono text-[0.6rem] text-text-lo">
+            <span><span className="text-pass">A</span> Approved</span>
+            <span><span className="text-warning">B</span> Approved as noted</span>
+            <span><span className="text-critical">C</span> Revise &amp; resubmit</span>
+            <span><span className="text-critical">D</span> Rejected</span>
+            <span><span className="text-text-mid">E</span> For information</span>
           </div>
 
           {/* Real document upload — reads the actual file, no fabricated data */}
@@ -209,6 +220,7 @@ export default function CompliancePage() {
                                 {d.id}
                               </span>
                               <span
+                                title={d.status}
                                 className="rounded-chip px-1.5 py-0.5 font-mono text-[0.6rem] font-semibold"
                                 style={{ color: sm.color, background: sm.bg }}
                               >

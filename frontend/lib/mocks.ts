@@ -16,6 +16,7 @@ import type {
   SupplyChainMap,
   SupplyChainMeta,
   SupplyChainRisk,
+  TimelineData,
 } from "./types";
 
 export const PROJECT_LABEL = "Hyperscale DC — Chennai · 48 MW · Tier III";
@@ -27,6 +28,12 @@ export const mockOverview: OverviewStats = {
   rework_avoided_inr: 21000000, // ₹2.1 Cr
   open_ncrs_by_severity: { HIGH: 3, MEDIUM: 5, ADVISORY: 4, LOW: 2 },
   schedule_at_risk: 4,
+  machine_scale: {
+    documents_read: 12,
+    clauses_checked: 12,
+    cross_references_found: 5,
+    conflicts_surfaced: 2,
+  },
   by_pillar: [
     {
       pillar: "compliance",
@@ -483,14 +490,14 @@ export const mockRisks: RiskItem[] = [
 ];
 
 export const mockGantt: GanttBar[] = [
-  { wbs_id: "WBS-1.0", task: "Earthworks & piling", phase: "Substructure", start_day: 0, duration_days: 28, on_critical_path: true, at_risk: false },
-  { wbs_id: "WBS-3.2.1", task: "Yard foundations", phase: "Substructure", start_day: 26, duration_days: 24, on_critical_path: true, at_risk: true },
-  { wbs_id: "WBS-2.1", task: "Gen-building superstructure", phase: "Superstructure", start_day: 44, duration_days: 40, on_critical_path: false, at_risk: false },
-  { wbs_id: "WBS-5.4.0", task: "GIS hall switchgear", phase: "Electrical", start_day: 70, duration_days: 30, on_critical_path: true, at_risk: true },
-  { wbs_id: "WBS-6.1.3", task: "Chilled-water primary loop", phase: "Mechanical", start_day: 82, duration_days: 26, on_critical_path: false, at_risk: true },
-  { wbs_id: "WBS-7.3.2", task: "Generator commissioning", phase: "Electrical", start_day: 104, duration_days: 22, on_critical_path: false, at_risk: false },
-  { wbs_id: "WBS-8.2.0", task: "White-space fit-out", phase: "Fit-out", start_day: 120, duration_days: 28, on_critical_path: true, at_risk: false },
-  { wbs_id: "WBS-9.0", task: "Integrated systems test (IST)", phase: "Commissioning", start_day: 146, duration_days: 18, on_critical_path: true, at_risk: false },
+  { wbs_id: "WBS-1.0", task: "Earthworks & piling", phase: "Substructure", start_day: 0, duration_days: 28, on_critical_path: true, at_risk: false, predicted_slip_days: 0, drivers: [] },
+  { wbs_id: "WBS-3.2.1", task: "Yard foundations", phase: "Substructure", start_day: 26, duration_days: 24, on_critical_path: true, at_risk: true, predicted_slip_days: 5, drivers: ["Weather-sensitive activity scheduled during the monsoon window"] },
+  { wbs_id: "WBS-2.1", task: "Gen-building superstructure", phase: "Superstructure", start_day: 44, duration_days: 40, on_critical_path: false, at_risk: false, predicted_slip_days: 0, drivers: [] },
+  { wbs_id: "WBS-5.4.0", task: "GIS hall switchgear", phase: "Electrical", start_day: 70, duration_days: 30, on_critical_path: true, at_risk: true, predicted_slip_days: 25, drivers: ["Long-lead LV switchgear vendor status 'slipping' on the critical path"] },
+  { wbs_id: "WBS-6.1.3", task: "Chilled-water primary loop", phase: "Mechanical", start_day: 82, duration_days: 26, on_critical_path: false, at_risk: true, predicted_slip_days: 6, drivers: ["Progress lags planned completion"] },
+  { wbs_id: "WBS-7.3.2", task: "Generator commissioning", phase: "Electrical", start_day: 104, duration_days: 22, on_critical_path: false, at_risk: false, predicted_slip_days: 0, drivers: [] },
+  { wbs_id: "WBS-8.2.0", task: "White-space fit-out", phase: "Fit-out", start_day: 120, duration_days: 28, on_critical_path: true, at_risk: false, predicted_slip_days: 0, drivers: [] },
+  { wbs_id: "WBS-9.0", task: "Integrated systems test (IST)", phase: "Commissioning", start_day: 146, duration_days: 18, on_critical_path: true, at_risk: false, predicted_slip_days: 0, drivers: [] },
 ];
 
 // ── Knowledge graph ───────────────────────────────────────────────────────────
@@ -715,20 +722,29 @@ export const mockShipments: Shipment[] = [
   },
 ];
 
+// detected_at_day mirrors mockSupplyChainAlerts below (both derive from the
+// same real _detected_at_day() milestone scan in backend/app/supply_chain.py).
+const _MOCK_DETECTED_AT_DAY: Record<string, number> = { "SHP-001": 130, "SHP-002": 135 };
+
 export const mockSupplyChainRisks: SupplyChainRisk[] = mockShipments
   .filter((s) => s.days_at_risk > 0)
-  .map((s) => ({
-    shipment_id: s.id,
-    procurement_item: s.procurement_item,
-    wbs_id: s.wbs_id,
-    days_at_risk: s.days_at_risk,
-    detected_lead_time_days: s.required_on_site_by - 175,
-    root_cause: s.root_cause,
-    recommended_alternative: s.alternatives.find((a) => a.viable) ?? null,
-    on_critical_path: s.on_critical_path,
-    linked_rfi: s.linked_rfi,
-    linked_activity: s.linked_activity,
-  }))
+  .map((s) => {
+    const detectedAtDay = _MOCK_DETECTED_AT_DAY[s.id] ?? 175;
+    return {
+      shipment_id: s.id,
+      procurement_item: s.procurement_item,
+      wbs_id: s.wbs_id,
+      days_at_risk: s.days_at_risk,
+      detected_at_day: detectedAtDay,
+      lead_time_at_detection_days: s.required_on_site_by - detectedAtDay,
+      days_until_required: s.required_on_site_by - 175,
+      root_cause: s.root_cause,
+      recommended_alternative: s.alternatives.find((a) => a.viable) ?? null,
+      on_critical_path: s.on_critical_path,
+      linked_rfi: s.linked_rfi,
+      linked_activity: s.linked_activity,
+    };
+  })
   .sort((a, b) => Number(b.on_critical_path) - Number(a.on_critical_path) || b.days_at_risk - a.days_at_risk);
 
 // Severity + detected_at_day mirror the real rule in backend/app/supply_chain.py
@@ -741,6 +757,7 @@ export const mockSupplyChainAlerts: SupplyChainAlert[] = [
     severity: "WARNING",
     message: "DRUPS 2.5MW (SHP-001) is 5d at risk of missing its required-on-site date.",
     detected_at_day: 130,
+    lead_time_at_detection_days: 85,
     advance_warning_days: 45,
     days_at_risk: 5,
     on_critical_path: false,
@@ -752,6 +769,7 @@ export const mockSupplyChainAlerts: SupplyChainAlert[] = [
     severity: "WARNING",
     message: "LV switchgear 4000A (SHP-002) is 5d at risk of missing its required-on-site date.",
     detected_at_day: 135,
+    lead_time_at_detection_days: 85,
     advance_warning_days: 40,
     days_at_risk: 5,
     on_critical_path: false,
@@ -779,4 +797,78 @@ export const mockSupplyChainMap: SupplyChainMap = {
     ...s.tier2_suppliers.map((t2) => ({ shipment_id: s.id, from: { lat: t2.lat, lon: t2.lon }, to: { lat: s.tier1_supplier.lat, lon: s.tier1_supplier.lon }, tier: 2, at_risk: s.days_at_risk > 0 })),
     { shipment_id: s.id, from: { lat: s.tier1_supplier.lat, lon: s.tier1_supplier.lon }, to: { lat: SITE_PT.lat, lon: SITE_PT.lon }, tier: 1, at_risk: s.days_at_risk > 0 },
   ]),
+};
+
+// Project Timeline (P0) — a small, representative slice of the real aggregation
+// shape (7 phase bands, one event per pillar including a cross-pillar link),
+// used only when the backend is unreachable.
+export const mockTimeline: TimelineData = {
+  project_start: "2026-01-05",
+  today_day: 175,
+  phase_bands: [
+    { phase: "Enabling", start_day: 0, end_day: 48 },
+    { phase: "Civil/Structural", start_day: 45, end_day: 175 },
+    { phase: "Architecture/Finishes", start_day: 160, end_day: 240 },
+    { phase: "MEP", start_day: 120, end_day: 258 },
+    { phase: "White-Space Fit-out", start_day: 250, end_day: 273 },
+    { phase: "Commissioning L1-L5", start_day: 110, end_day: 313 },
+    { phase: "Snagging", start_day: 313, end_day: 337 },
+  ],
+  events: [
+    {
+      id: "tl-ncr-NCR-0002",
+      day: 56,
+      pillar: "compliance",
+      kind: "ncr",
+      severity: "HIGH",
+      title: "Footing F-12 nominal cover — HIGH NCR",
+      detail: "Nominal cover to reinforcement for footing F-12 does not meet the governing severe-exposure clause.",
+      link_route: "/compliance",
+      linked_event_ids: [],
+    },
+    {
+      id: "tl-rfi-RFI-EL-112",
+      day: 137,
+      pillar: "copilot",
+      kind: "rfi",
+      severity: "MEDIUM",
+      title: "RFI-EL-112 — LV switchgear delivery vs critical path",
+      detail: "Vendor indicates LV switchgear lead time slipping by ~6 weeks. Confirm impact on commissioning L4 milestone.",
+      link_route: "/copilot",
+      linked_event_ids: ["tl-alert-ALERT-SHP-002", "tl-risk-DC1-04-EL-030"],
+    },
+    {
+      id: "tl-risk-DC1-04-EL-030",
+      day: 130,
+      pillar: "schedule",
+      kind: "risk",
+      severity: "MEDIUM",
+      title: "LV switchgear 415V — procurement & delivery — predicted 25d slip",
+      detail: "Long-lead LV switchgear 4000A vendor status 'slipping' feeding the critical path.",
+      link_route: "/schedule",
+      linked_event_ids: ["tl-alert-ALERT-SHP-002", "tl-miss-SHP-002"],
+    },
+    {
+      id: "tl-alert-ALERT-SHP-002",
+      day: 135,
+      pillar: "supply_chain",
+      kind: "alert",
+      severity: "MEDIUM",
+      title: "LV switchgear 4000A — WARNING alert",
+      detail: "LV switchgear 4000A (SHP-002) is at risk of missing its required-on-site date.",
+      link_route: "/supply-chain",
+      linked_event_ids: ["tl-rfi-RFI-EL-112", "tl-risk-DC1-04-EL-030"],
+    },
+    {
+      id: "tl-cqa-CT-003",
+      day: 174,
+      pillar: "commissioning",
+      kind: "finding",
+      severity: "HIGH",
+      title: "White Space Zone C — Fail",
+      detail: "supply air temp: 34.0 degC",
+      link_route: "/commissioning",
+      linked_event_ids: [],
+    },
+  ],
 };

@@ -16,7 +16,8 @@ from .agents.compliance import evaluate
 from .data_loader import load_submittals
 from .impact import COMPLIANCE_HOURS_PER_ISSUE, COMPLIANCE_REWORK_INR_PER_ISSUE, all_pillar_impacts
 from .schedule import risks
-from .schemas import OverviewStats
+from .schemas import MachineScaleStats, OverviewStats
+from .supply_chain import shipments as supply_chain_shipments
 
 router = APIRouter(prefix="/api", tags=["overview"])
 
@@ -26,12 +27,12 @@ HOURS_PER_ISSUE = COMPLIANCE_HOURS_PER_ISSUE
 REWORK_INR_PER_ISSUE = COMPLIANCE_REWORK_INR_PER_ISSUE
 
 
-def _all_ncrs():
-    """NCRs from the canonical Design Basis Report (holds the full param set).
-
-    Counting the DBR avoids double-counting the same finding that is also mirrored
-    onto an individual submittal. Falls back to scanning every document if no DBR.
-    """
+def _evaluate_all():
+    """Runs the real Compliance evaluate() over the canonical Design Basis Report
+    (falls back to every document if no DBR is found) and returns the full
+    ComplianceResult list — NCRs, coverage, and overlaps all come from these same
+    runs, so the machine-scale counts below can never drift from what the
+    Compliance page itself would show for the same documents."""
     subs = load_submittals()
     dbr = [
         s.get("Submittal No")
@@ -40,26 +41,36 @@ def _all_ncrs():
         or "design basis" in (s.get("Title") or "").lower()
     ]
     targets = dbr or [s.get("Submittal No") for s in subs]
-    ncrs = []
+    results = []
     for doc_id in targets:
         if not doc_id:
             continue
         try:
-            ncrs.extend(evaluate(doc_id).ncrs)
+            results.append(evaluate(doc_id))
         except Exception:
             continue
-    return ncrs
+    return results
 
 
 @router.get("/overview", response_model=OverviewStats)
 def get_overview() -> OverviewStats:
-    ncrs = _all_ncrs()
+    results = _evaluate_all()
+    ncrs = [n for r in results for n in r.ncrs]
     issues = len(ncrs)
     by_sev: dict[str, int] = {}
     for n in ncrs:
         if n.status == "OPEN":
             by_sev[n.severity] = by_sev.get(n.severity, 0) + 1
     pillar_impacts = all_pillar_impacts(issues)
+
+    clauses_checked = sum(r.coverage.clauses_cited for r in results if r.coverage)
+    conflicts_surfaced = sum(len(r.overlaps) for r in results)
+    # Counts real RFI links only, not the near-automatic schedule-activity join
+    # (every shipment declares a wbs_id, so linked_activity resolves for almost
+    # all of them regardless of any real evidence work — linked_rfi is the
+    # genuinely selective match, curated or TF-IDF-retrieved against RFI text).
+    cross_references_found = sum(1 for s in supply_chain_shipments() if s.linked_rfi is not None)
+
     return OverviewStats(
         project=config.PROJECT_NAME,
         issues_caught=issues,
@@ -68,4 +79,10 @@ def get_overview() -> OverviewStats:
         open_ncrs_by_severity=by_sev,
         schedule_at_risk=len(risks()),
         by_pillar=pillar_impacts,
+        machine_scale=MachineScaleStats(
+            documents_read=len(load_submittals()),
+            clauses_checked=clauses_checked,
+            cross_references_found=cross_references_found,
+            conflicts_surfaced=conflicts_surfaced,
+        ),
     )

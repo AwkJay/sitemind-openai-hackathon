@@ -57,7 +57,10 @@ CPM + leading-indicator rules over the synthetic schedule. Each item includes
 activity's duration, diffed against the baseline project finish. Genuinely causal, not asserted:
 non-critical-path activities correctly show `project_impact_days: 0` when float absorbs the slip.
 
-### `GET /api/schedule/gantt` → `[{ wbs_id, task, phase, start_day, duration_days, on_critical_path, at_risk }]`
+### `GET /api/schedule/gantt` → `[{ wbs_id, task, phase, start_day, duration_days, on_critical_path, at_risk, predicted_slip_days, drivers }]`
+`predicted_slip_days`/`drivers` are joined in directly from `/api/schedule/risks` (0/`[]` when not
+at risk) — never recomputed — so the frontend can render a ghost baseline-vs-predicted bar overlay
+with a named cause on the chart itself, not just in the risk cards below it.
 
 ### `GET /api/kg/{element_id}` → `{ nodes:[{id,label,type}], edges:[{source,target,label}] }`
 type ∈ equipment|spec|standard|rfi.
@@ -80,10 +83,14 @@ source — `wbs_id` links each shipment back to the schedule activity it feeds. 
   caller should escalate for a schedule replan; never a guessed "it'll probably work out."
 
 ### `GET /api/supply-chain/risks` → `[SupplyChainRisk]`
-Only shipments with `days_at_risk > 0`, sorted critical-path-first then by `days_at_risk`. Includes
-`detected_lead_time_days` (days of advance warning vs `required_on_site_by`, same "lead time over naive
-baseline" framing as `/schedule/risks`) and `recommended_alternative` (the earliest-arriving *viable* one,
-or `null`).
+Only shipments with `days_at_risk > 0`, sorted critical-path-first then by `days_at_risk`. Includes two
+distinct, non-interchangeable time fields (a 2026-07-08 UI review found both had been called "advance
+warning" under different names on different surfaces, which read as a data bug rather than the two
+different metrics they are): `lead_time_at_detection_days` (`required_on_site_by - detected_at_day`,
+FIXED at detection time — the brief's literal "schedule risk prediction lead time" metric, same framing
+as `/schedule/risks`' `detected_lead_time_days`) and `days_until_required` (`required_on_site_by - today`,
+SHRINKS daily — "runway remaining", a different concept). Also includes `recommended_alternative` (the
+earliest-arriving *viable* one, or `null`).
 
 ### `GET /api/supply-chain/map` → `{ points:[{id,kind,shipment_id,label,city,lat,lon,at_risk}], routes:[{shipment_id,from,to,tier,at_risk}] }`
 Plain lat/lon data for the geospatial view — real city coordinates for each supplier/site, no external

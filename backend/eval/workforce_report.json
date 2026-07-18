@@ -1,0 +1,70 @@
+{
+  "n_cases": 10,
+  "n_pass": 10,
+  "accuracy": 1.0,
+  "method": "Held-out synthetic day-offset windows constructed directly against the pure functions in app/schedule_factors.py (Pongal-window day-overlap arithmetic, availability-factor slip formula) \u2014 not the bundled schedule.csv. Verifies the deterministic arithmetic behind the P1b 'workforce availability' schedule-risk input. This rule is honestly dormant on the bundled demo dataset (documented in PROGRESS.md and the Schedule page's methodology panel, GET /api/schedule/methodology) \u2014 this eval proves the formula is correct, independent of whether the live demo happens to exercise it.",
+  "overlap_cases": [
+    {
+      "id": "no-overlap-before",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    },
+    {
+      "id": "no-overlap-after",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    },
+    {
+      "id": "full-overlap-activity-inside-window",
+      "pass": true,
+      "got": 5,
+      "expected": 5
+    },
+    {
+      "id": "partial-overlap-tail",
+      "pass": true,
+      "got": 4,
+      "expected": 4
+    },
+    {
+      "id": "partial-overlap-head",
+      "pass": true,
+      "got": 3,
+      "expected": 3
+    },
+    {
+      "id": "exact-boundary-touch-zero-width",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    }
+  ],
+  "slip_cases": [
+    {
+      "id": "slip-zero-overlap",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    },
+    {
+      "id": "slip-standard-factor",
+      "pass": true,
+      "got": 3,
+      "expected": 3
+    },
+    {
+      "id": "slip-full-loss-factor",
+      "pass": true,
+      "got": 10,
+      "expected": 10
+    },
+    {
+      "id": "slip-no-loss-factor",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    }
+  ]
+}

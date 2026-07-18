@@ -1,0 +1,23 @@
+{
+  "_note": "Real IMD (India Meteorological Department) primary-source data for the Chennai / Coastal Tamil Nadu Northeast Monsoon normal window -- used as the calendar risk window for the citable weather-sensitive schedule-risk rule (backend/app/schedule_factors.py). This is a planning-grade CLIMATOLOGICAL window, NOT a forecast -- no rainfall prediction is made or implied anywhere this window is used.",
+  "onset_month": 10,
+  "onset_day": 20,
+  "withdrawal_month": 12,
+  "withdrawal_day": 31,
+  "citation": {
+    "standard": "IMD -- Northeast Monsoon, Coastal Tamil Nadu",
+    "clause": "Normal onset / withdrawal dates",
+    "text": "The Northeast Monsoon (India's principal winter-monsoon season over the southern peninsula, including Coastal Tamil Nadu) has a normal/climatological onset around 20 October and normal withdrawal around 31 December, per IMD's annual 'Report on Northeast Monsoon' series for Tamil Nadu (IMD Regional Meteorological Centre, Chennai). IMD's separate 2020 revision of Southwest Monsoon normal dates (base period 1961-2019), fetched and read directly for this project, marks Chennai, Tamil Nadu's SW-monsoon-withdrawal column with an asterisk denoting 'SW Monsoon retreats from the area and Northeast monsoon gets established' rather than giving a single SW withdrawal date -- corroborating, from a document this project verified directly, that Tamil Nadu's monsoon record transitions from the Southwest to the Northeast monsoon record rather than having a separate dry gap between them.",
+    "verify_url": "https://mausam.imd.gov.in/chennai/mcdata/ne_monsoon_2025.pdf",
+    "source_type": "cross_source_unverified"
+  },
+  "cross_source_note": "The exact 20 October / 31 December normal dates are corroborated across independent secondary reporting of IMD's annual Northeast Monsoon reports (e.g. Deccan Herald's and DD News' coverage of NE-monsoon onset/withdrawal timing for Tamil Nadu), rather than personally verified against the primary IMD PDF's interior text -- that PDF (linked as verify_url) is a genuine, currently-published IMD document at a real mausam.imd.gov.in URL, but this project's PDF tooling could not render/OCR its pages (a large scanned/image PDF), so source_type is honestly tagged cross_source_unverified rather than a primary_* tier -- same discipline used for the ASHRAE thermal-envelope corpus in Commissioning QA (see backend/data/standards/commissioning_clauses.json).",
+  "secondary_sources": [
+    "https://www.deccanherald.com/india/tamil-nadu/northeast-monsoon-withdraws-from-south-india-third-delayed-withdrawal-in-100-years-3375227",
+    "https://ddnews.gov.in/en/northeast-monsoon-heading-towards-conclusion-in-tamil-nadu-with-near-normal-seasonal-rainfall/"
+  ],
+  "sw_monsoon_primary_source_verified": {
+    "verify_url": "https://mausam.imd.gov.in/backend/assets/press_release_pdf/IMD_Press_release_new_onset_and_withdrawal_dates(Final).pdf",
+    "note": "IMD press release 'New Normal Dates of Onset/Progress and Withdrawal of Southwest Monsoon over India' -- fetched and read directly by this project (genuine IMD/Ministry of Earth Sciences letterhead confirmed). Table-1 lists Chennai, Tamil Nadu's SW monsoon onset (new normal, 1961-2019 base) as 04-Jun, with the withdrawal columns marked '*' -- 'SW Monsoon retreats from the area and Northeast monsoon gets established.'"
+  }
+}

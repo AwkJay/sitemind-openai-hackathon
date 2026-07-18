@@ -1,0 +1,108 @@
+{
+  "n_cases": 20,
+  "n_pass": 20,
+  "accuracy": 1.0,
+  "method": "Consistency checks (not arithmetic checks) against the LIVE aggregation in app/timeline.py: every event id resolves to a real record in its source pillar's live output, per-pillar event counts match the source pillar's real counts, phase-band boundaries match an independently-recomputed min/max over schedule.csv's real phase column, and every linked_event_ids entry is symmetric and resolves to a real timeline event id. This catches the specific failure mode timeline.py's docstring forbids: an event that doesn't trace to a real source record.",
+  "cases": [
+    {
+      "id": "ncr-ids-resolve",
+      "pass": true,
+      "detail": "6 NCR events, 6 real NCRs"
+    },
+    {
+      "id": "rfi-ids-resolve",
+      "pass": true,
+      "detail": "14 RFI events"
+    },
+    {
+      "id": "schedule-risk-ids-resolve",
+      "pass": true,
+      "detail": "6 schedule-risk events"
+    },
+    {
+      "id": "alert-ids-resolve",
+      "pass": true,
+      "detail": "2 alert events"
+    },
+    {
+      "id": "projected-miss-ids-resolve",
+      "pass": true,
+      "detail": "2 projected-miss events"
+    },
+    {
+      "id": "ncr-count-matches",
+      "pass": true,
+      "detail": "6 vs 6"
+    },
+    {
+      "id": "schedule-risk-count-matches",
+      "pass": true,
+      "detail": "6 vs 6"
+    },
+    {
+      "id": "alert-count-matches",
+      "pass": true,
+      "detail": "2 vs 2"
+    },
+    {
+      "id": "projected-miss-count-matches",
+      "pass": true,
+      "detail": "2 vs 2"
+    },
+    {
+      "id": "phase-set-matches",
+      "pass": true,
+      "detail": "['Architecture/Finishes', 'Civil/Structural', 'Commissioning L1-L5', 'Enabling', 'MEP', 'Snagging', 'White-Space Fit-out'] vs ['Architecture/Finishes', 'Civil/Structural', 'Commissioning L1-L5', 'Enabling', 'MEP', 'Snagging', 'White-Space Fit-out']"
+    },
+    {
+      "id": "phase-bounds-Enabling",
+      "pass": true,
+      "detail": "got (0, 48) expected (0, 48)"
+    },
+    {
+      "id": "phase-bounds-Civil/Structural",
+      "pass": true,
+      "detail": "got (45, 175) expected (45, 175)"
+    },
+    {
+      "id": "phase-bounds-Architecture/Finishes",
+      "pass": true,
+      "detail": "got (160, 240) expected (160, 240)"
+    },
+    {
+      "id": "phase-bounds-MEP",
+      "pass": true,
+      "detail": "got (120, 258) expected (120, 258)"
+    },
+    {
+      "id": "phase-bounds-White-Space Fit-out",
+      "pass": true,
+      "detail": "got (250, 273) expected (250, 273)"
+    },
+    {
+      "id": "phase-bounds-Commissioning L1-L5",
+      "pass": true,
+      "detail": "got (110, 313) expected (110, 313)"
+    },
+    {
+      "id": "phase-bounds-Snagging",
+      "pass": true,
+      "detail": "got (313, 337) expected (313, 337)"
+    },
+    {
+      "id": "links-resolve",
+      "pass": true,
+      "detail": "16 link edges checked"
+    },
+    {
+      "id": "links-symmetric",
+      "pass": true,
+      "detail": "16 link edges checked"
+    },
+    {
+      "id": "at-least-one-cross-pillar-link",
+      "pass": true,
+      "detail": "16 link edges found"
+    }
+  ]
+}

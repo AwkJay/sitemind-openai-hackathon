@@ -17,6 +17,7 @@ from .kg import router as kg_router
 from .overview import router as overview_router
 from .schedule import router as schedule_router
 from .supply_chain import router as supply_chain_router
+from .timeline import router as timeline_router
 from .trace_api import router as trace_router
 
 app = FastAPI(title="SiteMind", version="1.0.0")
@@ -54,6 +55,7 @@ for r in (
     commissioning_router,
     schedule_router,
     supply_chain_router,
+    timeline_router,
     cost_risk_router,
     kg_router,
     eval_router,

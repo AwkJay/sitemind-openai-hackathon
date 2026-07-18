@@ -4,9 +4,13 @@ Source-of-truth diagram-as-code (Mermaid). GitHub renders this block natively; f
 the [Mermaid Live Editor](https://mermaid.live) and export PNG/SVG, or run `npx @mermaid-js/mermaid-cli -i
 ARCHITECTURE.md -o architecture.png` locally (no account needed either way).
 
-> Updated 2026-07-03 (third pass): adds the simulated demo clock (`clock.py`, `/api/clock*`) and
-> the live-upload sample documents (`project_docs/live_upload_samples/`), on top of the second pass
-> the same day (the multi-agent mitigation-option engine, supply-chain alerting, hybrid BM25+dense
+> Updated 2026-07-08 (fourth pass): adds the Project Timeline (`timeline.py`, `GET /api/timeline`)
+> — a pure aggregation layer with zero new judgment and zero new fabricated events, cross-linking
+> the other five pillars' real findings on one lifecycle view — plus two real, IMD/festival-cited
+> schedule-risk factors (`schedule_factors.py`: a Northeast Monsoon weather rule and a Pongal
+> workforce-availability rule) that close the brief's last two named Predictive Schedule Risk
+> Engine inputs. On top of the third pass (simulated demo clock, live-upload sample documents), the
+> second pass (multi-agent mitigation-option engine, supply-chain alerting, hybrid BM25+dense
 > retrieval) and the first pass (all 5 pillars, the platform-wide impact model, deterministic
 > cost-at-risk, the computed evidence-linking resolver) — supersedes the earlier 3-pillar version.
 
@@ -15,6 +19,7 @@ flowchart LR
     subgraph Client["Browser — Next.js Command Center"]
         direction TB
         UI_OV["Overview\nROI ticker + Cost-at-Risk"]
+        UI_TL["Project Timeline\npure aggregation + cross-links"]
         UI_CO["Compliance"]
         UI_CP["Copilot"]
         UI_SC["Schedule"]
@@ -25,6 +30,7 @@ flowchart LR
 
     subgraph Backend["FastAPI backend"]
         direction TB
+        API_TL["GET /timeline"]
         API_ING["POST /compliance/ingest"]
         API_CHK["POST /compliance/check (+ SSE stream)"]
         API_AB["GET /compliance/action-brief"]
@@ -42,9 +48,11 @@ flowchart LR
 
     subgraph Logic["Deterministic decision layer — Python, never the LLM"]
         direction TB
+        TIMELINE["timeline.py\nPURE aggregation — zero new judgment,\nzero new fabricated events; reuses\nevidence_links.py for cross-pillar links"]
         INGEST["ingest.py\nregex extraction + mandatory abstention"]
         CHECKS["checks.py\nthreshold rules vs real clauses\n(structural + electrical domains)"]
         CPM["schedule.py\nCPM + leading-indicator rules"]
+        SCHEDF["schedule_factors.py\nIMD NE-monsoon window (weather) +\nPongal window (workforce) — real,\ncited calendar-overlap rules"]
         MITIGATE["agents/mitigation.py\n3 specialist agents + coordinator —\nreal multi-agent mitigation options"]
         SCLOGIC["supply_chain.py\ndelay propagation + alternative viability\n+ equipment-spec check + alert log"]
         CXLOGIC["commissioning.py\nthreshold vs thermal envelope\n(cooling-only slice)"]
@@ -82,7 +90,7 @@ flowchart LR
         LANGFUSE["langfuse_sink.py — real Langfuse\nproject when keys set"]
     end
 
-    subgraph Evals["backend/eval/ — THIRTEEN separate held-out metrics, never blended into one number"]
+    subgraph Evals["backend/eval/ — SIXTEEN separate held-out metrics, never blended into one number"]
         direction LR
         E1["run_eval.py — structural"]
         E2["run_extraction_eval.py"]
@@ -97,9 +105,20 @@ flowchart LR
         E11["run_mitigation_eval.py (added 07-03)"]
         E12["run_alerts_eval.py (added 07-03)"]
         E13["run_hybrid_retrieval_eval.py (added 07-03)"]
+        E14["run_weather_eval.py (added 07-08)"]
+        E15["run_workforce_eval.py (added 07-08)"]
+        E16["run_timeline_eval.py (added 07-08)"]
     end
 
     Client -- "REST + SSE" --> Backend
+    API_TL --> TIMELINE
+    TIMELINE -. "reads, never re-decides" .-> CHECKS
+    TIMELINE -. "reads, never re-decides" .-> CPM
+    TIMELINE -. "reads, never re-decides" .-> SCLOGIC
+    TIMELINE -. "reads, never re-decides" .-> CXLOGIC
+    TIMELINE --> PROJDOCS
+    API_SD --> SCHEDF
+    SCHEDF -. "real IMD + festival citations" .-> PROJDOCS
     API_ING --> INGEST --> PROJDOCS
     INGEST -. "same pipeline, new file" .-> LIVEUP
     API_CHK --> CHECKS --> CLAUSES
@@ -265,8 +284,21 @@ hackathon prototype doesn't need it yet, not because the design doesn't anticipa
 - **impact.py and cost_risk.py compute, never assert.** Every hours/Rs figure traces to a real per-pillar
   signal (NCR count, CPM-recomputed schedule impact, supply-chain days-at-risk, commissioning FAIL count)
   x a constant stated in the UI (`basis`/formula breakdown), never a bare number.
-- **Thirteen evals, thirteen separate boxes.** They are deliberately not merged into one "accuracy" number
+- **Sixteen evals, sixteen separate boxes.** They are deliberately not merged into one "accuracy" number
   anywhere in the codebase or this diagram — see `sitemind/PROGRESS.md` for why that distinction matters.
+- **All four brief-named Predictive Schedule Risk Engine inputs are covered.** Procurement status and
+  lead times (the original vendor-status rule), workforce availability (a real Pongal festival window),
+  and weather (a real IMD-cited Northeast Monsoon normal window for Coastal Tamil Nadu) all feed the same
+  CPM recompute. The weather/workforce rules are honestly dormant on the bundled demo schedule where
+  their calendar window doesn't overlap a flagged activity's window — held-out tested
+  (`run_weather_eval.py`, `run_workforce_eval.py`) rather than force-fit onto the live dataset; see
+  `GET /api/schedule/methodology` for the live per-input disclosure.
+- **The Timeline adds no new judgment.** `timeline.py` only aggregates: every event's day, severity, and
+  detail trace to a real field another pillar's module already computed, and `linked_event_ids` reuse
+  `evidence_links.py`'s existing real shared-key matches — never a new match invented for the Timeline
+  itself. `run_timeline_eval.py` checks this directly (every event id resolves to a real source record,
+  per-pillar counts match, phase-band bounds match an independently recomputed min/max, links are
+  symmetric).
 - **Data is labeled REPRESENTATIVE**, not real project data — consistent with the honesty framing in
   `sitemind/README.md`'s "What's REAL vs REPRESENTATIVE" section. This now explicitly includes
   `cost_basis.json` (added 2026-07-03) — the cost-at-risk *formula* and its live inputs are real; the
@@ -287,3 +319,45 @@ hackathon prototype doesn't need it yet, not because the design doesn't anticipa
   regex-extraction pipeline on `live_upload_samples/*.docx` as it does on any other upload — the
   only thing "new" is the file; every extracted value and NCR was independently verified via real
   `POST /api/compliance/ingest` + `/check` calls before being called done, not eyeballed.
+
+## From prototype to product
+
+**SiteMind is the real product's kernel with the enterprise shell deliberately absent.** The shell
+(connectors, workflow, permissions) is commodity engineering that can be hired; the kernel
+(grounded, deterministic, citable verification) is the part that can't be bought — so that's what
+was built and proven here.
+
+1. **Now (built): the trust kernel.** Deterministic checks against real cited standards,
+   source-reliability tiers, abstention, computed ROI/cost-at-risk, cross-pillar evidence linking
+   (now visible on one Timeline), held-out evals. The part an EPC's QA head must trust before any
+   AI-generated NCR carries weight — NCRs have contractual consequences (back-charges, delay
+   claims, liquidated damages), so evidence chains and honest reliability labelling are product
+   requirements, not polish.
+2. **Next: overlay the systems of record, don't replace them.** Real projects run on Primavera P6
+   (schedule), Aconex/Procore/ACC (documents, RFIs, submittals), SAP/Oracle (procurement), Cx tools
+   + BMS/EPMS (commissioning). SiteMind becomes an intelligence layer over them: read via
+   connectors (P6 XER import first — a file format, not an API negotiation), write findings BACK
+   into the QMS of record. Adding a data source is an adapter; adding a compliance domain is
+   curating clauses — and that curation cost is exactly why the output stays defensible. Stated
+   plainly: **connectors are commodity; the verification layer is the moat.**
+3. **Then: the equipment-tag ontology as the join key.** The brief's 15,000–40,000 equipment
+   line-item scale is handled by entity resolution on equipment tags (`CRAH-B2-014` appearing in
+   spec, submittal, PO line, shipping manifest, and test scripts in five formats). Today's evidence
+   linking (SHP-002 ↔ RFI-EL-112 ↔ DC1-04-EL-030, now surfaced on the Timeline too) is a working
+   miniature of this graph — scaling it is resolution + volume, not a new architecture.
+4. **Then: findings become workflows.** NCR lifecycle states (open → assigned → disputed →
+   resolved → verified-closed), role-based views (a tier-2 supplier never sees the schedule), and
+   push delivery — site engineers live in email/messaging and contractually-mandated tools, not
+   dashboards, so the intelligence pushes to them and pulls them into the evidence view only when
+   needed.
+5. **Then: commissioning at real scale.** From cooling-log checks to the full L1–L5 program: live
+   BMS/EPMS trend ingestion during integrated systems testing, checked against the SAME
+   deterministic envelope logic already built — the architecture extends, it doesn't restart.
+   Gated, as today, on real primary-source standards (never paraphrased acceptance criteria).
+6. **Endgame: cross-project memory as the compounding moat.** Portfolio-level institutional memory
+   — "this vendor's submittals fail on insulation ratings 30% of the time," "this RFI was answered
+   on the last build" — the seen-before RFI detector (`agents/copilot.py`) is v0 of exactly this.
+
+**For the pitch:** lead Business Impact with the ₹-cost-at-risk number (delay exposure + rework),
+not engineer-hours — a DC owner loses more per week of slipped commissioning than the whole hours
+ledger; keep hours as the secondary, brief-mandated metric.

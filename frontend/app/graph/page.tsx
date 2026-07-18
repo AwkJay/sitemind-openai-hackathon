@@ -16,10 +16,24 @@ const TYPE_META: Record<
   rfi: { label: "RFI", color: "var(--warning)", col: 3 },
 };
 
-const W = 1000;
-const COL_X = [120, 380, 650, 900];
-const NODE_W = 168;
-const NODE_H = 46;
+const W = 1050;
+const COL_X = [130, 400, 670, 940];
+const NODE_W = 210;
+const NODE_H = 54;
+
+// Splits a label onto up to 2 lines at the nearest word boundary instead of
+// hard-truncating it — clause-style labels ("IS 456:2000 Cl. 26.4.2.2") were
+// getting cut mid-string ("IS 456:2000 Cl. 26.4...") with no way to read the
+// full clause without opening the inspector panel.
+function wrapLabel(label: string, maxLineChars = 22): [string, string?] {
+  if (label.length <= maxLineChars) return [label];
+  let breakAt = label.lastIndexOf(" ", maxLineChars);
+  if (breakAt <= 0) breakAt = maxLineChars;
+  const line1 = label.slice(0, breakAt);
+  let line2 = label.slice(breakAt).trim();
+  if (line2.length > maxLineChars) line2 = `${line2.slice(0, maxLineChars - 1)}…`;
+  return [line1, line2];
+}
 
 interface Positioned extends KgNode {
   x: number;
@@ -31,7 +45,9 @@ function layout(g: KgGraph): { nodes: Positioned[]; height: number } {
   g.nodes.forEach((n) => (byType[n.type] ??= []).push(n));
   const colHeights = Object.values(byType).map((a) => a.length);
   const maxRows = Math.max(1, ...colHeights);
-  const rowGap = 84;
+  // Tighter row pitch than before (compacts sparse columns instead of
+  // stretching them thin to match the busiest column's centered spread).
+  const rowGap = 66;
   const height = maxRows * rowGap + 40;
   const nodes: Positioned[] = [];
   (Object.keys(byType) as KgNodeType[]).forEach((type) => {
@@ -80,7 +96,7 @@ export default function GraphPage() {
   return (
     <div>
       <PageHeader
-        eyebrow="Pillar 4 · Connected knowledge graph"
+        eyebrow="Connected Knowledge Graph"
         title="Knowledge Graph"
         subtitle="Equipment → spec → standard → RFI. SiteMind connects dots no single document shows. Click a node to trace its links."
       />
@@ -148,7 +164,7 @@ export default function GraphPage() {
                     selected !== null && !active;
                   const midX = (x1 + x2) / 2;
                   return (
-                    <g key={i} opacity={dim ? 0.15 : 1}>
+                    <g key={i} opacity={dim ? 0.3 : 1}>
                       <path
                         d={`M ${x1} ${s.y} C ${midX} ${s.y}, ${midX} ${t.y}, ${x2} ${t.y}`}
                         fill="none"
@@ -175,11 +191,12 @@ export default function GraphPage() {
                   const meta = TYPE_META[n.type];
                   const dim = isDim(n.id);
                   const sel = selected === n.id;
+                  const [line1, line2] = wrapLabel(n.label);
                   return (
                     <g
                       key={n.id}
                       transform={`translate(${n.x - NODE_W / 2}, ${n.y - NODE_H / 2})`}
-                      opacity={dim ? 0.3 : 1}
+                      opacity={dim ? 0.55 : 1}
                       style={{ cursor: "pointer" }}
                       onClick={() =>
                         setSelected((cur) => (cur === n.id ? null : n.id))
@@ -201,7 +218,7 @@ export default function GraphPage() {
                       />
                       <text
                         x={14}
-                        y={19}
+                        y={16}
                         fontSize="8"
                         fontFamily="var(--font-mono)"
                         fill="var(--text-lo)"
@@ -211,16 +228,26 @@ export default function GraphPage() {
                       </text>
                       <text
                         x={14}
-                        y={34}
+                        y={line2 ? 30 : 34}
                         fontSize="12"
                         fontFamily="var(--font-sans)"
                         fontWeight={500}
                         fill="var(--text-hi)"
                       >
-                        {n.label.length > 22
-                          ? n.label.slice(0, 21) + "…"
-                          : n.label}
+                        {line1}
                       </text>
+                      {line2 && (
+                        <text
+                          x={14}
+                          y={44}
+                          fontSize="12"
+                          fontFamily="var(--font-sans)"
+                          fontWeight={500}
+                          fill="var(--text-hi)"
+                        >
+                          {line2}
+                        </text>
+                      )}
                     </g>
                   );
                 })}

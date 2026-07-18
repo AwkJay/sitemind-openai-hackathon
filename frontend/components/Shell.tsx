@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Clock,
   LayoutDashboard,
+  Milestone,
   ShieldCheck,
   MessageSquareText,
   GanttChartSquare,
@@ -46,6 +47,7 @@ function useHealth() {
 
 const NAV = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
+  { href: "/timeline", label: "Project Timeline", icon: Milestone },
   { href: "/compliance", label: "Compliance", icon: ShieldCheck },
   { href: "/copilot", label: "Copilot", icon: MessageSquareText },
   { href: "/schedule", label: "Schedule", icon: GanttChartSquare },

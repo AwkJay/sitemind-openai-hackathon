@@ -1,0 +1,76 @@
+{
+  "n_cases": 11,
+  "n_pass": 11,
+  "accuracy": 1.0,
+  "method": "Held-out synthetic day-offset windows constructed directly against the pure functions in app/schedule_factors.py (monsoon day-overlap arithmetic, productivity-factor slip formula) \u2014 not the bundled schedule.csv. Verifies the deterministic arithmetic behind the P1a 'weather' schedule-risk input (IMD-cited NE-monsoon normal window, planning-grade climatological, not a forecast). This is a correctness check on the logic, not a claim of predictive rainfall accuracy.",
+  "overlap_cases": [
+    {
+      "id": "no-overlap-before",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    },
+    {
+      "id": "no-overlap-after",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    },
+    {
+      "id": "full-overlap-activity-inside-window",
+      "pass": true,
+      "got": 20,
+      "expected": 20
+    },
+    {
+      "id": "partial-overlap-tail",
+      "pass": true,
+      "got": 10,
+      "expected": 10
+    },
+    {
+      "id": "partial-overlap-head",
+      "pass": true,
+      "got": 10,
+      "expected": 10
+    },
+    {
+      "id": "exact-boundary-touch-zero-width",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    },
+    {
+      "id": "window-fully-inside-activity",
+      "pass": true,
+      "got": 50,
+      "expected": 50
+    }
+  ],
+  "slip_cases": [
+    {
+      "id": "slip-zero-overlap",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    },
+    {
+      "id": "slip-standard-factor",
+      "pass": true,
+      "got": 3,
+      "expected": 3
+    },
+    {
+      "id": "slip-full-loss-factor",
+      "pass": true,
+      "got": 10,
+      "expected": 10
+    },
+    {
+      "id": "slip-no-loss-factor",
+      "pass": true,
+      "got": 0,
+      "expected": 0
+    }
+  ]
+}

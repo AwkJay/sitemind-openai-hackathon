@@ -264,13 +264,17 @@ def risks() -> list[SupplyChainRisk]:
     for s in shipments():
         if s.days_at_risk <= 0:
             continue
+        detected = _detected_at_day(s.milestones)
+        detected_at_day = detected if detected is not None else clock.current_day()
         out.append(
             SupplyChainRisk(
                 shipment_id=s.id,
                 procurement_item=s.procurement_item,
                 wbs_id=s.wbs_id,
                 days_at_risk=s.days_at_risk,
-                detected_lead_time_days=max(0, s.required_on_site_by - clock.current_day()),
+                detected_at_day=detected_at_day,
+                lead_time_at_detection_days=max(0, s.required_on_site_by - detected_at_day),
+                days_until_required=max(0, s.required_on_site_by - clock.current_day()),
                 root_cause=s.root_cause,
                 recommended_alternative=_best_alternative(s),
                 on_critical_path=s.on_critical_path,
@@ -326,6 +330,7 @@ def _build_alert(s: Shipment) -> Optional[SupplyChainAlert]:
         message=f"{s.procurement_item} ({s.id}) is {s.days_at_risk}d at risk of missing its "
         f"required-on-site date{critical_note}.",
         detected_at_day=detected_at_day,
+        lead_time_at_detection_days=max(0, s.required_on_site_by - detected_at_day),
         advance_warning_days=max(0, clock.current_day() - detected_at_day),
         days_at_risk=s.days_at_risk,
         on_critical_path=s.on_critical_path,

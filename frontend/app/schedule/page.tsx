@@ -9,10 +9,12 @@ import {
   CartesianGrid,
   Cell,
   Tooltip,
+  ReferenceLine,
   ResponsiveContainer,
+  LabelList,
 } from "recharts";
 import { Clock, AlertTriangle, ShieldCheck, Route, Zap, ArrowRight, Check, X, Users } from "lucide-react";
-import { getGantt, getRisks } from "@/lib/api";
+import { getClockState, getGantt, getRisks } from "@/lib/api";
 import type { GanttBar, RiskItem, MitigationOption } from "@/lib/types";
 import { PageHeader } from "@/components/PageHeader";
 import { Card, Overline, Skeleton } from "@/components/ui/primitives";
@@ -32,26 +34,66 @@ interface TipDatum {
   duration_days: number;
   on_critical_path: boolean;
   at_risk: boolean;
+  predicted_slip_days: number;
+  drivers: string[];
+}
+
+// Short causal phrase for the Gantt label — the full driver list still lives
+// in the risk card below; this is just enough to name the cause on the chart.
+function shortenDriver(d: string, max = 26): string {
+  const cleaned = d.replace(/^Long-lead /, "").replace(/^Progress /, "Progress lags plan");
+  return cleaned.length > max ? `${cleaned.slice(0, max - 1)}…` : cleaned;
+}
+
+// Recharts' default LabelList renderer auto-wraps long text into one <tspan>
+// PER WORD when it infers a narrow available width — unusable for a causal
+// phrase. This draws a single plain <text> line instead, positioned just
+// right of the bar segment it labels.
+function SlipLabelContent(props: any) {
+  const { x, y, width, height, value } = props;
+  if (!value) return null;
+  return (
+    <text
+      x={x + width + 6}
+      y={y + height / 2}
+      dy={3}
+      fontSize={10}
+      fill="var(--critical)"
+    >
+      {value}
+    </text>
+  );
 }
 
 function GanttTooltip({ active, payload }: any) {
   if (!active || !payload?.length) return null;
   const d: TipDatum = payload[payload.length - 1].payload;
+  const baselineEnd = d.start_day + d.duration_days;
+  const predictedEnd = baselineEnd + (d.predicted_slip_days || 0);
   return (
     <div className="rounded border border-line bg-bg-700 px-3 py-2 text-xs shadow-glow">
-      <div className="font-mono text-text-lo">{d.wbs_id}</div>
       <div className="font-medium text-text-hi">{d.task}</div>
+      <div className="font-mono text-text-lo">{d.wbs_id}</div>
       <div className="mt-1 text-text-mid">
-        Day <span className="font-mono">{d.start_day}</span> →{" "}
-        <span className="font-mono">{d.start_day + d.duration_days}</span> ·{" "}
-        {d.duration_days}d
+        Baseline: Day <span className="font-mono">{d.start_day}</span> →{" "}
+        <span className="font-mono">{baselineEnd}</span> · {d.duration_days}d
       </div>
+      {d.at_risk && d.predicted_slip_days > 0 && (
+        <div className="mt-0.5 text-critical">
+          Predicted: Day <span className="font-mono">{d.start_day}</span> →{" "}
+          <span className="font-mono">{predictedEnd}</span>{" "}
+          <span className="font-mono font-semibold">(+{d.predicted_slip_days}d slip)</span>
+        </div>
+      )}
       <div className="mt-1 flex gap-2">
         {d.on_critical_path && (
           <span className="text-accent">● critical path</span>
         )}
         {d.at_risk && <span className="text-critical">● at-risk</span>}
       </div>
+      {d.at_risk && d.drivers.length > 0 && (
+        <div className="mt-1 max-w-[220px] text-text-mid">{d.drivers[0]}</div>
+      )}
     </div>
   );
 }
@@ -99,33 +141,103 @@ function MitigationOptionsPanel({ options }: { options: MitigationOption[] }) {
   );
 }
 
+function truncate(s: string, max: number): string {
+  return s.length > max ? `${s.slice(0, max - 1)}…` : s;
+}
+
+// Name-first row labels: the task name is the primary, legible text; the WBS
+// ID is small/muted secondary text underneath. Previously the WBS ID alone
+// was the primary label and got clipped in a narrow axis column (e.g.
+// "DC1-01-EN-010" rendering as ":1-01-EN-010") — IDs are secondary everywhere.
+function PhaseAwareYTick({
+  x,
+  y,
+  payload,
+  firstInPhase,
+  phaseByWbs,
+  taskByWbs,
+}: any) {
+  const wbsId = payload.value as string;
+  const isFirst = firstInPhase.has(wbsId);
+  const taskName = truncate(taskByWbs[wbsId] || wbsId, 22);
+  return (
+    <g transform={`translate(${x},${y})`}>
+      {isFirst && (
+        <text
+          x={-136}
+          y={-16}
+          textAnchor="start"
+          fontSize={9}
+          fill="var(--accent)"
+          style={{ textTransform: "uppercase", letterSpacing: "0.04em" }}
+        >
+          {phaseByWbs[wbsId]}
+        </text>
+      )}
+      <text x={-8} y={-2} textAnchor="end" fontSize={10.5} fill="var(--text-hi)">
+        {taskName}
+      </text>
+      <text x={-8} y={11} textAnchor="end" fontSize={9} fontFamily="var(--font-mono)" fill="var(--text-lo)">
+        {wbsId}
+      </text>
+    </g>
+  );
+}
+
 export default function SchedulePage() {
   const [gantt, setGantt] = useState<GanttBar[] | null>(null);
   const [risks, setRisks] = useState<RiskItem[] | null>(null);
+  const [todayDay, setTodayDay] = useState<number | null>(null);
 
   useEffect(() => {
     getGantt().then((r) => setGantt(r.data));
     getRisks().then((r) => setRisks(r.data));
+    getClockState().then((c) => c && setTodayDay(c.current_day));
   }, []);
 
-  const chartData = gantt?.map((b) => ({
-    ...b,
-    label: `${b.wbs_id}`,
-    offset: b.start_day,
-  }));
+  const chartData = gantt?.map((b) => {
+    const slipExtension = b.at_risk ? b.predicted_slip_days : 0;
+    const slipLabel =
+      b.at_risk && b.predicted_slip_days > 0
+        ? `+${b.predicted_slip_days}d${b.drivers[0] ? " · " + shortenDriver(b.drivers[0]) : ""}`
+        : "";
+    return {
+      ...b,
+      label: `${b.wbs_id}`,
+      offset: b.start_day,
+      slipExtension,
+      slipLabel,
+    };
+  });
   const totalDays = gantt
-    ? Math.max(...gantt.map((b) => b.start_day + b.duration_days))
+    ? Math.max(
+        ...gantt.map((b) => b.start_day + b.duration_days + (b.at_risk ? b.predicted_slip_days : 0)),
+        todayDay ?? 0
+      )
     : 0;
   const earliestWarning = risks?.length
     ? risks.reduce((a, b) => (b.detected_lead_time_days > a.detected_lead_time_days ? b : a))
     : null;
 
+  const phaseByWbs: Record<string, string> = {};
+  const taskByWbs: Record<string, string> = {};
+  const firstInPhase = new Set<string>();
+  let lastPhase = "";
+  (chartData ?? []).forEach((b) => {
+    phaseByWbs[b.wbs_id] = b.phase;
+    taskByWbs[b.wbs_id] = b.task;
+    if (b.phase !== lastPhase) {
+      firstInPhase.add(b.wbs_id);
+      lastPhase = b.phase;
+    }
+  });
+
   return (
     <div>
       <PageHeader
-        eyebrow="Pillar 3 · Predictive schedule risk"
+        eyebrow="Predictive Schedule Risk"
         title="Schedule & Risk"
-        subtitle="Critical path in lime, at-risk activities in red. SiteMind flags slips weeks before the baseline does."
+        subtitle="For the planning engineer — critical path in lime, at-risk activities in red. SiteMind flags slips weeks before the baseline does."
       />
 
       {/* Gantt */}
@@ -142,6 +254,13 @@ export default function SchedulePage() {
             <span className="flex items-center gap-1.5">
               <span className="h-2.5 w-3 rounded-sm bg-data" /> nominal
             </span>
+            <span className="flex items-center gap-1.5">
+              <span
+                className="h-2.5 w-3 rounded-sm"
+                style={{ background: "var(--critical)", opacity: 0.35, border: "1px dashed var(--critical)" }}
+              />{" "}
+              predicted slip
+            </span>
           </div>
         </div>
         {chartData ? (
@@ -150,7 +269,7 @@ export default function SchedulePage() {
               <BarChart
                 data={chartData}
                 layout="vertical"
-                margin={{ top: 0, right: 24, left: 8, bottom: 8 }}
+                margin={{ top: 10, right: 160, left: 8, bottom: 8 }}
                 barCategoryGap={10}
               >
                 <CartesianGrid
@@ -168,34 +287,49 @@ export default function SchedulePage() {
                 <YAxis
                   type="category"
                   dataKey="label"
-                  width={84}
-                  tick={{ fill: "var(--text-mid)", fontSize: 11, fontFamily: "var(--font-mono)" }}
+                  width={150}
+                  tick={<PhaseAwareYTick firstInPhase={firstInPhase} phaseByWbs={phaseByWbs} taskByWbs={taskByWbs} />}
                   stroke="var(--line)"
                 />
                 <Tooltip
                   content={<GanttTooltip />}
                   cursor={{ fill: "var(--bg-700)", opacity: 0.4 }}
                 />
+                {todayDay !== null && (
+                  <ReferenceLine
+                    x={todayDay}
+                    stroke="var(--accent)"
+                    strokeDasharray="4 3"
+                    label={{
+                      value: `Day ${todayDay} — today`,
+                      position: "top",
+                      fill: "var(--accent)",
+                      fontSize: 10,
+                    }}
+                  />
+                )}
                 <Bar dataKey="offset" stackId="a" fill="transparent" />
                 <Bar dataKey="duration_days" stackId="a" radius={3}>
                   {chartData.map((d, i) => (
                     <Cell key={i} fill={barColor(d)} />
                   ))}
                 </Bar>
+                <Bar
+                  dataKey="slipExtension"
+                  stackId="a"
+                  radius={3}
+                  fill="var(--critical)"
+                  fillOpacity={0.35}
+                  stroke="var(--critical)"
+                  strokeDasharray="3 2"
+                >
+                  <LabelList dataKey="slipLabel" content={<SlipLabelContent />} />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         ) : (
           <Skeleton className="mt-4 h-72" />
-        )}
-        {gantt && (
-          <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 font-mono text-[0.68rem] text-text-lo">
-            {gantt.map((b) => (
-              <span key={b.wbs_id}>
-                {b.wbs_id} · {b.task}
-              </span>
-            ))}
-          </div>
         )}
       </Card>
 

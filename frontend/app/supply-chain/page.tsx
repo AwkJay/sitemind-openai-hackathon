@@ -36,7 +36,7 @@ export default function SupplyChainPage() {
       <PageHeader
         eyebrow="Supply Chain Visibility & Risk"
         title="Supply Chain"
-        subtitle="Multi-tier shipment tracking extending the schedule pillar's own procurement data — real milestone delays, root-cause attribution across supplier tiers, and computed procurement alternatives."
+        subtitle="For the procurement lead — multi-tier shipment tracking extending the schedule pillar's own procurement data, real milestone delays, root-cause attribution across supplier tiers, and computed procurement alternatives."
       />
 
       {meta && (
@@ -76,7 +76,7 @@ export default function SupplyChainPage() {
                     <Chip color={m.color} bg={m.bg}>{m.label}</Chip>
                     <span className="flex-1 text-text-hi">{a.message}</span>
                     <span className="shrink-0 font-mono text-[0.7rem] text-text-lo">
-                      detected day {a.detected_at_day} · {a.advance_warning_days}d advance warning
+                      {a.lead_time_at_detection_days}d advance warning · flagged day {a.detected_at_day} ({a.advance_warning_days}d ago)
                     </span>
                   </div>
                 );
@@ -154,7 +154,7 @@ export default function SupplyChainPage() {
                     <div className="mt-3 flex items-center gap-2 text-sm">
                       <Truck size={14} className="text-text-lo" />
                       <span className="text-text-mid">
-                        {r.detected_lead_time_days}d advance warning vs. required-on-site date
+                        {r.lead_time_at_detection_days}d advance warning at detection · {r.days_until_required}d runway remaining
                       </span>
                     </div>
 

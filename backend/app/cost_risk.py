@@ -35,7 +35,7 @@ from fastapi import APIRouter
 
 from . import config
 from .impact import COMPLIANCE_REWORK_INR_PER_ISSUE
-from .overview import _all_ncrs
+from .overview import _evaluate_all
 from .schedule import risks as schedule_risks
 from .schemas import CostRisk, CostRiskComponent
 from .supply_chain import shipments as supply_chain_shipments
@@ -113,7 +113,7 @@ def compute_cost_risk() -> CostRisk:
         base_cost = base_costs.get(s.procurement_item, default_cost)
         expedite_items.append((s.id, s.procurement_item, best.cost_premium_pct, base_cost))
 
-    open_ncr_count = len(_all_ncrs())
+    open_ncr_count = sum(len(r.ncrs) for r in _evaluate_all())
 
     components = [
         schedule_delay_cost_from(critical_days, daily_rate),

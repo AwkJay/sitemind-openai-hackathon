@@ -54,9 +54,9 @@ def _find(*rel_candidates: str) -> Optional[Any]:
 # --------------------------------------------------------------------------- #
 _SAMPLE_SUBMITTALS: list[dict] = [
     {"Submittal No": "DC1-02-DBR-0001-R2", "Rev": "R2", "Title": "Structural Design Basis Report", "Discipline": "Structural", "Type": "PD", "Status": "A – Approved"},
-    {"Submittal No": "DC1-02-SD-0142-R1", "Rev": "R1", "Title": "Foundation shop drawing — footing F-12 transformer yard (cover 30mm, M25, severe)", "Discipline": "Structural", "Type": "SD", "Status": "C – Revise & Resubmit"},
-    {"Submittal No": "DC1-02-MOS-0210-R0", "Rev": "R0", "Title": "Method statement — concrete mix for severe-exposure raft (w/c 0.55)", "Discipline": "Structural", "Type": "MOS", "Status": "C – Revise & Resubmit"},
-    {"Submittal No": "DC1-02-SD-0156-R0", "Rev": "R0", "Title": "Reinforcement detailing — column C-08 (0.6% long. steel, cover 45mm)", "Discipline": "Structural", "Type": "SD", "Status": "Pending"},
+    {"Submittal No": "DC1-02-SD-0142-R1", "Rev": "R1", "Title": "Foundation shop drawing — footing F-12 transformer yard", "Discipline": "Structural", "Type": "SD", "Status": "C – Revise & Resubmit"},
+    {"Submittal No": "DC1-02-MOS-0210-R0", "Rev": "R0", "Title": "Method statement — concrete mix for severe-exposure raft", "Discipline": "Structural", "Type": "MOS", "Status": "C – Revise & Resubmit"},
+    {"Submittal No": "DC1-02-SD-0156-R0", "Rev": "R0", "Title": "Reinforcement detailing — column C-08", "Discipline": "Structural", "Type": "SD", "Status": "Pending"},
     {"Submittal No": "DC1-01-SD-0301-R0", "Rev": "R0", "Title": "Roof cladding — design wind pressure & fastener schedule", "Discipline": "Architecture", "Type": "SD", "Status": "B – Approved as Noted"},
 ]
 

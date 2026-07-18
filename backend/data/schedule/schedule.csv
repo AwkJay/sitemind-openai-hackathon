@@ -1,34 +1,34 @@
-wbs_id,task,phase,planned_start_day,duration_days,predecessors,pct_complete,procurement_item,lead_time_days,vendor_status,weather_sensitive
-DC1-01-EN-010,Site mobilisation & enabling works,Enabling,0,15,,100,,0,na,false
-DC1-01-EN-020,"Site clearing, fencing & temporary power",Enabling,5,12,DC1-01-EN-010,100,,0,na,true
-DC1-01-EN-030,Bulk earthwork & cut/fill to formation,Enabling,15,20,DC1-01-EN-020,100,,0,na,true
-DC1-01-EN-040,Dewatering & ground improvement,Enabling,30,18,DC1-01-EN-030,90,,0,na,true
-DC1-02-CS-010,Piling / raft excavation,Civil/Structural,45,22,DC1-01-EN-040,100,,0,na,true
-DC1-02-CS-020,PCC & raft foundation (1240 cum),Civil/Structural,60,25,DC1-02-CS-010,100,,0,na,true
-DC1-02-CS-030,Transformer-yard footings & plinths (F-12 etc.),Civil/Structural,78,18,DC1-02-CS-020,100,,0,na,true
-DC1-02-CS-040,RCC columns C-08 etc. up to plinth,Civil/Structural,85,20,DC1-02-CS-020,95,,0,na,false
-DC1-02-CS-050,Superstructure RCC frame & shear walls,Civil/Structural,100,40,DC1-02-CS-040,90,,0,na,false
-DC1-02-CS-060,Suspended white-space slabs,Civil/Structural,130,30,DC1-02-CS-050,88,,0,na,false
-DC1-02-CS-070,Roof structure & cyclonic-rated cladding,Civil/Structural,150,25,DC1-02-CS-050,90,,0,na,true
-DC1-03-AF-010,Block work & internal partitions,Architecture/Finishes,160,30,DC1-02-CS-060,40,,0,na,false
-DC1-03-AF-020,Waterproofing & screed,Architecture/Finishes,175,20,DC1-02-CS-070,0,,0,na,false
-DC1-03-AF-030,Anti-static raised access floor (white space),Architecture/Finishes,195,25,DC1-03-AF-010,0,Raised access floor,70,on-track,false
-DC1-03-AF-040,"Painting, doors & architectural finishes",Architecture/Finishes,210,30,DC1-03-AF-010,0,,0,na,false
-DC1-04-EL-010,Primary cable containment & earthing grid,MEP,170,28,DC1-02-CS-050,5,,0,na,false
-DC1-04-EL-020,DRUPS 2.5MW (2N) — procurement & delivery,MEP,120,30,DC1-02-CS-040,0,DRUPS 2.5MW,180,slipping,false
-DC1-04-EL-030,LV switchgear 415V — procurement & delivery,MEP,130,25,DC1-02-CS-040,0,LV switchgear 4000A,150,slipping,false
-DC1-04-EL-040,DRUPS installation & internal alignment,MEP,215,20,"DC1-04-EL-020,DC1-03-AF-020",0,,0,na,false
-DC1-04-EL-050,LV switchgear installation & busway,MEP,220,22,"DC1-04-EL-030,DC1-04-EL-010",0,Busway 4000A,90,slipping,false
-DC1-04-EL-060,rPDU / RPP / busway fit-out,MEP,240,18,DC1-04-EL-050,0,,0,na,false
-DC1-04-ME-010,Chilled-water plant & piping,MEP,180,35,DC1-02-CS-060,0,Chiller plant,120,on-track,false
-DC1-04-ME-020,CRAH units (N+1) install & pipe-up,MEP,225,25,"DC1-04-ME-010,DC1-03-AF-030",0,CRAH 150kW,100,on-track,false
-DC1-04-FI-010,"Fire detection, suppression & fire-stopping",MEP,230,22,DC1-03-AF-040,0,,0,na,false
-DC1-05-WS-010,Hot/cold-aisle containment & cabinet install,White-Space Fit-out,250,20,"DC1-04-EL-060,DC1-04-ME-020",0,,0,na,false
-DC1-05-WS-020,BMS / EPMS integration & wiring,White-Space Fit-out,255,18,DC1-04-EL-060,0,,0,na,false
-DC1-06-CX-010,L1 FAT — DRUPS & switchgear (factory),Commissioning L1-L5,110,10,DC1-04-EL-020,0,,0,na,false
-DC1-06-CX-020,L2 installation verification,Commissioning L1-L5,260,12,"DC1-05-WS-010,DC1-05-WS-020",0,,0,na,false
-DC1-06-CX-030,L3 pre-functional / SAT,Commissioning L1-L5,272,12,DC1-06-CX-020,0,,0,na,false
-DC1-06-CX-040,L4 functional testing (per system),Commissioning L1-L5,284,15,DC1-06-CX-030,0,,0,na,false
-DC1-06-CX-050,"L5 integrated systems test (IST, load-bank, pull-the-plug)",Commissioning L1-L5,299,14,DC1-06-CX-040,0,,0,na,false
-DC1-07-SN-010,Snagging / punch-list close-out,Snagging,313,14,DC1-06-CX-050,0,,0,na,false
-DC1-07-SN-020,Handover & as-built documentation,Snagging,327,10,DC1-07-SN-010,0,,0,na,false
+wbs_id,task,phase,planned_start_day,duration_days,predecessors,pct_complete,procurement_item,lead_time_days,vendor_status,weather_sensitive,labour_intensive
+DC1-01-EN-010,Site mobilisation & enabling works,Enabling,0,15,,100,,0,na,false,true
+DC1-01-EN-020,"Site clearing, fencing & temporary power",Enabling,5,12,DC1-01-EN-010,100,,0,na,true,true
+DC1-01-EN-030,Bulk earthwork & cut/fill to formation,Enabling,15,20,DC1-01-EN-020,100,,0,na,true,true
+DC1-01-EN-040,Dewatering & ground improvement,Enabling,30,18,DC1-01-EN-030,90,,0,na,true,false
+DC1-02-CS-010,Piling / raft excavation,Civil/Structural,45,22,DC1-01-EN-040,100,,0,na,true,true
+DC1-02-CS-020,PCC & raft foundation (1240 cum),Civil/Structural,60,25,DC1-02-CS-010,100,,0,na,true,true
+DC1-02-CS-030,Transformer-yard footings & plinths (F-12 etc.),Civil/Structural,78,18,DC1-02-CS-020,100,,0,na,true,false
+DC1-02-CS-040,RCC columns C-08 etc. up to plinth,Civil/Structural,85,20,DC1-02-CS-020,95,,0,na,false,false
+DC1-02-CS-050,Superstructure RCC frame & shear walls,Civil/Structural,100,40,DC1-02-CS-040,90,,0,na,false,false
+DC1-02-CS-060,Suspended white-space slabs,Civil/Structural,130,30,DC1-02-CS-050,88,,0,na,false,false
+DC1-02-CS-070,Roof structure & cyclonic-rated cladding,Civil/Structural,150,25,DC1-02-CS-050,90,,0,na,true,false
+DC1-03-AF-010,Block work & internal partitions,Architecture/Finishes,160,30,DC1-02-CS-060,40,,0,na,false,true
+DC1-03-AF-020,Waterproofing & screed,Architecture/Finishes,175,20,DC1-02-CS-070,0,,0,na,false,false
+DC1-03-AF-030,Anti-static raised access floor (white space),Architecture/Finishes,195,25,DC1-03-AF-010,0,Raised access floor,70,on-track,false,false
+DC1-03-AF-040,"Painting, doors & architectural finishes",Architecture/Finishes,210,30,DC1-03-AF-010,0,,0,na,false,false
+DC1-04-EL-010,Primary cable containment & earthing grid,MEP,170,28,DC1-02-CS-050,5,,0,na,false,false
+DC1-04-EL-020,DRUPS 2.5MW (2N) — procurement & delivery,MEP,120,30,DC1-02-CS-040,0,DRUPS 2.5MW,180,slipping,false,false
+DC1-04-EL-030,LV switchgear 415V — procurement & delivery,MEP,130,25,DC1-02-CS-040,0,LV switchgear 4000A,150,slipping,false,false
+DC1-04-EL-040,DRUPS installation & internal alignment,MEP,215,20,"DC1-04-EL-020,DC1-03-AF-020",0,,0,na,false,false
+DC1-04-EL-050,LV switchgear installation & busway,MEP,220,22,"DC1-04-EL-030,DC1-04-EL-010",0,Busway 4000A,90,slipping,false,false
+DC1-04-EL-060,rPDU / RPP / busway fit-out,MEP,240,18,DC1-04-EL-050,0,,0,na,false,false
+DC1-04-ME-010,Chilled-water plant & piping,MEP,180,35,DC1-02-CS-060,0,Chiller plant,120,on-track,false,false
+DC1-04-ME-020,CRAH units (N+1) install & pipe-up,MEP,225,25,"DC1-04-ME-010,DC1-03-AF-030",0,CRAH 150kW,100,on-track,false,false
+DC1-04-FI-010,"Fire detection, suppression & fire-stopping",MEP,230,22,DC1-03-AF-040,0,,0,na,false,false
+DC1-05-WS-010,Hot/cold-aisle containment & cabinet install,White-Space Fit-out,250,20,"DC1-04-EL-060,DC1-04-ME-020",0,,0,na,false,false
+DC1-05-WS-020,BMS / EPMS integration & wiring,White-Space Fit-out,255,18,DC1-04-EL-060,0,,0,na,false,false
+DC1-06-CX-010,L1 FAT — DRUPS & switchgear (factory),Commissioning L1-L5,110,10,DC1-04-EL-020,0,,0,na,false,false
+DC1-06-CX-020,L2 installation verification,Commissioning L1-L5,260,12,"DC1-05-WS-010,DC1-05-WS-020",0,,0,na,false,false
+DC1-06-CX-030,L3 pre-functional / SAT,Commissioning L1-L5,272,12,DC1-06-CX-020,0,,0,na,false,false
+DC1-06-CX-040,L4 functional testing (per system),Commissioning L1-L5,284,15,DC1-06-CX-030,0,,0,na,false,false
+DC1-06-CX-050,"L5 integrated systems test (IST, load-bank, pull-the-plug)",Commissioning L1-L5,299,14,DC1-06-CX-040,0,,0,na,false,false
+DC1-07-SN-010,Snagging / punch-list close-out,Snagging,313,14,DC1-06-CX-050,0,,0,na,true,true
+DC1-07-SN-020,Handover & as-built documentation,Snagging,327,10,DC1-07-SN-010,0,,0,na,false,false

@@ -126,10 +126,24 @@ export default function CopilotPage() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const seededRef = useRef(false);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [turns]);
+
+  // Pre-render one real exemplar Q&A on load — a genuine askCopilot() call
+  // against the same corpus/citations as any other question, not fake data —
+  // so the page never demos cold with an empty "ask something" placeholder.
+  // Guarded with a ref (not just the empty dep array) because React 18
+  // StrictMode double-invokes effects in dev, which would otherwise fire this
+  // twice and race against the existing by-index turn-update logic in send().
+  useEffect(() => {
+    if (seededRef.current) return;
+    seededRef.current = true;
+    send(SUGGESTIONS[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function send(question: string) {
     const q = question.trim();
@@ -151,9 +165,9 @@ export default function CopilotPage() {
   return (
     <div className="flex h-[calc(100vh-7.5rem)] flex-col">
       <PageHeader
-        eyebrow="Pillar 2 · Cited project copilot"
+        eyebrow="Cited Project Copilot"
         title="Copilot"
-        subtitle="Ask anything about the project or the codes — every answer is grounded in real clauses with inline citations."
+        subtitle="For everyone on the project — ask anything about the project or the codes, every answer is grounded in real clauses with inline citations."
       />
 
       <div className="flex min-h-0 flex-1 flex-col gap-4">
@@ -238,6 +252,30 @@ export default function CopilotPage() {
             ))}
             <div ref={endRef} />
           </div>
+
+          {/* Try-also row + abstention disclosure — visible once the exemplar
+              turn has already been asked, so a judge can still one-click the
+              remaining suggestions and sees the honesty guarantee up front. */}
+          {turns.length > 0 && (
+            <div className="border-t border-line px-4 py-2.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[0.68rem] text-text-lo">Try also:</span>
+                {SUGGESTIONS.slice(1).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => send(s)}
+                    disabled={busy}
+                    className="rounded-full border border-line bg-bg-700 px-2.5 py-1 text-[0.72rem] text-text-mid transition-colors hover:border-text-lo hover:text-text-hi disabled:opacity-50"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-1.5 text-[0.68rem] text-text-lo">
+                Abstains when the source doesn&rsquo;t answer — no guessed clauses.
+              </p>
+            </div>
+          )}
 
           {/* composer */}
           <form

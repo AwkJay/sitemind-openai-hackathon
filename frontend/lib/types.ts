@@ -193,6 +193,9 @@ export interface SupplyChainAlert {
   severity: AlertSeverity;
   message: string;
   detected_at_day: number;
+  /** FIXED at detection (required_on_site_by - detected_at_day) — the brief's lead-time metric. */
+  lead_time_at_detection_days: number;
+  /** GROWS daily (today - detected_at_day) — "flagged N days ago" caption only, not the same metric. */
   advance_warning_days: number;
   days_at_risk: number;
   on_critical_path: boolean;
@@ -209,7 +212,11 @@ export interface SupplyChainRisk {
   procurement_item: string;
   wbs_id: string;
   days_at_risk: number;
-  detected_lead_time_days: number;
+  detected_at_day?: number | null;
+  /** Same FIXED metric as SupplyChainAlert.lead_time_at_detection_days. */
+  lead_time_at_detection_days: number;
+  /** SHRINKS daily (required_on_site_by - today) — "runway remaining", a different concept. */
+  days_until_required: number;
   root_cause: string | null;
   recommended_alternative: ProcurementAlternative | null;
   on_critical_path: boolean;
@@ -252,6 +259,10 @@ export interface GanttBar {
   duration_days: number;
   on_critical_path: boolean;
   at_risk: boolean;
+  /** Joined from /schedule/risks; 0 when not at risk. Baseline bar never moves — this extends it. */
+  predicted_slip_days: number;
+  /** Joined from /schedule/risks; [] when not at risk. */
+  drivers: string[];
 }
 
 export type ImpactPillar =
@@ -279,6 +290,13 @@ export interface CostRisk {
   data_note: string;
 }
 
+export interface MachineScaleStats {
+  documents_read: number;
+  clauses_checked: number;
+  cross_references_found: number;
+  conflicts_surfaced: number;
+}
+
 export interface OverviewStats {
   project: string;
   issues_caught: number;
@@ -287,6 +305,37 @@ export interface OverviewStats {
   open_ncrs_by_severity: Record<string, number>;
   schedule_at_risk: number;
   by_pillar: PillarImpact[];
+  machine_scale?: MachineScaleStats | null;
+}
+
+// ── Project Timeline (P0) — pure aggregation, mirrors backend/app/schemas.py ──
+
+export type TimelinePillar = "compliance" | "copilot" | "schedule" | "supply_chain" | "commissioning";
+export type TimelineSeverity = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" | "INFO";
+
+export interface PhaseBand {
+  phase: string;
+  start_day: number;
+  end_day: number;
+}
+
+export interface TimelineEvent {
+  id: string;
+  day: number;
+  pillar: TimelinePillar;
+  kind: string;
+  severity: TimelineSeverity;
+  title: string;
+  detail: string;
+  link_route: string;
+  linked_event_ids: string[];
+}
+
+export interface TimelineData {
+  project_start: string;
+  today_day: number;
+  phase_bands: PhaseBand[];
+  events: TimelineEvent[];
 }
 
 export type KgNodeType = "equipment" | "spec" | "standard" | "rfi";

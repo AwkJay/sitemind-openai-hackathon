@@ -1,4 +1,4 @@
-import type { AlertSeverity, CommissioningVerdict, EquipmentSpecCheck, ImpactPillar, MitigationAgent, Severity, SourceType } from "./types";
+import type { AlertSeverity, CommissioningVerdict, EquipmentSpecCheck, ImpactPillar, MitigationAgent, Severity, SourceType, TimelinePillar, TimelineSeverity } from "./types";
 
 export function inrCompact(n: number): string {
   // Indian Crore/Lakh compaction for ₹ figures
@@ -121,6 +121,22 @@ export const mitigationAgentMeta: Record<MitigationAgent, { label: string; icon:
 
 export const impactPillarMeta: Record<ImpactPillar, { label: string; href: string }> = {
   compliance: { label: "Compliance", href: "/compliance" },
+  schedule: { label: "Schedule", href: "/schedule" },
+  supply_chain: { label: "Supply Chain", href: "/supply-chain" },
+  commissioning: { label: "Commissioning QA", href: "/commissioning" },
+};
+
+export const timelineSeverityMeta: Record<TimelineSeverity, { color: string; bg: string }> = {
+  CRITICAL: { color: "var(--critical)", bg: "var(--critical-bg)" },
+  HIGH: { color: "var(--critical)", bg: "var(--critical-bg)" },
+  MEDIUM: { color: "var(--warning)", bg: "var(--warning-bg)" },
+  LOW: { color: "var(--text-mid)", bg: "rgba(159,176,191,0.12)" },
+  INFO: { color: "var(--data)", bg: "rgba(56,189,248,0.12)" },
+};
+
+export const timelinePillarMeta: Record<TimelinePillar, { label: string; href: string }> = {
+  compliance: { label: "Compliance", href: "/compliance" },
+  copilot: { label: "Copilot / RFIs", href: "/copilot" },
   schedule: { label: "Schedule", href: "/schedule" },
   supply_chain: { label: "Supply Chain", href: "/supply-chain" },
   commissioning: { label: "Commissioning QA", href: "/commissioning" },

@@ -17,6 +17,7 @@ import {
   mockSupplyChainMeta,
   mockSupplyChainRisks,
   mockShipments,
+  mockTimeline,
 } from "./mocks";
 import type {
   ActionBrief,
@@ -37,6 +38,7 @@ import type {
   SupplyChainMap,
   SupplyChainMeta,
   SupplyChainRisk,
+  TimelineData,
 } from "./types";
 
 export const API_URL =
@@ -107,6 +109,11 @@ export const getGantt = () =>
 
 export const getKg = (elementId = "eq-tx") =>
   getJSON<KgGraph>(`/api/kg/${elementId}`, mockKg);
+
+// ── Project Timeline (P0) ───────────────────────────────────────────────────
+
+export const getTimeline = () =>
+  getJSON<TimelineData>("/api/timeline", mockTimeline);
 
 // ── Supply Chain Visibility ─────────────────────────────────────────────────
 
