@@ -3,9 +3,9 @@
 Mirrors app/standards.py's pattern (load once, hand out Citation objects) but
 reads a SEPARATE file (commissioning_clauses.json) with source_type explicitly
 marked "cross_source_unverified" on every row — see that file's _note for why.
-Never merged into clauses.json / all_clauses(): mixing a manak-verified corpus
-with a cross-source one in the same index would blur a distinction this project
-depends on being visible everywhere it matters.
+Never merged into clauses.json / all_clauses(): mixing a Codebook-verified
+corpus with a cross-source one in the same index would blur a distinction this
+project depends on being visible everywhere it matters.
 """
 from __future__ import annotations
 

@@ -8,7 +8,7 @@ Emits all synthetic project documents for the fictional project:
 Chennai = coastal -> SEVERE exposure (IS 456) + cyclonic wind k4 (IS 875) ->
 natural, REAL IS-code compliance checks.
 
-Standards (backend/data/standards/clauses.json) are REAL manak-cached clauses and
+Standards (backend/data/standards/clauses.json) are REAL Codebook-cached clauses and
 are NEVER touched by this script — they are only READ to align violating values to
 real clause thresholds. Everything else here is clearly synthetic sample data.
 
@@ -664,7 +664,7 @@ Synthetic-but-realistic project documents for the fictional project:
 
 Chennai = coastal -> **severe exposure** (IS 456) + **cyclonic wind k4** (IS 875),
 which makes the real IS-code compliance checks natural. All values below are
-**sample data**; the only REAL artefact is `standards/clauses.json` (manak-cached
+**sample data**; the only REAL artefact is `standards/clauses.json` (Codebook-cached
 IS clauses — the ground truth for every citation, never edited).
 
 Regenerate everything reproducibly with:
@@ -678,7 +678,7 @@ python gen_synthetic.py
 | File | Description |
 |---|---|
 | `gen_synthetic.py` | Seeded generator that emits every file below. |
-| `standards/clauses.json` | REAL manak-cached IS 456 / 875 / 1893 clauses (read-only ground truth). |
+| `standards/clauses.json` | REAL Codebook-cached IS 456 / 875 / 1893 clauses (read-only ground truth). |
 | `project_docs/design_basis.md` | Structural Design Basis Report as numbered General Notes; each design parameter is a quotable sentence (for extract-with-source). |
 | `project_docs/design_basis_params.json` | The same parameters as STRUCTURED data so the backend needs no OCR. |
 | `project_docs/submittals.csv` | Submittal register (~12 rows) incl. the violating foundation drawing. |

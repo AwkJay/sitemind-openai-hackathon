@@ -174,7 +174,7 @@ CHECKS: list[Check] = [
     },
     # ---------------------------------------------------------------------- #
     # Electrical domain (IS 732:1989, Third Revision — a real BIS document, but
-    # an OLDER edition extracted via OCR from a scanned copy, not manak. See
+    # an OLDER edition extracted via OCR from a scanned copy, not Codebook. See
     # each clause's source_type="primary_scan_ocr" in clauses.json and
     # sitemind/docs/codes.txt. Only 2 checks so far: IS 3043 (earthing electrode
     # resistance thresholds) is still needed to check earthing itself.

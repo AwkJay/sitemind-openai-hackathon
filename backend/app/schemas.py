@@ -7,10 +7,10 @@ from pydantic import BaseModel
 class Citation(BaseModel):
     standard: str            # e.g. "IS 456:2000"
     clause: str              # e.g. "26.4.2.2"
-    text: str                # exact clause text (from clauses.json / manak)
+    text: str                # exact clause text (from clauses.json / the Codebook standards service)
     verify_url: str          # link to the real source clause
-    # "manak_verified": fetched verbatim from the manak MCP (IS/IRC/IRS corpus) — the
-    # default and the project's normal integrity bar. "cross_source_unverified": NOT
+    # "manak_verified": fetched verbatim via Codebook's digitised-standards index (IS/IRC/IRS
+    # corpus) — the default and the project's normal integrity bar. "cross_source_unverified": NOT
     # fetched from a single verified primary document — compiled from convergent public
     # secondary sources because the primary standard is paywalled/inaccessible (e.g.
     # ASHRAE TC9.9's book). "primary_scan_ocr": IS the real primary document (a genuine
@@ -20,10 +20,10 @@ class Citation(BaseModel):
     # used. "primary_native_pdf": IS the real primary document (genuine BIS/CEA text),
     # extracted directly from a clean NATIVE (non-scanned) PDF — no OCR-transcription risk
     # at all, and may be the current edition (unlike primary_scan_ocr, which is often an
-    # older scanned reprint) — but still not fetched via the manak MCP, so it carries
+    # older scanned reprint) — but still not fetched via Codebook, so it carries
     # whatever edition-currency caveat applies to that specific document (stated per-clause).
     # Must be disclosed in the UI whenever it's not manak_verified; never silently
-    # presented as equivalent to a manak citation.
+    # presented as equivalent to a Codebook-verified citation.
     source_type: Literal[
         "manak_verified", "cross_source_unverified", "primary_scan_ocr", "primary_native_pdf"
     ] = "manak_verified"

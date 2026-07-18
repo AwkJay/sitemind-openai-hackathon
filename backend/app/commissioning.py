@@ -10,7 +10,7 @@ Same architectural pattern as the Compliance Agent (Pillar 1):
 corpus (commissioning_clauses.json) is cross-source compiled, NOT fetched
 verbatim from a single verified primary document (see that file's _note and
 Citation.source_type). Every finding and every quality package this module
-produces carries that limitation explicitly — never presented as manak-grade.
+produces carries that limitation explicitly — never presented as Codebook-grade.
 
 Scope: system == "cooling" only. power/IT records are accepted (not rejected)
 but always verdict NOT_CHECKABLE — this pillar does not attempt electrical/fire

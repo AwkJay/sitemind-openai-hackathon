@@ -5,10 +5,10 @@ number. Same discipline as every other pillar's eval in this project.
 What this measures and why it's scoped the way it is:
   * `app/agents/checks.py`'s two electrical checks (INSULATION_RESISTANCE,
     RCD_RATED_CURRENT) are grounded in IS 732:1989 (Third Revision) — a real BIS
-    document, extracted via OCR from an older scanned edition, NOT manak, NOT the
+    document, extracted via OCR from an older scanned edition, NOT via Codebook, NOT the
     current 2019 edition. Every clause's Citation carries
     source_type="primary_scan_ocr" (schemas.py) so this is never presented as
-    equivalent to a manak-verified structural clause.
+    equivalent to a Codebook-verified structural clause.
   * This eval checks the THRESHOLD ARITHMETIC against a hand-built answer key
     (does the deterministic rule reach the correct CONFORMS/NON-CONFORMS verdict
     for a given measured value) — it does NOT re-verify the OCR transcription
