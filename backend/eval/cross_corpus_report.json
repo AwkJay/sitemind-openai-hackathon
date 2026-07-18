@@ -1,0 +1,194 @@
+{
+  "n_cases": 26,
+  "n_pass": 26,
+  "accuracy": 1.0,
+  "method": "Phase 3b — read-only cross-corpus search over manak-dev + existing SiteMind standards. Five independent groups: (a) both corpora build from the REAL files on disk with expected document/chunk counts and correct source/provenance tags, (b) 4 hand-verified known-answer queries (2 per corpus) hit the expected real document and cite verbatim text located by reading the source beforehand, (c) gibberish queries abstain against both real (not tiny synthetic) corpora, (d) EVERY chunk in both corpora satisfies raw_text == source_text[start_char:end_char] against the real file content read fresh from disk, (e) manak-dev/ file mtimes and file count are provably unchanged by building the corpus. Never blended with the existing 16 evals or with Phase 3's own run_retrieval_eval.py (24 cases, synthetic fixtures only).",
+  "manak_chunk_count": 6206,
+  "manak_document_count": 17,
+  "sitemind_chunk_count": 29,
+  "sitemind_document_count": 2,
+  "cases": [
+    {
+      "name": "manak_document_count_matches_real_file_count",
+      "expected": 17,
+      "actual": 17,
+      "group": "corpus_build_integrity",
+      "pass": true
+    },
+    {
+      "name": "manak_corpus_source_is_filesystem_readonly",
+      "expected": "filesystem_readonly",
+      "actual": "filesystem_readonly",
+      "group": "corpus_build_integrity",
+      "pass": true
+    },
+    {
+      "name": "manak_corpus_provenance_tag",
+      "expected": "manak_indexed",
+      "actual": "manak_indexed",
+      "group": "corpus_build_integrity",
+      "pass": true
+    },
+    {
+      "name": "manak_corpus_nonempty",
+      "expected": true,
+      "actual": true,
+      "group": "corpus_build_integrity",
+      "pass": true
+    },
+    {
+      "name": "sitemind_document_count_matches_two_json_files",
+      "expected": 2,
+      "actual": 2,
+      "group": "corpus_build_integrity",
+      "pass": true
+    },
+    {
+      "name": "sitemind_corpus_source_is_filesystem_readonly",
+      "expected": "filesystem_readonly",
+      "actual": "filesystem_readonly",
+      "group": "corpus_build_integrity",
+      "pass": true
+    },
+    {
+      "name": "sitemind_corpus_provenance_tag",
+      "expected": "sitemind_indexed",
+      "actual": "sitemind_indexed",
+      "group": "corpus_build_integrity",
+      "pass": true
+    },
+    {
+      "name": "sitemind_chunk_count_equals_total_clause_records",
+      "expected": 29,
+      "actual": 29,
+      "group": "corpus_build_integrity",
+      "pass": true
+    },
+    {
+      "name": "manak_footing_cover_not_abstained",
+      "expected": true,
+      "actual": true,
+      "group": "known_answer_retrieval",
+      "pass": true
+    },
+    {
+      "name": "manak_footing_cover_hits_is456_document",
+      "expected": true,
+      "actual": true,
+      "group": "known_answer_retrieval",
+      "pass": true
+    },
+    {
+      "name": "manak_footing_cover_verbatim_text_present",
+      "expected": true,
+      "actual": true,
+      "group": "known_answer_retrieval",
+      "pass": true
+    },
+    {
+      "name": "manak_importance_factor_not_abstained",
+      "expected": true,
+      "actual": true,
+      "group": "known_answer_retrieval",
+      "pass": true
+    },
+    {
+      "name": "manak_importance_factor_hits_is1893_document",
+      "expected": true,
+      "actual": true,
+      "group": "known_answer_retrieval",
+      "pass": true
+    },
+    {
+      "name": "manak_importance_factor_verbatim_text_present",
+      "expected": true,
+      "actual": true,
+      "group": "known_answer_retrieval",
+      "pass": true
+    },
+    {
+      "name": "sitemind_earth_grid_resistance_not_abstained",
+      "expected": true,
+      "actual": true,
+      "group": "known_answer_retrieval",
+      "pass": true
+    },
+    {
+      "name": "sitemind_earth_grid_resistance_hits_clauses_document",
+      "expected": true,
+      "actual": true,
+      "group": "known_answer_retrieval",
+      "pass": true
+    },
+    {
+      "name": "sitemind_earth_grid_resistance_verbatim_text_present",
+      "expected": true,
+      "actual": true,
+      "group": "known_answer_retrieval",
+      "pass": true
+    },
+    {
+      "name": "sitemind_ashrae_temp_not_abstained",
+      "expected": true,
+      "actual": true,
+      "group": "known_answer_retrieval",
+      "pass": true
+    },
+    {
+      "name": "sitemind_ashrae_temp_hits_commissioning_document",
+      "expected": true,
+      "actual": true,
+      "group": "known_answer_retrieval",
+      "pass": true
+    },
+    {
+      "name": "sitemind_ashrae_temp_verbatim_text_present",
+      "expected": true,
+      "actual": true,
+      "group": "known_answer_retrieval",
+      "pass": true
+    },
+    {
+      "name": "manak_gibberish_query_abstains",
+      "expected": true,
+      "actual": true,
+      "group": "abstention",
+      "pass": true
+    },
+    {
+      "name": "sitemind_gibberish_query_abstains",
+      "expected": true,
+      "actual": true,
+      "group": "abstention",
+      "pass": true
+    },
+    {
+      "name": "manak_all_chunks_verbatim_offset_integrity",
+      "group": "verbatim_offset_integrity",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "sitemind_all_chunks_verbatim_offset_integrity",
+      "group": "verbatim_offset_integrity",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "manak_dev_file_count_unchanged_after_build",
+      "group": "manak_untouched",
+      "expected": 17,
+      "actual": 17,
+      "pass": true
+    },
+    {
+      "name": "manak_dev_files_unchanged_after_build",
+      "group": "manak_untouched",
+      "pass": true,
+      "expected": "see manak_dev_file_count_unchanged_after_build for a compact check",
+      "actual": "see manak_dev_file_count_unchanged_after_build for a compact check"
+    }
+  ]
+}

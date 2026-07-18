@@ -1,0 +1,224 @@
+{
+  "n_cases": 24,
+  "n_pass": 24,
+  "accuracy": 1.0,
+  "method": "Three independent groups: (a) chunker structure-detection + verbatim-offset integrity over inline fixtures, (b) RRF fusion arithmetic cross-checked against an independently written reference implementation, (c) end-to-end ingest+query over inline synthetic documents (never a real standard) verifying on-topic retrieval, gibberish-query abstention, and that no result ever names a document outside the known ingested set.",
+  "cases": [
+    {
+      "name": "markdown_heading_detection",
+      "expected": true,
+      "actual": true,
+      "group": "chunker",
+      "pass": true
+    },
+    {
+      "name": "markdown_offset_integrity",
+      "expected": true,
+      "actual": true,
+      "group": "chunker",
+      "pass": true
+    },
+    {
+      "name": "markdown_breadcrumb_present",
+      "expected": true,
+      "actual": true,
+      "group": "chunker",
+      "pass": true
+    },
+    {
+      "name": "numbered_heading_detection",
+      "expected": true,
+      "actual": true,
+      "group": "chunker",
+      "pass": true
+    },
+    {
+      "name": "numbered_offset_integrity",
+      "expected": true,
+      "actual": true,
+      "group": "chunker",
+      "pass": true
+    },
+    {
+      "name": "numbered_breadcrumb_nesting",
+      "expected": true,
+      "actual": true,
+      "group": "chunker",
+      "pass": true
+    },
+    {
+      "name": "unstructured_fallback_used",
+      "expected": true,
+      "actual": true,
+      "group": "chunker",
+      "pass": true
+    },
+    {
+      "name": "unstructured_offset_integrity",
+      "expected": true,
+      "actual": true,
+      "group": "chunker",
+      "pass": true
+    },
+    {
+      "name": "oversized_paragraph_sentence_split",
+      "expected": true,
+      "actual": true,
+      "group": "chunker",
+      "pass": true
+    },
+    {
+      "name": "oversized_paragraph_offset_integrity",
+      "expected": true,
+      "actual": true,
+      "group": "chunker",
+      "pass": true
+    },
+    {
+      "name": "chunk_ids_assigned_and_unique",
+      "expected": true,
+      "actual": true,
+      "group": "chunker",
+      "pass": true
+    },
+    {
+      "name": "rrf_identical_rankings",
+      "expected": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "actual": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "group": "rrf_arithmetic",
+      "pass": true
+    },
+    {
+      "name": "rrf_reversed_rankings",
+      "expected": [
+        0,
+        3,
+        1,
+        2
+      ],
+      "actual": [
+        0,
+        3,
+        1,
+        2
+      ],
+      "group": "rrf_arithmetic",
+      "pass": true
+    },
+    {
+      "name": "rrf_partial_overlap",
+      "expected": [
+        1,
+        0,
+        2
+      ],
+      "actual": [
+        1,
+        0,
+        2
+      ],
+      "group": "rrf_arithmetic",
+      "pass": true
+    },
+    {
+      "name": "rrf_single_list_passthrough",
+      "expected": [
+        4,
+        1,
+        3,
+        0,
+        2
+      ],
+      "actual": [
+        4,
+        1,
+        3,
+        0,
+        2
+      ],
+      "group": "rrf_arithmetic",
+      "pass": true
+    },
+    {
+      "name": "rrf_three_way_custom_k",
+      "expected": [
+        0,
+        1,
+        2
+      ],
+      "actual": [
+        0,
+        1,
+        2
+      ],
+      "group": "rrf_arithmetic",
+      "pass": true
+    },
+    {
+      "name": "ingest_all_three_docs_chunked",
+      "expected": true,
+      "actual": true,
+      "group": "end_to_end",
+      "pass": true
+    },
+    {
+      "name": "corpus_has_three_documents",
+      "expected": 3,
+      "actual": 3,
+      "group": "end_to_end",
+      "pass": true
+    },
+    {
+      "name": "on_topic_query_earthing_retrieves",
+      "expected": true,
+      "actual": true,
+      "group": "end_to_end",
+      "pass": true
+    },
+    {
+      "name": "retrieved_chunk_is_verbatim",
+      "expected": true,
+      "actual": true,
+      "group": "end_to_end",
+      "pass": true
+    },
+    {
+      "name": "on_topic_query_fire_retrieves",
+      "expected": true,
+      "actual": true,
+      "group": "end_to_end",
+      "pass": true
+    },
+    {
+      "name": "gibberish_query_abstains",
+      "expected": true,
+      "actual": true,
+      "group": "end_to_end",
+      "pass": true
+    },
+    {
+      "name": "unrelated_query_never_invents_a_document",
+      "expected": true,
+      "actual": true,
+      "group": "end_to_end",
+      "pass": true
+    },
+    {
+      "name": "corpus_persisted_to_disk",
+      "expected": true,
+      "actual": true,
+      "group": "end_to_end",
+      "pass": true
+    }
+  ]
+}

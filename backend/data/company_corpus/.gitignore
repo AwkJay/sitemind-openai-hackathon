@@ -1,0 +1,8 @@
+# Runtime-generated company-uploaded corpora (Phase 3 retrieval package).
+# These are user-uploaded documents + derived chunk/embedding indices —
+# never source, never part of the tracked demo dataset. Keep the folder
+# itself tracked (via this file + .gitkeep) so the app has somewhere to
+# write when RETRIEVAL_ENABLED=1, without committing anyone's uploads.
+*
+!.gitignore
+!.gitkeep
