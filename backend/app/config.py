@@ -72,3 +72,23 @@ PROJECT_NAME = "Hyperscale DC — Chennai, 48 MW, Tier III (N+1)"
 ALLOWED_ORIGINS: list[str] = [
     o.strip() for o in os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",") if o.strip()
 ]
+
+# Standalone standards/company-upload retrieval package (Phase 3,
+# backend/app/retrieval/) — OFF by default. When unset/0, main.py never even
+# imports the retrieval router, so none of that package's code, models, or
+# dependencies (rank_bm25, sentence-transformers) are touched at all. Set to
+# 1 to mount /api/retrieval/* endpoints.
+RETRIEVAL_ENABLED: bool = os.getenv("RETRIEVAL_ENABLED", "0").strip() == "1"
+
+# Codebook (standards-service/, a separate process — see
+# docs/BUILD_PLAN_CODEBOOK.md) MCP client — OFF by default. When unset/0,
+# main.py never imports codebook_client.py/codebook_router.py, so the `mcp`
+# client package is never touched at all (same import-gating discipline as
+# RETRIEVAL_ENABLED above). Set to 1 to mount /api/codebook/* endpoints,
+# which proxy to Codebook's own MCP server (standards-service/app/mcp_server.py)
+# over CODEBOOK_MCP_URL — this backend becomes an MCP *client*, the browser UI
+# still only ever talks to this backend, never to Codebook directly.
+CODEBOOK_ENABLED: bool = os.getenv("CODEBOOK_ENABLED", "0").strip() == "1"
+# standards-service/run.sh's own default port (8010 — 8000/8001 are already
+# spoken for by manak-dev and this backend). Not hardcoded deeper than here.
+CODEBOOK_MCP_URL: str = os.getenv("CODEBOOK_MCP_URL", "http://127.0.0.1:8010/mcp").strip()

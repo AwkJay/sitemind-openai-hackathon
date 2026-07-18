@@ -46,7 +46,7 @@ def health() -> dict:
     }
 
 
-for r in (
+routers = (
     overview_router,
     documents_router,
     compliance_router,
@@ -61,5 +61,24 @@ for r in (
     eval_router,
     trace_router,
     clock_router,
-):
+)
+
+# Standalone retrieval package (Phase 3) — mounted only when RETRIEVAL_ENABLED
+# is true, so with the flag off this import never executes and none of that
+# package's code runs at all (see app/config.py).
+if config.RETRIEVAL_ENABLED:
+    from .retrieval.router import router as retrieval_router
+
+    routers = routers + (retrieval_router,)
+
+# Codebook MCP client (step 5, docs/BUILD_PLAN_CODEBOOK.md) — mounted only
+# when CODEBOOK_ENABLED is true, so with the flag off this import never
+# executes and the `mcp` client package is never touched at all (see
+# app/config.py).
+if config.CODEBOOK_ENABLED:
+    from .codebook_router import router as codebook_router
+
+    routers = routers + (codebook_router,)
+
+for r in routers:
     app.include_router(r)
