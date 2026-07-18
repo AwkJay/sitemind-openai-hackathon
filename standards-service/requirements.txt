@@ -1,0 +1,29 @@
+# Codebook (standards-service) — only the deps `app/retrieval/` actually
+# imports (checked against backend/requirements.txt before copying; see
+# docs/BUILD_PLAN_CODEBOOK.md step 1). Versions pinned to match
+# backend/requirements.txt exactly, since this is the SAME code relocated,
+# not rewritten — behavior must stay identical.
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+python-dotenv==1.0.1
+numpy==2.1.1
+python-multipart==0.0.9
+pdfplumber==0.11.10
+python-docx==1.1.2
+sentence-transformers==5.6.0
+rank_bm25==0.2.2
+
+# MCP server layer (step 3, docs/BUILD_PLAN_CODEBOOK.md) — same SDK/pattern
+# manak-dev's own mcp_server.py uses (mcp.server.fastmcp.FastMCP, streamable
+# HTTP transport). Latest mcp (1.28.1) forces starlette>=1.0, which breaks
+# fastapi==0.115.0's own pin (starlette<0.39,>=0.37.2 — see above, kept
+# byte-identical to backend/requirements.txt on purpose). mcp==1.9.4 is the
+# newest release that resolves cleanly against that same starlette pin
+# (confirmed: `pip install mcp==1.9.4 "starlette>=0.37.2,<0.39.0"` resolves
+# starlette==0.38.6 with zero conflicts, and the full retrieval eval suite
+# still passes against it) — pinned explicitly rather than left to float, so
+# a future `pip install -r requirements.txt` doesn't silently pull 1.28.1
+# again and break the app at import time.
+mcp==1.9.4
+starlette==0.38.6

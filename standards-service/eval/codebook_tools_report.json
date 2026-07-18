@@ -1,0 +1,218 @@
+{
+  "n_cases": 30,
+  "n_pass": 30,
+  "accuracy": 1.0,
+  "method": "Drives all 4 Codebook MCP tools (list_corpora, search_standards, get_clause, check_document_against_corpus) through a REAL mcp.client.streamable_http session against a LIVE standards-service process on :8010 -- a genuinely different test surface from run_retrieval_eval.py/run_cross_corpus_eval.py, which import app/retrieval/* directly and never make a real MCP protocol call. Every expected value (corpus counts, top search hits, clause text) was independently verified against the real corpus/source files (REST calls, grep against manak-dev/lib and backend/data/standards/clauses.json, and a direct call to app.document_check's pure Python function) before being hardcoded as an expectation here -- never asserted from the tool's own output alone. Reported separately; never blended into the retrieval or cross-corpus eval counts.",
+  "cases": [
+    {
+      "name": "list_corpora_no_error",
+      "group": "list_corpora",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "name": "list_corpora_manak_structural_counts",
+      "group": "list_corpora",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "list_corpora_sitemind_existing_standards_counts",
+      "group": "list_corpora",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "list_corpora_both_source_types_disclosed",
+      "group": "list_corpora",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "search_importance_factor_no_error",
+      "group": "search_standards",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "name": "search_importance_factor_hits_is1893",
+      "group": "search_standards",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "search_earth_grid_no_error",
+      "group": "search_standards",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "name": "search_earth_grid_hits_is3043",
+      "group": "search_standards",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "search_offtopic_1_no_error",
+      "group": "search_standards",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "name": "search_offtopic_1_abstains",
+      "group": "search_standards",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "search_offtopic_2_no_error",
+      "group": "search_standards",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "name": "search_offtopic_2_abstains",
+      "group": "search_standards",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "search_unknown_corpus_is_hard_error",
+      "group": "search_standards",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "get_clause_is1893_no_error",
+      "group": "get_clause",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "name": "get_clause_is1893_contains_expected_heading",
+      "group": "get_clause",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "get_clause_is1893_body_is_verbatim_substring_of_source_file",
+      "group": "get_clause",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "get_clause_is1893_contains_expected_sentence",
+      "group": "get_clause",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "get_clause_is3043_no_error",
+      "group": "get_clause",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "name": "get_clause_is3043_text_byte_identical_to_clauses_json",
+      "group": "get_clause",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "get_clause_is3043_text_found_verbatim_in_raw_source_file",
+      "group": "get_clause",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "get_clause_bogus_id_is_hard_error",
+      "group": "get_clause",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "get_clause_bogus_id_error_names_the_bad_id_not_fabricated_text",
+      "group": "get_clause",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "check_document_no_error",
+      "group": "check_document_against_corpus",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "name": "check_document_conforms_present",
+      "group": "check_document_against_corpus",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "check_document_non_conform_present",
+      "group": "check_document_against_corpus",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "check_document_needs_review_present",
+      "group": "check_document_against_corpus",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "check_document_cites_real_is456_cover_clause",
+      "group": "check_document_against_corpus",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "check_document_needs_review_cites_real_is3043_clause",
+      "group": "check_document_against_corpus",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "check_document_summary_shows_all_three_decisions",
+      "group": "check_document_against_corpus",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "name": "check_document_bogus_path_is_hard_error",
+      "group": "check_document_against_corpus",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    }
+  ]
+}
