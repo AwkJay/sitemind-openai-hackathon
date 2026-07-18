@@ -12,3 +12,14 @@ pdfplumber==0.11.10
 python-docx==1.1.2
 sentence-transformers==5.6.0
 rank_bm25==0.2.2
+
+# Codebook MCP client (step 5, docs/BUILD_PLAN_CODEBOOK.md) — only imported
+# when CODEBOOK_ENABLED=1 (app/codebook_client.py), but installed
+# unconditionally same as rank_bm25/sentence-transformers above. Pinned to
+# mcp==1.9.4 + starlette==0.38.6 identically to
+# standards-service/requirements.txt (see that file's comment): the latest
+# mcp forces starlette>=1.0, which breaks fastapi==0.115.0's own
+# starlette<0.39 pin. Confirmed this exact pair resolves clean and this
+# backend's own app still imports/boots normally against it.
+mcp==1.9.4
+starlette==0.38.6
