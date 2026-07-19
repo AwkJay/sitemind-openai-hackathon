@@ -2,14 +2,19 @@
 
 Independent of `app/embeddings.py` by design — zero import coupling to the
 existing pillars (IMPROVEMENTS.md Phase 3, finding 3). Mirrors that module's
-model choice (`all-MiniLM-L6-v2` via `sentence-transformers`, already a
-pinned dependency in requirements.txt) as the offline default, and adds a
-pluggable external-API provider mirroring `app/config.py`'s `LLM_PROVIDER`
-pattern: set `RETRIEVAL_EMBEDDINGS_PROVIDER=openai` + `OPENAI_API_KEY` to
-embed via OpenAI's `text-embedding-3-small` instead. Any failure (network,
-auth, timeout, malformed response) is caught and falls back to the local
-model automatically — never raises, matching the project's "OFFLINE_MODE
-must keep working end-to-end" rule.
+model choice (`all-MiniLM-L6-v2`) and, as of the free-tier deploy fix, its
+default transport too: the Hugging Face Inference API, using this service's
+own `HF_TOKEN` (same free-tier fix applied to backend/app/embeddings.py and
+backend/app/retrieval/embeddings_provider.py — sentence-transformers/torch
+push every host tested past the 512 MB free-tier RAM ceiling). `local` mode
+still exists for anyone who pip-installs `sentence-transformers` separately,
+but it is no longer the default. Also supports a pluggable external-API
+provider mirroring `app/config.py`'s `LLM_PROVIDER` pattern: set
+`RETRIEVAL_EMBEDDINGS_PROVIDER=openai` + `OPENAI_API_KEY` to embed via
+OpenAI's `text-embedding-3-small` instead. Any failure (network, auth,
+timeout, malformed response) is caught and falls back down the chain
+(openai -> hf -> local) rather than raising, matching the project's
+"OFFLINE_MODE must keep working end-to-end" rule.
 
 Calls the OpenAI REST endpoint directly via `urllib` (stdlib) rather than
 adding the `openai` pip package as a new dependency — this package's guiding
@@ -26,6 +31,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 
+import httpx
 import numpy as np
 from dotenv import load_dotenv
 
@@ -45,8 +51,12 @@ LOCAL_EMBEDDING_DIM = 384
 OPENAI_EMBEDDING_MODEL = "text-embedding-3-small"
 OPENAI_EMBEDDINGS_URL = "https://api.openai.com/v1/embeddings"
 
-RETRIEVAL_EMBEDDINGS_PROVIDER: str = os.environ.get("RETRIEVAL_EMBEDDINGS_PROVIDER", "local").strip().lower()
+_HF_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+HF_EMBEDDINGS_URL = f"https://router.huggingface.co/hf-inference/models/{_HF_MODEL_NAME}/pipeline/feature-extraction"
+
+RETRIEVAL_EMBEDDINGS_PROVIDER: str = os.environ.get("RETRIEVAL_EMBEDDINGS_PROVIDER", "hf").strip().lower()
 OPENAI_API_KEY: str = os.environ.get("OPENAI_API_KEY", "").strip()
+HF_TOKEN: str = os.environ.get("HF_TOKEN", "").strip()
 
 
 @lru_cache(maxsize=1)
@@ -85,21 +95,46 @@ def _embed_openai(texts: list[str]) -> np.ndarray:
     return _l2_normalize(vecs)
 
 
+def _embed_hf(texts: list[str]) -> np.ndarray:
+    resp = httpx.post(
+        HF_EMBEDDINGS_URL,
+        headers={"Authorization": f"Bearer {HF_TOKEN}"},
+        json={"inputs": list(texts)},
+        timeout=30.0,
+    )
+    resp.raise_for_status()
+    return np.array(resp.json(), dtype=np.float32)
+
+
 def embed(texts: list[str]) -> np.ndarray:
     """L2-normalized embeddings — dot product == cosine similarity, same
-    contract as `app/embeddings.embed()`. Uses the external API only when
-    `RETRIEVAL_EMBEDDINGS_PROVIDER=openai` AND `OPENAI_API_KEY` is set; any
-    failure falls back to the local model rather than raising, so a flaky
-    connection or missing key never breaks ingestion or query."""
+    contract as `app/embeddings.embed()`. Provider order: `openai` (only if
+    explicitly selected AND `OPENAI_API_KEY` set) -> `hf` (the default,
+    using `HF_TOKEN`) -> `local` (requires `sentence-transformers` installed
+    separately; no longer a project dependency). Any failure falls through
+    to the next provider rather than raising, so a flaky connection or
+    missing key never breaks ingestion or query."""
     if not texts:
         return np.zeros((0, LOCAL_EMBEDDING_DIM), dtype=np.float32)
+
     if RETRIEVAL_EMBEDDINGS_PROVIDER == "openai" and OPENAI_API_KEY:
         try:
             return _embed_openai(texts)
         except Exception as exc:  # pragma: no cover - network/env dependent
             logger.warning(
                 "retrieval.embeddings_provider: OpenAI embeddings call failed (%s); "
+                "falling back to HF Inference API.",
+                exc,
+            )
+
+    if HF_TOKEN:
+        try:
+            return _embed_hf(texts)
+        except Exception as exc:  # pragma: no cover - network/env dependent
+            logger.warning(
+                "retrieval.embeddings_provider: HF Inference API call failed (%s); "
                 "falling back to local sentence-transformers model.",
                 exc,
             )
+
     return _embed_local(texts)

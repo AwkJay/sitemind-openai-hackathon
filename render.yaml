@@ -16,11 +16,30 @@ services:
       - key: RETRIEVAL_ENABLED
         value: "1"
       - key: CODEBOOK_ENABLED
-        value: "0"
+        value: "1"
+      - key: CODEBOOK_MCP_URL
+        value: https://sitemind-codebook.onrender.com/mcp
       - key: ALLOWED_ORIGINS
-        value: https://frontend-tau-indol-ucguhuklc7.vercel.app,http://localhost:3000
+        value: https://frontend-tau-indol-ucguhuklc7.vercel.app,https://sitemind.awni.in,http://localhost:3000
       # Free token from https://huggingface.co/settings/tokens (Read scope,
       # "Make calls to Inference Providers"). Fill in via the Render
       # Dashboard's Environment tab — not committed here.
+      - key: HF_TOKEN
+        sync: false
+
+  - type: web
+    name: sitemind-codebook
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: standards-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.4
+      # Same free HF token as sitemind-backend — reused here for this
+      # service's own retrieval embeddings (app/retrieval/embeddings_provider.py).
       - key: HF_TOKEN
         sync: false
