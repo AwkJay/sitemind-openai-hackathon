@@ -18,12 +18,12 @@ Most AI compliance tools either hallucinate citations or hide their reasoning be
   judgment call is a rule evaluated against a cited clause, so it's auditable and reproducible.
 - **Every number is computed, not asserted.** ROI, cost-at-risk, schedule impact, and retrieval
   confidence all come from real formulas over real inputs — see `docs/ARCHITECTURE.md`.
-- **16 held-out evaluation suites**, each reported separately, never blended into one figure.
+- **21 held-out evaluation suites**, each reported separately, never blended into one figure.
 
 ## What's REAL vs REPRESENTATIVE
 
 - **Real:** every IS/CEA clause citation (resolves to digitised primary-source text), the
-  compliance decision logic, all 16 evals, document ingestion (an uploaded PDF/DOCX is actually
+  compliance decision logic, all 21 evals, document ingestion (an uploaded PDF/DOCX is actually
   parsed, with mandatory abstention on anything not confidently extracted), and the CPM
   schedule-impact recomputation.
 - **Representative:** the pre-loaded project documents and schedule are synthetic, modelled on
@@ -92,13 +92,25 @@ Restart `npm run dev` after changing `.env.local` — Next.js only reads it at s
 the real backend; red means the API URL is wrong or the backend isn't up (the UI is quietly
 showing mock data, not a real run).
 
-### Optional: Codebook — the standalone standards service
+### One command: boot the full stack
+
+```bash
+npm run dev    # from the repo root — Codebook + backend (RETRIEVAL_ENABLED=1 CODEBOOK_ENABLED=1)
+                # + frontend, all together. Same as running ./run-full.sh directly.
+```
+
+Prefer this over the manual two-terminal quick start above whenever you intend to show Codebook
+or the Knowledge Base — it's the only path that turns both optional flags on. `npm run dev` inside
+`frontend/` (not the repo root) still does frontend-only, no-flags Next.js dev, as documented above.
+
+### Codebook — the standalone standards service (part of the demo — see DEMO_STORY.md Act 7)
 
 Codebook (`standards-service/`) is a separate, independently-runnable service that indexes the
 same standards corpora as a searchable, MCP-consumable index — the point is other agents (not
-just SiteMind's own backend) can query it too. It's **off by default**; the app above works fully
-without it.
-
+just SiteMind's own backend) can query it too. The app above works fully without it, and its
+backend flag (`CODEBOOK_ENABLED`) stays **off by default in `backend/.env`** so a fresh clone or
+an eval run never depends on a third process being up. `npm run dev` at the repo root (above)
+turns it on for you; or run it manually, one piece at a time:
 ```bash
 cd standards-service
 ./run.sh            # creates .venv, installs deps, serves on :8010
@@ -111,16 +123,30 @@ To let SiteMind's backend use it (browse/search/check-document from the `/codebo
 CODEBOOK_ENABLED=1
 CODEBOOK_MCP_URL=http://127.0.0.1:8010/mcp   # default, only needed if you moved the port
 ```
-Restart the backend after changing this. With `CODEBOOK_ENABLED` unset, every `/api/codebook/*`
-route 404s and none of that code path ever runs — same import-gating pattern as the rest of this
-repo's optional features. Full design/decisions: `docs/BUILD_PLAN_CODEBOOK.md`.
+Restart the backend after changing this. With `CODEBOOK_ENABLED` unset (the checked-in default —
+`run-full.sh` sets it for its own processes only), every `/api/codebook/*` route 404s and none of
+that code path ever runs — same import-gating pattern as the rest of this repo's feature flags,
+kept off by default so a fresh clone or an eval run never depends on a third process being up.
+Full design/decisions: `docs/BUILD_PLAN_CODEBOOK.md`. Codebook also has its own **Console**
+(`/codebook/console`) for browsing corpora/documents and uploading new ones, with a provenance
+badge distinguishing internal verified standards from externally-uploaded documents.
+
+### Optional: Knowledge Base — the standalone retrieval package (`/knowledge-base`)
+
+A second, independent retrieval package (`backend/app/retrieval/`) predates Codebook and is kept
+separate rather than merged, because 2 of the 21 evals still import it directly. Off by default
+(`RETRIEVAL_ENABLED=0` in `backend/.env`); set `RETRIEVAL_ENABLED=1` and restart the backend to
+mount `/api/retrieval/*` and use `/knowledge-base` to upload documents into a searchable corpus
+and ask cited questions against it.
 
 ## Evaluation suites
 
-16 independent, held-out benchmarks — each measures a different thing (rule-decision accuracy,
+21 independent, held-out benchmarks — each measures a different thing (rule-decision accuracy,
 extraction precision/recall, delay-propagation arithmetic, ROI/cost-formula correctness,
-retrieval calibration...) and is reported on its own, never blended into a single score:
+retrieval calibration...) and is reported on its own, never blended into a single score. Full
+per-script breakdown (test-data source, metric, honest limitations): `docs/features.md`.
 
+**18 in `backend/`:**
 ```bash
 cd backend && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 
@@ -140,11 +166,15 @@ python -m eval.run_hybrid_retrieval_eval  # BM25+dense fusion arithmetic — n=5
 python -m eval.run_weather_eval        # IMD-cited monsoon-window overlap arithmetic — n=11, 11/11
 python -m eval.run_workforce_eval      # Pongal labour-dip overlap arithmetic — n=10, 10/10
 python -m eval.run_timeline_eval       # cross-pillar aggregation consistency — n=20, 20/20
+python -m eval.run_retrieval_eval      # Knowledge Base: chunking + RRF + abstention — n=24, 24/24
+python -m eval.run_cross_corpus_eval   # real corpus build, both corpora — n=26, 26/26
 ```
 
 Codebook (`standards-service/`, the standalone service above) has its own **3 evals**, run
-separately and never blended into the 16 above — it's a different service with its own
-`.venv`/`eval/` directory:
+separately with their own `.venv`/`eval/` directory — the last two are near-duplicates of the
+backend's own `run_retrieval_eval`/`run_cross_corpus_eval` above, repointed at the relocated
+package after Codebook split out as its own service; kept in both places on purpose (Codebook
+must be evaluable standalone, without the rest of the backend):
 ```bash
 cd standards-service && source .venv/bin/activate
 
@@ -194,6 +224,10 @@ as-commissioned quality package.
 **Knowledge Graph** (`/graph`) — an equipment → spec → standard → RFI graph built with plain
 NetworkX over the same structured data the other pillars use.
 
+**Knowledge Base** (`/knowledge-base`, off by default — see "Optional: Knowledge Base" above) —
+upload documents into a searchable corpus and ask cited questions against it, independent of
+Codebook's own corpora.
+
 **Overview** (`/`) — a platform-wide ROI figure broken down per pillar with its computed basis,
 and a cost-at-risk panel showing schedule-delay, expedite-premium, and rework-exposure terms
 with their formulas, not just a headline number.
@@ -201,13 +235,15 @@ with their formulas, not just a headline number.
 **Provenance trace** (`GET /api/trace`) — every agent run logs its step timings, provider, and
 output summary locally; optionally mirrored to a Langfuse project when credentials are set.
 
-**Codebook** (`/codebook`, optional, off by default) — a standalone standards service
-(`standards-service/`, its own process on :8010) exposing the same corpora over 4 MCP tools so
-any agent can query them, not just SiteMind's own backend. Adds one new reasoning primitive,
+**Codebook** (`/codebook`, part of the demo — see DEMO_STORY.md Act 7) — a standalone standards
+service (`standards-service/`, its own process on :8010) exposing the same corpora over 4 MCP tools
+so any agent can query them, not just SiteMind's own backend. Adds one new reasoning primitive,
 `check_document_against_corpus`: upload a document, it extracts candidate requirements, retrieves
 the matching real clause, and returns a deterministic CONFORMS/NON_CONFORM/NEEDS_REVIEW — same
 retrieval-then-deterministic-decision-then-cited-prose pattern as the Compliance Agent, generalized
-to any corpus. See "Optional: Codebook" above to run it.
+to any corpus. Its Console (`/codebook/console`) adds a browsing/upload UI with provenance badges.
+See "Codebook — the standalone standards service" above to run it (`./run-full.sh` for the
+one-command path).
 
 ## Architecture
 
@@ -234,14 +270,18 @@ AI engineering (retrieval + deterministic logic + an LLM for prose only), not an
 ## Repository layout
 
 - `backend/app/` — FastAPI app (agents/, ingest, schedule, supply_chain, commissioning, impact,
-  cost_risk, evidence_links, kg, overview, standards, trace, codebook_client/codebook_router)
+  cost_risk, evidence_links, kg, overview, standards, trace, codebook_client/codebook_router,
+  retrieval/ — the flag-gated Knowledge Base package, off by default)
 - `backend/data/` — synthetic project documents, real standards clauses, and reference PDFs
-- `backend/eval/` — labelled test sets and the 16 benchmark runners
+- `backend/eval/` — labelled test sets and the 18 benchmark runners
 - `standards-service/` — Codebook, a standalone MCP-consumable standards service (optional,
-  off by default) — its own app/, eval/, run.sh, .venv
-- `frontend/` — the Command Center UI
+  off by default) — its own app/, eval/ (3 more runners), run.sh, .venv
+- `frontend/app/` — the Command Center UI: one page per pillar (`compliance/`, `copilot/`,
+  `schedule/`, `timeline/`, `supply-chain/`, `commissioning/`, `graph/`), plus `codebook/` (and
+  `codebook/console/`) and `knowledge-base/`
 - `CONTRACT.md` — the API contract · `docs/ARCHITECTURE.md` — full system diagram
-  (Codebook's architecture, corpora, and MCP interface included)
+  (Codebook's architecture, corpora, and MCP interface included) · `docs/features.md` — every
+  page, feature, and eval script inventoried in detail, incl. known caveats
 
 ## Roadmap
 

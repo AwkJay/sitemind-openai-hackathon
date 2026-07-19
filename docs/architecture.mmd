@@ -2,16 +2,21 @@ flowchart LR
     subgraph Client["Browser — Next.js Command Center"]
         direction TB
         UI_OV["Overview\nROI ticker + Cost-at-Risk"]
+        UI_TL["Project Timeline\npure aggregation + cross-links"]
         UI_CO["Compliance"]
         UI_CP["Copilot"]
         UI_SC["Schedule"]
-        UI_SU["Supply Chain\n+ linked-evidence chips + alerts"]
+        UI_SU["Supply Chain\n+ linked-evidence chips"]
         UI_CX["Commissioning QA"]
         UI_KG["Knowledge Graph"]
+        UI_CBK["Codebook\nbrowse + search + check-document"]
+        UI_CBC["Codebook Console\ncorpora/documents browser + upload,\nadded 2026-07-12"]
+        UI_KB["Knowledge Base\nRETRIEVAL_ENABLED-gated, off by default"]
     end
 
     subgraph Backend["FastAPI backend"]
         direction TB
+        API_TL["GET /timeline"]
         API_ING["POST /compliance/ingest"]
         API_CHK["POST /compliance/check (+ SSE stream)"]
         API_AB["GET /compliance/action-brief"]
@@ -25,13 +30,20 @@ flowchart LR
         API_EV["GET /eval/report"]
         API_CLK["GET/POST /clock, /clock/advance, /clock/reset"]
         API_META["GET /supply-chain/meta"]
+        API_CBK["/api/codebook/* (gated:\nCODEBOOK_ENABLED, default off)"]
+        API_CBK_CONSOLE["/api/codebook/console/* — REST\n(not MCP) passthrough to Codebook's\nown /api/retrieval/*, added 07-12"]
+        CBCLIENT["codebook_client.py\nMCP client of Codebook\n(standards-service, not the UI's client)"]
+        CBRESTCLIENT["codebook_rest_client.py\nhttpx REST client of Codebook's\n/api/retrieval/*, added 07-12"]
+        API_RET["/api/retrieval/* (gated:\nRETRIEVAL_ENABLED, default off)"]
     end
 
     subgraph Logic["Deterministic decision layer — Python, never the LLM"]
         direction TB
+        TIMELINE["timeline.py\nPURE aggregation — zero new judgment,\nzero new fabricated events; reuses\nevidence_links.py for cross-pillar links"]
         INGEST["ingest.py\nregex extraction + mandatory abstention"]
         CHECKS["checks.py\nthreshold rules vs real clauses\n(structural + electrical domains)"]
         CPM["schedule.py\nCPM + leading-indicator rules"]
+        SCHEDF["schedule_factors.py\nIMD NE-monsoon window (weather) +\nPongal window (workforce) — real,\ncited calendar-overlap rules"]
         MITIGATE["agents/mitigation.py\n3 specialist agents + coordinator —\nreal multi-agent mitigation options"]
         SCLOGIC["supply_chain.py\ndelay propagation + alternative viability\n+ equipment-spec check + alert log"]
         CXLOGIC["commissioning.py\nthreshold vs thermal envelope\n(cooling-only slice)"]
@@ -39,6 +51,7 @@ flowchart LR
         IMPACT["impact.py\nper-pillar hours/Rs, documented\nassumptions, computed not asserted"]
         COSTRISK["cost_risk.py\ndeterministic cost-at-risk =\nschedule + expedite + rework"]
         CLOCK["clock.py\nsimulated demo day (added 07-03) —\nadvancing it clears every downstream\ncache so numbers genuinely recompute"]
+        RETRIEVAL["app/retrieval/ package\nchunker + BM25/dense RRF + abstention —\npredates Codebook, kept separate because\n2 evals import it directly"]
     end
 
     subgraph LLM["llm.py — pluggable, PROSE ONLY (never the pass/fail decision)"]
@@ -60,8 +73,17 @@ flowchart LR
         LIVEUP["project_docs/live_upload_samples/*.docx\n(added 07-03) 2 real docs for live\ndemo upload — sentences hand-verified\nagainst ingest.py's regex before writing"]
     end
 
-    subgraph Manak["manak MCP — build-time only, not a runtime dependency"]
+    subgraph Manak["Codebook's structural-code corpus — build-time origin, not a runtime dependency"]
         MCP[("Real digitised IS/IRC/IRS text\n(structural) fetched + cached")]
+    end
+
+    subgraph CodebookSvc["Codebook (standards-service/) — standalone process, port 8010, MCP-only interface, added 2026-07-10"]
+        direction TB
+        CB_MCP["mcp_server.py — 4 MCP tools:\nlist_corpora, search_standards,\nget_clause, check_document_against_corpus"]
+        CB_DOC["document_check.py — the one new\nreasoning primitive: retrieval finds\ncandidates, deterministic code decides,\nLLM only composes cited prose"]
+        CB_STRUCT[("manak_structural\n17 docs / 6,206 chunks")]
+        CB_EXIST[("sitemind_existing_standards\n2 docs / 29 chunks")]
+        CB_COMPANY[("company_uploaded\npersisted per-corpus uploads")]
     end
 
     subgraph Trace["Provenance — always on, optionally mirrored"]
@@ -69,7 +91,7 @@ flowchart LR
         LANGFUSE["langfuse_sink.py — real Langfuse\nproject when keys set"]
     end
 
-    subgraph Evals["backend/eval/ — THIRTEEN separate held-out metrics, never blended into one number"]
+    subgraph Evals["backend/eval/ — EIGHTEEN separate held-out metrics, never blended into one number"]
         direction LR
         E1["run_eval.py — structural"]
         E2["run_extraction_eval.py"]
@@ -84,17 +106,30 @@ flowchart LR
         E11["run_mitigation_eval.py (added 07-03)"]
         E12["run_alerts_eval.py (added 07-03)"]
         E13["run_hybrid_retrieval_eval.py (added 07-03)"]
+        E14["run_weather_eval.py (added 07-08)"]
+        E15["run_workforce_eval.py (added 07-08)"]
+        E16["run_timeline_eval.py (added 07-08)"]
+        E17["run_retrieval_eval.py — Knowledge Base\nchunking+RRF+abstention, n=24"]
+        E18["run_cross_corpus_eval.py — real\ncorpus build, both corpora, n=26"]
     end
 
     Client -- "REST + SSE" --> Backend
+    API_TL --> TIMELINE
+    TIMELINE -. "reads, never re-decides" .-> CHECKS
+    TIMELINE -. "reads, never re-decides" .-> CPM
+    TIMELINE -. "reads, never re-decides" .-> SCLOGIC
+    TIMELINE -. "reads, never re-decides" .-> CXLOGIC
+    TIMELINE --> PROJDOCS
+    API_SD --> SCHEDF
+    SCHEDF -. "real IMD + festival citations" .-> PROJDOCS
     API_ING --> INGEST --> PROJDOCS
     INGEST -. "same pipeline, new file" .-> LIVEUP
     API_CHK --> CHECKS --> CLAUSES
+    API_SD --> MITIGATE
+    MITIGATE --> SCLOGIC
     CHECKS -. "prose only" .-> LLM
     API_CP -. "prose only" .-> LLM
     API_SD --> CPM --> SCHED
-    API_SD --> MITIGATE
-    MITIGATE --> SCLOGIC
     API_SU --> SCLOGIC --> SUPPLY
     API_META --> SCLOGIC
     SCLOGIC --> LINKS --> PROJDOCS
@@ -113,6 +148,17 @@ flowchart LR
     API_CLK --> CLOCK
     CLOCK -. "current_day(), cache-cleared on advance" .-> CPM
     CLOCK -. "current_day(), cache-cleared on advance" .-> SCLOGIC
+    API_CBK --> CBCLIENT
+    CBCLIENT -. "MCP over HTTP transport, CODEBOOK_ENABLED-gated" .-> CB_MCP
+    CB_MCP --> CB_DOC
+    CB_MCP --> CB_STRUCT
+    CB_MCP --> CB_EXIST
+    CB_MCP --> CB_COMPANY
+    API_CBK_CONSOLE --> CBRESTCLIENT
+    CBRESTCLIENT -. "plain REST, not MCP —\nstructured JSON, CODEBOOK_ENABLED-gated" .-> CB_STRUCT
+    CBRESTCLIENT -. "plain REST, not MCP" .-> CB_EXIST
+    CBRESTCLIENT -. "plain REST, not MCP" .-> CB_COMPANY
+    API_RET --> RETRIEVAL --> PROJDOCS
     Backend --> LOCALTRACE --> LANGFUSE
     MCP -. "verbatim fetch, cached at build time" .-> CLAUSES
     Evals -. "score" .-> Logic

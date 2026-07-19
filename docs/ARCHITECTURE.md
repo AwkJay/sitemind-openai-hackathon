@@ -4,6 +4,13 @@ Source-of-truth diagram-as-code (Mermaid). GitHub renders this block natively; f
 the [Mermaid Live Editor](https://mermaid.live) and export PNG/SVG, or run `npx @mermaid-js/mermaid-cli -i
 ARCHITECTURE.md -o architecture.png` locally (no account needed either way).
 
+> Updated 2026-07-12 (sixth pass): adds **Codebook Console** (`/codebook/console`, a browse/upload UI
+> on Codebook's plain-REST endpoints, structured JSON not MCP prose) and clarifies **Knowledge Base**
+> (`/knowledge-base`, `backend/app/retrieval/`) as a second, older, intentionally-separate retrieval
+> package — both were built but missing from this diagram until now. Eval count corrected 16 → **21**
+> (the backend's own `run_retrieval_eval.py`/`run_cross_corpus_eval.py`, which power Knowledge Base,
+> were previously omitted from the count).
+>
 > Updated 2026-07-10 (fifth pass): adds **Codebook** (`standards-service/`, `docs/BUILD_PLAN_CODEBOOK.md`)
 > — a brand-new standalone process on port 8010 that relocates the retrieval package built in the
 > fourth-and-earlier passes' Phase 3/3b, indexes three corpora (`manak_structural`,
@@ -30,6 +37,8 @@ flowchart LR
         UI_CX["Commissioning QA"]
         UI_KG["Knowledge Graph"]
         UI_CBK["Codebook\nbrowse + search + check-document"]
+        UI_CBC["Codebook Console\ncorpora/documents browser + upload,\nadded 2026-07-12"]
+        UI_KB["Knowledge Base\nRETRIEVAL_ENABLED-gated, off by default"]
     end
 
     subgraph Backend["FastAPI backend"]
@@ -49,7 +58,10 @@ flowchart LR
         API_CLK["GET/POST /clock, /clock/advance, /clock/reset"]
         API_META["GET /supply-chain/meta"]
         API_CBK["/api/codebook/* (gated:\nCODEBOOK_ENABLED, default off)"]
+        API_CBK_CONSOLE["/api/codebook/console/* — REST\n(not MCP) passthrough to Codebook's\nown /api/retrieval/*, added 07-12"]
         CBCLIENT["codebook_client.py\nMCP client of Codebook\n(standards-service, not the UI's client)"]
+        CBRESTCLIENT["codebook_rest_client.py\nhttpx REST client of Codebook's\n/api/retrieval/*, added 07-12"]
+        API_RET["/api/retrieval/* (gated:\nRETRIEVAL_ENABLED, default off)"]
     end
 
     subgraph Logic["Deterministic decision layer — Python, never the LLM"]
@@ -66,6 +78,7 @@ flowchart LR
         IMPACT["impact.py\nper-pillar hours/Rs, documented\nassumptions, computed not asserted"]
         COSTRISK["cost_risk.py\ndeterministic cost-at-risk =\nschedule + expedite + rework"]
         CLOCK["clock.py\nsimulated demo day (added 07-03) —\nadvancing it clears every downstream\ncache so numbers genuinely recompute"]
+        RETRIEVAL["app/retrieval/ package\nchunker + BM25/dense RRF + abstention —\npredates Codebook, kept separate because\n2 evals import it directly"]
     end
 
     subgraph LLM["llm.py — pluggable, PROSE ONLY (never the pass/fail decision)"]
@@ -105,7 +118,7 @@ flowchart LR
         LANGFUSE["langfuse_sink.py — real Langfuse\nproject when keys set"]
     end
 
-    subgraph Evals["backend/eval/ — SIXTEEN separate held-out metrics, never blended into one number"]
+    subgraph Evals["backend/eval/ — EIGHTEEN separate held-out metrics, never blended into one number"]
         direction LR
         E1["run_eval.py — structural"]
         E2["run_extraction_eval.py"]
@@ -123,6 +136,8 @@ flowchart LR
         E14["run_weather_eval.py (added 07-08)"]
         E15["run_workforce_eval.py (added 07-08)"]
         E16["run_timeline_eval.py (added 07-08)"]
+        E17["run_retrieval_eval.py — Knowledge Base\nchunking+RRF+abstention, n=24"]
+        E18["run_cross_corpus_eval.py — real\ncorpus build, both corpora, n=26"]
     end
 
     Client -- "REST + SSE" --> Backend
@@ -166,6 +181,11 @@ flowchart LR
     CB_MCP --> CB_STRUCT
     CB_MCP --> CB_EXIST
     CB_MCP --> CB_COMPANY
+    API_CBK_CONSOLE --> CBRESTCLIENT
+    CBRESTCLIENT -. "plain REST, not MCP —\nstructured JSON, CODEBOOK_ENABLED-gated" .-> CB_STRUCT
+    CBRESTCLIENT -. "plain REST, not MCP" .-> CB_EXIST
+    CBRESTCLIENT -. "plain REST, not MCP" .-> CB_COMPANY
+    API_RET --> RETRIEVAL --> PROJDOCS
     Backend --> LOCALTRACE --> LANGFUSE
     MCP -. "verbatim fetch, cached at build time" .-> CLAUSES
     Evals -. "score" .-> Logic
@@ -361,14 +381,16 @@ hackathon prototype doesn't need it yet, not because the design doesn't anticipa
 - **impact.py and cost_risk.py compute, never assert.** Every hours/Rs figure traces to a real per-pillar
   signal (NCR count, CPM-recomputed schedule impact, supply-chain days-at-risk, commissioning FAIL count)
   x a constant stated in the UI (`basis`/formula breakdown), never a bare number.
-- **Sixteen evals, sixteen separate boxes.** They are deliberately not merged into one "accuracy" number
-  anywhere in the codebase or this diagram — see `sitemind/PROGRESS.md` for why that distinction matters.
-  Codebook adds three more of the same discipline, in `standards-service/eval/`, not in this box because
-  they test a different service and a different corpus than `backend/eval/`'s sixteen do:
-  `run_retrieval_eval.py` (24/24), `run_cross_corpus_eval.py` (26/26, confirming `manak_structural`'s
-  17 docs/6,206 chunks and `sitemind_existing_standards`'s 2 docs/29 chunks survived the relocation
-  unchanged), and `run_codebook_tools_eval.py` (30/30, the only one of the three that drives the live MCP
-  tools over a real protocol session rather than importing the retrieval code directly).
+- **Twenty-one evals, twenty-one separate boxes — never merged into one "accuracy" number.** 18 live in
+  `backend/eval/` (16 shown above + `run_retrieval_eval.py`/`run_cross_corpus_eval.py`, which power the
+  flag-gated Knowledge Base page). `standards-service/eval/` has its own 3, not in this box because they
+  test a different service and a different corpus: `run_retrieval_eval.py` (24/24) and
+  `run_cross_corpus_eval.py` (26/26, confirming `codebook_structural`'s 17 docs/6,206 chunks and
+  `sitemind_existing_standards`'s 2 docs/29 chunks) are near-duplicates of the backend's own two,
+  repointed at the relocated package so Codebook stays evaluable standalone; `run_codebook_tools_eval.py`
+  (30/30) is the only one of the 21 that drives the live MCP tools over a real protocol session rather
+  than importing the retrieval code directly. See `sitemind/PROGRESS.md` for why they're never blended,
+  and `docs/features.md` for a per-script breakdown including honest limitations of each.
 - **All four brief-named Predictive Schedule Risk Engine inputs are covered.** Procurement status and
   lead times (the original vendor-status rule), workforce availability (a real Pongal festival window),
   and weather (a real IMD-cited Northeast Monsoon normal window for Coastal Tamil Nadu) all feed the same
@@ -398,6 +420,14 @@ hackathon prototype doesn't need it yet, not because the design doesn't anticipa
   `risks()`/`alerts()` for real (verified live: +20 days grew both active alerts'
   `advance_warning_days` by exactly +20 and grew the schedule at-risk count 5→9), and `reset()`
   restores the exact prior baseline — nothing in `schedule.csv`/`supply_chain.json` is touched.
+- **Codebook Console and Knowledge Base are two separate, independent retrieval surfaces, kept apart
+  on purpose.** Codebook Console (`/codebook/console`, added 2026-07-12) is a browse/upload UI on
+  Codebook's own plain-REST endpoints (`CBRESTCLIENT` → `/api/retrieval/*` on `standards-service`
+  directly — structured JSON, not MCP prose), gated by the same `CODEBOOK_ENABLED` flag as the rest of
+  `/codebook`. Knowledge Base (`/knowledge-base`) is a second, older retrieval package
+  (`backend/app/retrieval/`) that predates Codebook and was never merged into it, because 2 of the 21
+  evals (`run_retrieval_eval.py`, `run_cross_corpus_eval.py`) still import it directly; it's gated by
+  its own `RETRIEVAL_ENABLED` flag, off by default, same import-gating discipline as `CODEBOOK_ENABLED`.
 - **The live-upload documents are new input, not a new code path.** `INGEST` runs the identical
   regex-extraction pipeline on `live_upload_samples/*.docx` as it does on any other upload — the
   only thing "new" is the file; every extracted value and NCR was independently verified via real
