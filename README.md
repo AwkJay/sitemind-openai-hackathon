@@ -92,6 +92,29 @@ Restart `npm run dev` after changing `.env.local` — Next.js only reads it at s
 the real backend; red means the API URL is wrong or the backend isn't up (the UI is quietly
 showing mock data, not a real run).
 
+### Optional: Codebook — the standalone standards service
+
+Codebook (`standards-service/`) is a separate, independently-runnable service that indexes the
+same standards corpora as a searchable, MCP-consumable index — the point is other agents (not
+just SiteMind's own backend) can query it too. It's **off by default**; the app above works fully
+without it.
+
+```bash
+cd standards-service
+./run.sh            # creates .venv, installs deps, serves on :8010
+curl localhost:8010/health   # -> {"status":"ok","service":"codebook"}
+```
+
+To let SiteMind's backend use it (browse/search/check-document from the `/codebook` page), set in
+`backend/.env`:
+```
+CODEBOOK_ENABLED=1
+CODEBOOK_MCP_URL=http://127.0.0.1:8010/mcp   # default, only needed if you moved the port
+```
+Restart the backend after changing this. With `CODEBOOK_ENABLED` unset, every `/api/codebook/*`
+route 404s and none of that code path ever runs — same import-gating pattern as the rest of this
+repo's optional features. Full design/decisions: `docs/BUILD_PLAN_CODEBOOK.md`.
+
 ## Evaluation suites
 
 16 independent, held-out benchmarks — each measures a different thing (rule-decision accuracy,
@@ -117,6 +140,17 @@ python -m eval.run_hybrid_retrieval_eval  # BM25+dense fusion arithmetic — n=5
 python -m eval.run_weather_eval        # IMD-cited monsoon-window overlap arithmetic — n=11, 11/11
 python -m eval.run_workforce_eval      # Pongal labour-dip overlap arithmetic — n=10, 10/10
 python -m eval.run_timeline_eval       # cross-pillar aggregation consistency — n=20, 20/20
+```
+
+Codebook (`standards-service/`, the standalone service above) has its own **3 evals**, run
+separately and never blended into the 16 above — it's a different service with its own
+`.venv`/`eval/` directory:
+```bash
+cd standards-service && source .venv/bin/activate
+
+python -m eval.run_retrieval_eval        # chunking + RRF fusion + abstention — n=24, 24/24
+python -m eval.run_cross_corpus_eval     # real corpus build, both corpora — n=26, 26/26
+python -m eval.run_codebook_tools_eval   # all 4 MCP tools over the real protocol — n=30, 30/30
 ```
 
 ## Features
@@ -167,6 +201,14 @@ with their formulas, not just a headline number.
 **Provenance trace** (`GET /api/trace`) — every agent run logs its step timings, provider, and
 output summary locally; optionally mirrored to a Langfuse project when credentials are set.
 
+**Codebook** (`/codebook`, optional, off by default) — a standalone standards service
+(`standards-service/`, its own process on :8010) exposing the same corpora over 4 MCP tools so
+any agent can query them, not just SiteMind's own backend. Adds one new reasoning primitive,
+`check_document_against_corpus`: upload a document, it extracts candidate requirements, retrieves
+the matching real clause, and returns a deterministic CONFORMS/NON_CONFORM/NEEDS_REVIEW — same
+retrieval-then-deterministic-decision-then-cited-prose pattern as the Compliance Agent, generalized
+to any corpus. See "Optional: Codebook" above to run it.
+
 ## Architecture
 
 ```
@@ -192,11 +234,14 @@ AI engineering (retrieval + deterministic logic + an LLM for prose only), not an
 ## Repository layout
 
 - `backend/app/` — FastAPI app (agents/, ingest, schedule, supply_chain, commissioning, impact,
-  cost_risk, evidence_links, kg, overview, standards, trace)
+  cost_risk, evidence_links, kg, overview, standards, trace, codebook_client/codebook_router)
 - `backend/data/` — synthetic project documents, real standards clauses, and reference PDFs
 - `backend/eval/` — labelled test sets and the 16 benchmark runners
+- `standards-service/` — Codebook, a standalone MCP-consumable standards service (optional,
+  off by default) — its own app/, eval/, run.sh, .venv
 - `frontend/` — the Command Center UI
 - `CONTRACT.md` — the API contract · `docs/ARCHITECTURE.md` — full system diagram
+  (Codebook's architecture, corpora, and MCP interface included)
 
 ## Roadmap
 
