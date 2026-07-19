@@ -14,7 +14,7 @@ services:
       - key: LLM_PROVIDER
         value: offline
       - key: RETRIEVAL_ENABLED
-        value: "0"
+        value: "1"
       - key: CODEBOOK_ENABLED
         value: "0"
       - key: ALLOWED_ORIGINS
