@@ -13,8 +13,7 @@ visibility, and commissioning QA — in seconds, with a measured zero-hallucinat
 
 Most AI compliance tools either hallucinate citations or hide their reasoning behind an LLM
 "trust me." SiteMind doesn't:
-- **Every citation resolves to real text** — digitised Indian Standards (IS 456, IS 875, IS 1893,
-  IS 732, IS 3043, IS 8623) and CEA regulations, never paraphrased from a model's memory.
+- **Every citation resolves to real text** — digitised Indian Standards (IS 3043, IS 8623, etc.) and CEA regulations, never paraphrased from a model's memory.
 - **Pass/fail is deterministic Python, not an LLM.** The model only writes prose; the judgment
   call is a rule evaluated against a cited clause — auditable and reproducible.
 - **Every number is computed, not asserted.** ROI, cost-at-risk, schedule impact, and retrieval
