@@ -151,7 +151,7 @@ const RESULT_DBR: ComplianceResult = {
         clause: "26.4.2.2",
         text: "For footings minimum cover shall be 50 mm.",
         verify_url:
-          "http://gaudi.local/manak/#is456_2000/clause:26.4.2",
+          "http://gaudi.local/codebook/#is456_2000/clause:26.4.2",
       },
       why_it_matters:
         "Footings sit against soil with chlorides from the nearby sea-coast. 10 mm of missing cover materially shortens time-to-corrosion of the bottom mat and risks durability of the entire transformer-yard substructure.",
@@ -175,7 +175,7 @@ const RESULT_DBR: ComplianceResult = {
         clause: "7.2.3",
         text: "The importance factor I is used to obtain the design seismic force. It depends upon the functional use of the structure, characterized by hazardous consequences of its failure, post-earthquake functional need, historic value, or economic importance.",
         verify_url:
-          "http://gaudi.local/manak/#is1893_2016/clause:7.2.3",
+          "http://gaudi.local/codebook/#is1893_2016/clause:7.2.3",
       },
       why_it_matters:
         "If the owner classifies the facility as critical (continuous-operation Tier III), I = 1.5 increases the design base shear by 50%. Catching this now avoids a structural redesign after detailed design freeze.",
@@ -201,7 +201,7 @@ const RESULT_DBR: ComplianceResult = {
         clause: "23.2",
         text: "The vertical deflection limits may generally be assumed to be satisfied provided that the span to depth ratios are not greater than the values obtained as below: (a) Basis values of span to effective depth ratios for spans up to 10 m: Cantilever 7, Simply supported 20, Continuous 26.",
         verify_url:
-          "http://gaudi.local/manak/#is456_2000/clause:23.2",
+          "http://gaudi.local/codebook/#is456_2000/clause:23.2",
       },
       why_it_matters:
         "Excess deflection of the trench cover can crack finishes and disturb cable supports. The ratio must be justified with the tension-steel modification factor or the depth increased.",
@@ -257,7 +257,7 @@ const RESULT_SD42: ComplianceResult = {
         clause: "12.3.2",
         text: "The actual concrete cover should not deviate from the required nominal cover by +10 mm and -0 mm.",
         verify_url:
-          "http://gaudi.local/manak/#is456_2000/clause:12.3.2",
+          "http://gaudi.local/codebook/#is456_2000/clause:12.3.2",
       },
       why_it_matters:
         "A −5 mm tolerance silently permits 45 mm cover on site, re-introducing the durability risk the 50 mm minimum exists to prevent.",
@@ -292,7 +292,7 @@ const RESULT_GENERIC: ComplianceResult = {
         clause: "8.2.4.1",
         text: "The free water-cement ratio is an important factor in governing the durability of concrete and should always be the lowest value. Appropriate values for minimum cement content and the maximum free water-cement ratio are given in Table 5 for different exposure conditions.",
         verify_url:
-          "http://gaudi.local/manak/#is456_2000/clause:8.2.4.1",
+          "http://gaudi.local/codebook/#is456_2000/clause:8.2.4.1",
       },
       why_it_matters:
         "Without the stated w-c ratio the durability check is incomplete for the severe sea-coast exposure class.",
@@ -347,13 +347,13 @@ export function mockCopilotAnswer(question: string): RFIAnswer {
         {
           label: "IS 456:2000 · Cl. 26.4.2.2",
           detail: "For footings minimum cover shall be 50 mm.",
-          verify_url: "http://gaudi.local/manak/#is456_2000/clause:26.4.2",
+          verify_url: "http://gaudi.local/codebook/#is456_2000/clause:26.4.2",
         },
         {
           label: "IS 456:2000 · Cl. 12.3.2",
           detail:
             "The actual concrete cover should not deviate from the required nominal cover by +10 mm and -0 mm.",
-          verify_url: "http://gaudi.local/manak/#is456_2000/clause:12.3.2",
+          verify_url: "http://gaudi.local/codebook/#is456_2000/clause:12.3.2",
         },
       ],
       seen_before: {
@@ -374,7 +374,7 @@ export function mockCopilotAnswer(question: string): RFIAnswer {
           label: "IS 875 (Part 3):2015 · Cl. 5.3",
           detail:
             "Design wind speed Vz = Vb·k1·k2·k3 where k1 = risk coefficient, k2 = terrain/height factor, k3 = topography factor.",
-          verify_url: "http://gaudi.local/manak/#is875_2015/clause:5.3",
+          verify_url: "http://gaudi.local/codebook/#is875_2015/clause:5.3",
         },
       ],
       seen_before: null,
@@ -389,7 +389,7 @@ export function mockCopilotAnswer(question: string): RFIAnswer {
           label: "IS 1893 (Part 1):2016 · Cl. 7.2.3",
           detail:
             "Importance factor depends on functional use, hazardous consequences of failure and post-earthquake functional need.",
-          verify_url: "http://gaudi.local/manak/#is1893_2016/clause:7.2.3",
+          verify_url: "http://gaudi.local/codebook/#is1893_2016/clause:7.2.3",
         },
       ],
       seen_before: null,
@@ -403,7 +403,7 @@ export function mockCopilotAnswer(question: string): RFIAnswer {
         label: "IS 456:2000 · Cl. 8.2.4.1",
         detail:
           "Durability governed by the free water-cement ratio; minimum cement content and max w-c ratio per Table 5 by exposure class.",
-        verify_url: "http://gaudi.local/manak/#is456_2000/clause:8.2.4.1",
+        verify_url: "http://gaudi.local/codebook/#is456_2000/clause:8.2.4.1",
       },
     ],
     seen_before: null,

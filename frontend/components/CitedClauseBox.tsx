@@ -5,8 +5,8 @@ import { sourceTypeMeta } from "@/lib/format";
 // THE signature component. A cited clause rendered as a verified system fact:
 // lime left-border, provenance badge, mono clause id + exact text, verify link.
 // The badge is NEVER a generic "Verified" — it discloses the real source_type
-// (manak / primary native PDF / primary OCR scan / cross-source) so a non-manak
-// citation is never presented as equivalent to a manak one.
+// (Codebook / primary native PDF / primary OCR scan / cross-source) so a
+// non-Codebook citation is never presented as equivalent to a Codebook one.
 export function CitedClauseBox({
   citation,
   advisory,

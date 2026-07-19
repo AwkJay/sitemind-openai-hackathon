@@ -42,22 +42,22 @@ export const severityMeta: Record<
 };
 
 // Honest provenance disclosure for CitedClauseBox — see backend Citation.source_type.
-// manak_verified is the gold standard; the other three are real primary-source
-// extractions with a stated reliability caveat, never presented as equivalent.
+// manak_verified (displayed as "Codebook") is the gold standard; the other three
+// are real primary-source extractions with a stated reliability caveat, never presented as equivalent.
 export const sourceTypeMeta: Record<
   SourceType,
   { label: string; caveat: string; color: string; bg: string }
 > = {
   manak_verified: {
-    label: "Verified · manak",
-    caveat: "Fetched verbatim from the manak digitised-standards MCP.",
+    label: "Verified · Codebook",
+    caveat: "Fetched verbatim from Codebook's digitised-standards index.",
     color: "var(--accent)",
     bg: "rgba(190,242,100,0.12)",
   },
   primary_native_pdf: {
     label: "Primary · native PDF",
     caveat:
-      "Real primary BIS/CEA document, clean native (non-scanned) PDF — no OCR risk, but not manak-fetched.",
+      "Real primary BIS/CEA document, clean native (non-scanned) PDF — no OCR risk, but not fetched via Codebook.",
     color: "var(--data)",
     bg: "rgba(56,189,248,0.12)",
   },
@@ -151,4 +151,57 @@ export function statusMeta(status: string): { color: string; bg: string } {
   if (s.startsWith("C") || s.includes("REVISE"))
     return { color: "var(--critical)", bg: "var(--critical-bg)" };
   return { color: "var(--text-mid)", bg: "rgba(159,176,191,0.10)" };
+}
+
+// ── Knowledge Base retrieval provenance (backend/app/retrieval/models.py'
+// RetrievalCitation.source_type) — deliberately a SEPARATE map from
+// sourceTypeMeta above: this package's tags are never Codebook-verified (i.e.
+// manak_verified) or a pillar's own citation, and must never be presented as
+// equivalent to one. "company_uploaded" is the only tag the live package
+// returns today; "manak_indexed" / "sitemind_indexed" are Phase 3b's
+// read-only cross-corpus tags, handled here in case they exist by the time
+// this ships. Falls back to a plain, clearly-flagged "unrecognized" badge for
+// anything else, rather than crashing on an unknown string.
+export const retrievalSourceTypeMeta: Record<
+  string,
+  { label: string; caveat: string; color: string; bg: string }
+> = {
+  company_uploaded: {
+    label: "Company uploaded",
+    caveat:
+      "Ingested from a document your organisation uploaded — not a verified standard. Trusted only to the extent your team vouches for the source.",
+    color: "var(--data)",
+    bg: "rgba(56,189,248,0.12)",
+  },
+  manak_indexed: {
+    label: "Indexed copy · Codebook",
+    caveat:
+      "A locally-built search index of Codebook's public structural-code text — not a live Codebook citation. See the Compliance/Commissioning pillar pages for the authoritative Codebook-verified citation.",
+    color: "var(--accent)",
+    bg: "rgba(190,242,100,0.12)",
+  },
+  sitemind_indexed: {
+    label: "Indexed copy · SiteMind standards",
+    caveat:
+      "A locally-built search index of SiteMind's own standards corpus — see the relevant pillar page for the authoritative citation and its real source_type.",
+    color: "var(--warning)",
+    bg: "var(--warning-bg)",
+  },
+};
+
+export function retrievalSourceTypeMetaFor(tag: string): {
+  label: string;
+  caveat: string;
+  color: string;
+  bg: string;
+} {
+  return (
+    retrievalSourceTypeMeta[tag] ?? {
+      label: tag || "Unrecognized source",
+      caveat:
+        "Unrecognized provenance tag from the retrieval API — shown as-is rather than hidden or guessed at.",
+      color: "var(--text-lo)",
+      bg: "rgba(159,176,191,0.12)",
+    }
+  );
 }
