@@ -1,8 +1,0 @@
-{
-  "name": "sitemind",
-  "private": true,
-  "description": "Repo-root convenience wrapper — `npm run dev` here boots the full stack (Codebook + backend + frontend, flags on) via run-full.sh. Run `npm run dev` inside frontend/ instead for frontend-only, no-flags Next.js dev.",
-  "scripts": {
-    "dev": "bash run-full.sh"
-  }
-}
