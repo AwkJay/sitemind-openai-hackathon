@@ -4,15 +4,18 @@ Source-of-truth diagram-as-code (Mermaid). GitHub renders this block natively; f
 the [Mermaid Live Editor](https://mermaid.live) and export PNG/SVG, or run `npx @mermaid-js/mermaid-cli -i
 ARCHITECTURE.md -o architecture.png` locally (no account needed either way).
 
-> Updated 2026-07-08 (fourth pass): adds the Project Timeline (`timeline.py`, `GET /api/timeline`)
-> — a pure aggregation layer with zero new judgment and zero new fabricated events, cross-linking
-> the other five pillars' real findings on one lifecycle view — plus two real, IMD/festival-cited
-> schedule-risk factors (`schedule_factors.py`: a Northeast Monsoon weather rule and a Pongal
-> workforce-availability rule) that close the brief's last two named Predictive Schedule Risk
-> Engine inputs. On top of the third pass (simulated demo clock, live-upload sample documents), the
-> second pass (multi-agent mitigation-option engine, supply-chain alerting, hybrid BM25+dense
-> retrieval) and the first pass (all 5 pillars, the platform-wide impact model, deterministic
-> cost-at-risk, the computed evidence-linking resolver) — supersedes the earlier 3-pillar version.
+> Updated 2026-07-10 (fifth pass): adds **Codebook** (`standards-service/`, `docs/BUILD_PLAN_CODEBOOK.md`)
+> — a brand-new standalone process on port 8010 that relocates the retrieval package built in the
+> fourth-and-earlier passes' Phase 3/3b, indexes three corpora (`manak_structural`,
+> `sitemind_existing_standards`, `company_uploaded`), and exposes itself over **MCP only**
+> (`list_corpora`, `search_standards`, `get_clause`, and the new
+> `check_document_against_corpus` reasoning tool) so any agent — not just SiteMind's own UI — can
+> query it. SiteMind's backend becomes an MCP *client* of Codebook, gated behind `CODEBOOK_ENABLED`
+> (default off). On top of the fourth pass (Project Timeline, weather/workforce schedule-risk
+> factors), the third pass (simulated demo clock, live-upload sample documents), the second pass
+> (multi-agent mitigation-option engine, supply-chain alerting, hybrid BM25+dense retrieval) and the
+> first pass (all 5 pillars, the platform-wide impact model, deterministic cost-at-risk, the
+> computed evidence-linking resolver) — supersedes the earlier 3-pillar version.
 
 ```mermaid
 flowchart LR
@@ -26,6 +29,7 @@ flowchart LR
         UI_SU["Supply Chain\n+ linked-evidence chips"]
         UI_CX["Commissioning QA"]
         UI_KG["Knowledge Graph"]
+        UI_CBK["Codebook\nbrowse + search + check-document"]
     end
 
     subgraph Backend["FastAPI backend"]
@@ -44,6 +48,8 @@ flowchart LR
         API_EV["GET /eval/report"]
         API_CLK["GET/POST /clock, /clock/advance, /clock/reset"]
         API_META["GET /supply-chain/meta"]
+        API_CBK["/api/codebook/* (gated:\nCODEBOOK_ENABLED, default off)"]
+        CBCLIENT["codebook_client.py\nMCP client of Codebook\n(standards-service, not the UI's client)"]
     end
 
     subgraph Logic["Deterministic decision layer — Python, never the LLM"]
@@ -81,8 +87,17 @@ flowchart LR
         LIVEUP["project_docs/live_upload_samples/*.docx\n(added 07-03) 2 real docs for live\ndemo upload — sentences hand-verified\nagainst ingest.py's regex before writing"]
     end
 
-    subgraph Manak["manak MCP — build-time only, not a runtime dependency"]
+    subgraph Manak["Codebook's structural-code corpus — build-time origin, not a runtime dependency"]
         MCP[("Real digitised IS/IRC/IRS text\n(structural) fetched + cached")]
+    end
+
+    subgraph CodebookSvc["Codebook (standards-service/) — standalone process, port 8010, MCP-only interface, added 2026-07-10"]
+        direction TB
+        CB_MCP["mcp_server.py — 4 MCP tools:\nlist_corpora, search_standards,\nget_clause, check_document_against_corpus"]
+        CB_DOC["document_check.py — the one new\nreasoning primitive: retrieval finds\ncandidates, deterministic code decides,\nLLM only composes cited prose"]
+        CB_STRUCT[("manak_structural\n17 docs / 6,206 chunks")]
+        CB_EXIST[("sitemind_existing_standards\n2 docs / 29 chunks")]
+        CB_COMPANY[("company_uploaded\npersisted per-corpus uploads")]
     end
 
     subgraph Trace["Provenance — always on, optionally mirrored"]
@@ -145,6 +160,12 @@ flowchart LR
     API_CLK --> CLOCK
     CLOCK -. "current_day(), cache-cleared on advance" .-> CPM
     CLOCK -. "current_day(), cache-cleared on advance" .-> SCLOGIC
+    API_CBK --> CBCLIENT
+    CBCLIENT -. "MCP over HTTP transport, CODEBOOK_ENABLED-gated" .-> CB_MCP
+    CB_MCP --> CB_DOC
+    CB_MCP --> CB_STRUCT
+    CB_MCP --> CB_EXIST
+    CB_MCP --> CB_COMPANY
     Backend --> LOCALTRACE --> LANGFUSE
     MCP -. "verbatim fetch, cached at build time" .-> CLAUSES
     Evals -. "score" .-> Logic
@@ -170,6 +191,31 @@ Python compares (checks.py / cost_risk.py /      ← deterministic, re-runnable,
 Verdict + citation + (LLM prose, clearly          ← the ONLY LLM-authored part is explanation
  separated from the decision itself)                text, never the pass/fail
 ```
+
+## Codebook — a standalone, MCP-consumable standards service
+
+Two problems, one build (`docs/BUILD_PLAN_CODEBOOK.md`, 2026-07-10). First, a naming leak:
+"manak" is a third-party dependency's name that had spread into SiteMind's own product
+vocabulary — 23 files, including the `Citation.source_type` disclosure tag itself — when it
+should have been SiteMind's own concept all along. Second, a missed capability: the retrieval
+package built for the Knowledge Base page (`backend/app/retrieval/`, Phase 3/3b) was only ever
+reachable through SiteMind's own UI, when "AI agents fetch and compare standards" — a real ask —
+needs an independently callable service, not a page bolted onto one app.
+
+**Codebook (`standards-service/`) is both fixes at once.** It's a new, standalone FastAPI process
+(port 8010 — 8000/8001 are already spoken for by manak-dev and this backend) that relocates the
+retrieval package's chunker/index/embeddings/filesystem-corpus logic wholesale (re-verified
+byte-identical via `run_retrieval_eval.py` 24/24 and `run_cross_corpus_eval.py` 26/26 after the
+move) and exposes it over **MCP only** — the same interface shape manak-dev itself already uses,
+and the more genuinely agentic story: any MCP-speaking caller, not just this project's own
+frontend, can `list_corpora`, `search_standards`, or `get_clause` against the same three corpora
+this app itself relies on. SiteMind's backend is now a real MCP *client* of Codebook (gated behind
+`CODEBOOK_ENABLED`, default off, mirroring `RETRIEVAL_ENABLED`'s import-gating discipline) rather
+than a second bespoke REST API existing solely for the browser UI to call.
+
+**The one genuinely new capability, not just a relocation, is `check_document_against_corpus`** —
+see "Where Codebook's `check_document_against_corpus` fits this line" below for how it holds to
+the same never-let-the-LLM-decide rule as every other pillar.
 
 ## Where we ARE agentic, and where we deliberately are not (a stated position)
 
@@ -210,6 +256,28 @@ make. **The line, stated plainly:** agentic where the task is naturally
 multi-option and every option is a real, grounded computation (schedule
 mitigation); never agentic where the task is a single verifiable yes/no against a
 cited standard (compliance, commissioning, cost-risk, the impact model).
+
+**Where Codebook's `check_document_against_corpus` fits this line — extends it,
+doesn't contradict it.** It generalizes the Compliance Agent's own pattern —
+retrieval (RAG) surfaces candidate clauses from the target corpus, a
+deterministic step decides conformance, the LLM only composes prose around a
+clause it was handed, never invents or paraphrases one — into a reusable MCP
+tool any caller (a QA bot, another agent, a human via `/codebook`) can invoke
+against any of Codebook's three corpora, not just the hardcoded
+design-basis-params pipeline. **The decision itself stays in the never-agentic
+bucket above**: it's a single verifiable conforms/non-conform/needs-review
+call against a cited clause, not a multiple-valid-answers judgment like
+mitigation-option generation, so it does not get a multi-agent treatment
+either — one bounded tool-call, same architecture as `checks.py`, just
+relocated behind an MCP interface instead of called in-process. **What
+actually is new and genuinely agentic about it is what it enables, not how it
+decides:** exposing this pattern over MCP means an external agentic system —
+something SiteMind doesn't control or run — can call a grounded,
+hallucination-safe verification primitive instead of reasoning about clause
+text itself from memory. That is the real Innovation story: not "SiteMind runs
+more agents," but "SiteMind now offers other agents a tool they can trust,"
+which is the same discipline this project applies to its own LLM calls,
+extended outward.
 
 ## Scalability — how this grows without retraining anything
 
@@ -271,12 +339,21 @@ hackathon prototype doesn't need it yet, not because the design doesn't anticipa
   cost-at-risk are all plain Python. This is the whole credibility thesis (see the root `README.md`'s
   "What's REAL vs REPRESENTATIVE" section) and the diagram makes it structurally visible, not just
   claimed in text.
-- **manak is a build-time dependency, not a runtime one.** The live app never calls out to manak during a
-  demo — clauses are fetched once and cached to `clauses.json`, so a flaky venue network can't break the
-  compliance pillar. The dotted line marks this explicitly. manak's corpus is structural-only; the
-  electrical domain (IS 732/3043/CEA/8623) is grounded in real, verified-genuine BIS/CEA PDFs instead —
-  each clause's `Citation.source_type` field records exactly which reliability tier it belongs to
-  (manak-verified / primary-native-pdf / primary-scan-ocr / cross-source-unverified).
+- **Codebook's structural-code corpus is a build-time source, not a runtime dependency.** The live app
+  never calls out to it during a demo — clauses are fetched once and cached to `clauses.json`, so a flaky
+  venue network can't break the compliance pillar. The dotted line marks this explicitly. That corpus is
+  structural-only; the electrical domain (IS 732/3043/CEA/8623) is grounded in real, verified-genuine
+  BIS/CEA PDFs instead — each clause's `Citation.source_type` field records exactly which reliability tier
+  it belongs to (Codebook-verified / primary-native-pdf / primary-scan-ocr / cross-source-unverified).
+- **That build-time corpus box is not the same thing as the `CodebookSvc` box.** The former (subgraph
+  `Manak`) is the one-time, offline fetch that populated `clauses.json` and predates this build; it was
+  only cosmetically relabeled to say "Codebook" when "manak" was renamed out of SiteMind's own
+  vocabulary. The latter (subgraph `CodebookSvc`, `standards-service/`) is the actual new component this
+  pass adds — a live process, running on demand, queryable over MCP at request time — and the internal
+  `Citation.source_type` literal `"manak_verified"` was deliberately left unrenamed inside the protected
+  Compliance Agent pipeline (`backend/data/standards/`, `standards.py` — both on this project's
+  never-modify list); only its user-facing *label* changed. Two components share a display name because
+  they share one brand; they are not the same code path.
 - **evidence_links.py never hardcodes a cross-reference.** The SHP-002 <-> RFI-EL-112 <->
   DC1-04-EL-030 connection DEMO_STORY.md narrates is computed live from a real shared key (the wbs_id
   appears verbatim in the RFI's own reference text) — the same discipline `action_brief.py` already
@@ -286,6 +363,12 @@ hackathon prototype doesn't need it yet, not because the design doesn't anticipa
   x a constant stated in the UI (`basis`/formula breakdown), never a bare number.
 - **Sixteen evals, sixteen separate boxes.** They are deliberately not merged into one "accuracy" number
   anywhere in the codebase or this diagram — see `sitemind/PROGRESS.md` for why that distinction matters.
+  Codebook adds three more of the same discipline, in `standards-service/eval/`, not in this box because
+  they test a different service and a different corpus than `backend/eval/`'s sixteen do:
+  `run_retrieval_eval.py` (24/24), `run_cross_corpus_eval.py` (26/26, confirming `manak_structural`'s
+  17 docs/6,206 chunks and `sitemind_existing_standards`'s 2 docs/29 chunks survived the relocation
+  unchanged), and `run_codebook_tools_eval.py` (30/30, the only one of the three that drives the live MCP
+  tools over a real protocol session rather than importing the retrieval code directly).
 - **All four brief-named Predictive Schedule Risk Engine inputs are covered.** Procurement status and
   lead times (the original vendor-status rule), workforce availability (a real Pongal festival window),
   and weather (a real IMD-cited Northeast Monsoon normal window for Coastal Tamil Nadu) all feed the same
