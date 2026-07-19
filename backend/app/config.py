@@ -25,6 +25,11 @@ ANTHROPIC_MODEL_SMART: str = os.getenv("ANTHROPIC_MODEL_SMART", "claude-3-5-sonn
 OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "").strip()
 OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-5.1").strip()
 
+# Hugging Face Inference API — used only by app/embeddings.py for Copilot's
+# semantic retrieval (a free token from https://huggingface.co/settings/tokens).
+# Independent of LLM_PROVIDER/OFFLINE_MODE, which govern prose generation only.
+HF_TOKEN: str = os.getenv("HF_TOKEN", "").strip()
+
 # Codex SDK uses local ChatGPT login (no API key); we only need a model id.
 CODEX_MODEL: str = os.getenv("CODEX_MODEL", "gpt-5.4").strip()
 

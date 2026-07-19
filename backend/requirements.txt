@@ -10,19 +10,11 @@ pandas==2.2.3
 python-multipart==0.0.9
 pdfplumber==0.11.10
 python-docx==1.1.2
-
-# CPU-only torch wheel — sentence-transformers pulls torch in as a dependency,
-# and an unpinned install can resolve a much larger CUDA-inclusive build. This
-# repo never uses a GPU (all inference is local CPU, see app/embeddings.py),
-# so pin the small CPU wheel explicitly to keep deploy image size/RAM down.
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.6.0+cpu
-sentence-transformers==5.6.0
 rank_bm25==0.2.2
 
 # Codebook MCP client (step 5, docs/BUILD_PLAN_CODEBOOK.md) — only imported
 # when CODEBOOK_ENABLED=1 (app/codebook_client.py), but installed
-# unconditionally same as rank_bm25/sentence-transformers above. Pinned to
+# unconditionally same as rank_bm25 above. Pinned to
 # mcp==1.9.4 + starlette==0.38.6 identically to
 # standards-service/requirements.txt (see that file's comment): the latest
 # mcp forces starlette>=1.0, which breaks fastapi==0.115.0's own

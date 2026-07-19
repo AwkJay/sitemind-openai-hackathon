@@ -21,3 +21,8 @@ services:
       # https://sitemind-openai-hackathon.vercel.app,http://localhost:3000
       - key: ALLOWED_ORIGINS
         value: http://localhost:3000
+      # Free token from https://huggingface.co/settings/tokens (Read scope,
+      # "Make calls to Inference Providers"). Fill in via the Render
+      # Dashboard's Environment tab — not committed here.
+      - key: HF_TOKEN
+        sync: false
