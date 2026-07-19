@@ -22,8 +22,9 @@ expected value was checked against before being hardcoded here):
 
   1. list_corpora        — real corpus doc/chunk counts match the state
                             docs/BUILD_PLAN_CODEBOOK.md's "Done when" section records
-                            (manak_structural: 17 docs/6206 chunks; sitemind_existing_
-                            standards: 2 docs/29 chunks).
+                            (codebook_structural, renamed from manak_structural per
+                            docs/codebook_changes.md item 2: 17 docs/6206 chunks;
+                            sitemind_existing_standards: 2 docs/29 chunks).
   2. search_standards     — 2 real queries with known top-1 hits (verified via the
                             existing REST /api/retrieval/query endpoint before being
                             hardcoded as expectations here — same underlying
@@ -72,7 +73,8 @@ HEALTH_URL = "http://127.0.0.1:8010/health"
 # Ground truth, independently verified BEFORE being hardcoded here:
 #   - list_corpora counts: `curl -s localhost:8010/api/retrieval/corpora`
 #     (real REST call against the same live corpus registry, 2026-07-10) ->
-#     manak_structural 17 docs/6206 chunks, sitemind_existing_standards 2
+#     manak_structural (renamed codebook_structural, docs/codebook_changes.md
+#     item 2, 2026-07-12) 17 docs/6206 chunks, sitemind_existing_standards 2
 #     docs/29 chunks. Matches docs/BUILD_PLAN_CODEBOOK.md's own "Done when"
 #     entry verbatim.
 #   - search_standards top hits: verified via the same REST /api/retrieval/query
@@ -146,10 +148,10 @@ async def _cases_list_corpora(session: ClientSession) -> list[dict]:
     cases.append(_new_case("list_corpora_no_error", "list_corpora", False, is_error))
     cases.append(
         _new_case(
-            "list_corpora_manak_structural_counts",
+            "list_corpora_codebook_structural_counts",
             "list_corpora",
             True,
-            ("manak_structural" in text and "documents: 17" in text and "chunks: 6206" in text),
+            ("codebook_structural" in text and "documents: 17" in text and "chunks: 6206" in text),
         )
     )
     cases.append(
@@ -182,13 +184,13 @@ async def _cases_search_standards(session: ClientSession) -> list[dict]:
     cases = []
 
     # Known hit #1: IS 1893 Part 1's own "Importance Factor (I)" clause, real
-    # heading "3.10 Importance Factor (I)", scoped to manak_structural.
+    # heading "3.10 Importance Factor (I)", scoped to codebook_structural.
     is_error, text = await _call_tool(
         session,
         "search_standards",
         {
             "query": "importance factor for data centre building seismic design",
-            "corpus_name": "manak_structural",
+            "corpus_name": "codebook_structural",
             "k": 3,
         },
     )
@@ -225,7 +227,7 @@ async def _cases_search_standards(session: ClientSession) -> list[dict]:
     # RETRIEVAL_FLOOR on their single best dense match.
     for i, q in enumerate(["best vacation destinations in Europe", "recipe for chocolate chip cookies"], 1):
         is_error, text = await _call_tool(
-            session, "search_standards", {"query": q, "corpus_name": "manak_structural", "k": 3}
+            session, "search_standards", {"query": q, "corpus_name": "codebook_structural", "k": 3}
         )
         cases.append(_new_case(f"search_offtopic_{i}_no_error", "search_standards", False, is_error))
         cases.append(
@@ -252,7 +254,7 @@ async def _cases_search_standards(session: ClientSession) -> list[dict]:
 async def _cases_get_clause(session: ClientSession) -> list[dict]:
     cases = []
 
-    # Filesystem corpus #1 (manak_structural): raw_text is a literal
+    # Filesystem corpus #1 (codebook_structural): raw_text is a literal
     # text[start_char:end_char] slice of the real .md file (chunker.py's own
     # contract) -- grep-verify it is a genuine contiguous substring of the
     # real source file on disk, not a re-typeset/paraphrased version.

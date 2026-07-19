@@ -15,21 +15,23 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
-# "company_uploaded"          — ingested via POST /api/retrieval/upload; trusted
-#                                only to the extent the uploading company vouches
-#                                for it, never a known standard.
-# "manak_indexed"  (Phase 3b)  — a locally-built read-only index OF manak-dev's
-#                                public `.md` corpus text. NOT an authoritative
-#                                manak API response and NOT equivalent to the
-#                                live `manak_verified` citations the Compliance/
-#                                Commissioning pillars already use — this is a
-#                                parallel, independent read path for the new
-#                                Knowledge Base unified search only.
-# "sitemind_indexed" (Phase 3b) — a locally-built read-only index OF SiteMind's
-#                                own `clauses.json`/`commissioning_clauses.json`.
-#                                The existing pillars keep citing those files
-#                                directly via `standards.py`, unaffected.
-SourceType = Literal["company_uploaded", "manak_indexed", "sitemind_indexed"]
+# "company_uploaded"            — ingested via POST /api/retrieval/upload; trusted
+#                                  only to the extent the uploading company vouches
+#                                  for it, never a known standard.
+# "codebook_verified" (Phase 3b) — a locally-built read-only index OF manak-dev's
+#                                  public `.md` corpus text (renamed from
+#                                  "manak_indexed" — docs/codebook_changes.md item 1,
+#                                  2026-07-12). NOT an authoritative manak API
+#                                  response and NOT equivalent to the live
+#                                  `manak_verified` citations the Compliance/
+#                                  Commissioning pillars already use — this is a
+#                                  parallel, independent read path for the new
+#                                  Knowledge Base unified search only.
+# "sitemind_indexed" (Phase 3b)  — a locally-built read-only index OF SiteMind's
+#                                  own `clauses.json`/`commissioning_clauses.json`.
+#                                  The existing pillars keep citing those files
+#                                  directly via `standards.py`, unaffected.
+SourceType = Literal["company_uploaded", "codebook_verified", "sitemind_indexed"]
 
 
 class RetrievalChunk(BaseModel):

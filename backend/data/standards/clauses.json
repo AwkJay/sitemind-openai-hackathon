@@ -9,7 +9,7 @@
       "text": "For footings minimum cover shall be 50 mm.",
       "verify_url": "http://gaudi.local/manak/#is456_2000/clause:26.4.2",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS456_26.4.2.1",
@@ -19,7 +19,7 @@
       "text": "However for a longitudinal reinforcing bar in a column nominal cover shall in any case not be less than 40 mm, or less than the diameter of such bar. In the case of columns of minimum dimension of 200 mm or under, whose reinforcing bars do not exceed 12 mm, a nominal cover of 25 mm may be used.",
       "verify_url": "http://gaudi.local/manak/#is456_2000/clause:26.4.2",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS456_8.2.8",
@@ -29,7 +29,7 @@
       "text": "Concrete in sea-water or exposed directly along the sea-coast shall be at least M 20 Grade in the case of plain concrete and M 30 in case of reinforced concrete. The use of slag or pozzolana cement is advantageous under such conditions.",
       "verify_url": "http://gaudi.local/manak/#is456_2000/clause:8.2.8",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS456_8.2.4.1",
@@ -39,7 +39,7 @@
       "text": "The free water-cement ratio is an important factor in governing the durability of concrete and should always be the lowest value. Appropriate values for minimum cement content and the maximum free water-cement ratio are given in Table 5 for different exposure conditions.",
       "verify_url": "http://gaudi.local/manak/#is456_2000/clause:8.2.4.1",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS456_12.3.2",
@@ -49,7 +49,7 @@
       "text": "The actual concrete cover should not deviate from the required nominal cover by +10 mm and -0 mm.",
       "verify_url": "http://gaudi.local/manak/#is456_2000/clause:12.3.2",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS456_26.5.3.1",
@@ -59,7 +59,7 @@
       "text": "The cross-sectional area of longitudinal reinforcement, shall be not less than 0.8 percent nor more than 6 percent of the gross cross-sectional area of the column. Where bars from the columns below have to be lapped with those in the column under consideration, the percentage of steel shall usually not exceed 4 percent.",
       "verify_url": "http://gaudi.local/manak/#is456_2000/clause:26.5.3.1",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS456_23.2",
@@ -69,7 +69,7 @@
       "text": "The final deflection due to all loads including the effects of temperature, creep and shrinkage and measured from the as-cast level of the supports of floors, roofs and all other horizontal members, should not normally exceed span/250. The deflection including the effects of temperature, creep and shrinkage occurring after erection of partitions and the application of finishes should not normally exceed span/350 or 20 mm whichever is less.",
       "verify_url": "http://gaudi.local/manak/#is456_2000/clause:23.2",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS875_5.3",
@@ -79,7 +79,7 @@
       "text": "The basic wind speed for any site shall be obtained from Fig. 1 and shall be modified to include the following effects to get design wind speed Vz at any height Z: (a) Risk level, (b) Terrain roughness and height of structure, (c) Local topography, and (d) Importance factor for the cyclonic region. Vz = Vb·k1·k2·k3·k4.",
       "verify_url": "http://gaudi.local/manak/#is875_part3_2015/clause:5.3",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS1893_7.2.3",
@@ -89,7 +89,7 @@
       "text": "In estimating design lateral force VB of buildings, the importance factor I shall be taken as per Table 8. Table 8: Important service and community buildings or structures, lifeline and emergency buildings (for example, hospital buildings, telephone exchange buildings, television/radio station buildings, metro rail station buildings), power station buildings, and fire station buildings — I = 1.5. Residential or commercial buildings with occupancy more than 200 persons — I = 1.2. All other buildings — I = 1.0. NOTE 1: Owners and design engineers of buildings or structures may choose values of importance factor I more than those mentioned above.",
       "verify_url": "http://gaudi.local/manak/#is1893_part1_2016/clause:7.2.3",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS1893_6.4.2",
@@ -99,7 +99,7 @@
       "text": "The design horizontal seismic coefficient Ah for a structure shall be determined by Ah = (Z/2)(Sa/g)/(R/I), where Z = seismic zone factor given in Table 3; I = importance factor given in IS 1893 (Parts 1 to 5) for the corresponding structures — when not specified, the minimum values of I shall be: (a) 1.5 for critical and lifeline structures; (b) 1.2 for business continuity structures; and (c) 1.0 for the rest; R = response reduction factor.",
       "verify_url": "http://gaudi.local/manak/#is1893_part1_2016/clause:6.4.2",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS456_26.5.1.1",
@@ -109,7 +109,7 @@
       "text": "Minimum reinforcement — the minimum area of tension reinforcement shall be not less than that given by As/(bd) = 0.85/fy. Maximum reinforcement — the maximum area of tension reinforcement shall not exceed 0.04 bD. Table 16 — Nominal Cover to Meet Durability Requirements (nominal concrete cover not less than): Mild 20 mm, Moderate 30 mm, Severe 45 mm, Very severe 50 mm, Extreme 75 mm. NOTE 3: For exposure 'severe' and 'very severe', a reduction of 5 mm may be made where concrete grade is M35 and above.",
       "verify_url": "http://gaudi.local/manak/#is456_2000/clause:26.5.1.1",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS456_26.5.3.2",
@@ -119,7 +119,7 @@
       "text": "Pitch — the pitch of transverse reinforcement shall be not more than the least of the following distances: (i) the least lateral dimension of the compression member; (ii) sixteen times the smallest diameter of the longitudinal reinforcement bar to be tied; and (iii) 300 mm.",
       "verify_url": "http://gaudi.local/manak/#is456_2000/clause:26.5.3.2",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS875_5.4",
@@ -129,7 +129,7 @@
       "text": "The wind pressure at any height above mean ground level shall be obtained by the relationship pz = 0.6 Vz^2, where pz = wind pressure in N/m2 at height z, and Vz = design wind speed in m/s at height z. The design wind pressure pd can be obtained as pd = Kd·Ka·Kc·pz, where Kd = wind directionality factor, Ka = area averaging factor and Kc = combination factor.",
       "verify_url": "http://gaudi.local/manak/#is875_part3_2015/clause:5.4",
       "domain": "structural",
-      "source_type": "manak_verified"
+      "source_type": "codebook_verified"
     },
     {
       "key": "IS732_1989_E-2.1.5b",

@@ -24,8 +24,8 @@
     },
     {
       "name": "manak_corpus_provenance_tag",
-      "expected": "manak_indexed",
-      "actual": "manak_indexed",
+      "expected": "codebook_verified",
+      "actual": "codebook_verified",
       "group": "corpus_build_integrity",
       "pass": true
     },

@@ -24,6 +24,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .mcp_server import build_mcp
+from .retrieval.filesystem_corpora import ensure_filesystem_corpora
 from .retrieval.router import router as retrieval_router
 
 # In-process MCP server, mounted below at /mcp. Its streamable-HTTP
@@ -35,6 +36,13 @@ mcp_app = mcp.streamable_http_app()
 
 @asynccontextmanager
 async def _lifespan(_app: FastAPI):
+    # Built here (blocking, ~7min on this machine — 6,206-chunk embedding
+    # computation, no on-disk cache yet) rather than lazily on first request:
+    # a request landing mid-build previously got a hard 503 (docs/PS_optimize.md
+    # finding #1). Blocking startup means /health only reports ready once the
+    # corpus is actually usable, same tradeoff `wait_for()`-style health checks
+    # already make elsewhere in this repo.
+    ensure_filesystem_corpora()
     async with mcp.session_manager.run():
         yield
 

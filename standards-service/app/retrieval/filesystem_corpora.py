@@ -4,11 +4,13 @@
 Extends Phase 3's company-upload retrieval package to ALSO cover two
 existing, already-real text sources, purely as a parallel READ path:
 
-  1. `manak_structural` — every `.md` file under manak-dev's own clause
-     library (`MANAK_LIB_DIR` below), indexed with THIS package's own
-     chunker (never manak's `chunker.py`/`indexer.py` — zero code coupling
-     to that separate, independently-versioned service). Provenance tag
-     `"manak_indexed"`.
+  1. `codebook_structural` (renamed from `manak_structural` —
+     docs/codebook_changes.md item 2, 2026-07-12) — every `.md` file under
+     manak-dev's own clause library (`MANAK_LIB_DIR` below), indexed with
+     THIS package's own chunker (never manak's `chunker.py`/`indexer.py` —
+     zero code coupling to that separate, independently-versioned service).
+     Provenance tag `"codebook_verified"` (renamed from `"manak_indexed"` —
+     item 1).
   2. `sitemind_existing_standards` — every clause record in SiteMind's own
      `backend/data/standards/clauses.json` and `commissioning_clauses.json`,
      one chunk per clause (these files are already atomic clause records,
@@ -36,15 +38,30 @@ from .index import Corpus, get_corpus, register_corpus
 
 logger = logging.getLogger(__name__)
 
-MANAK_CORPUS_NAME = "manak_structural"
+# String VALUE renamed "manak_structural" -> "codebook_structural"
+# (docs/codebook_changes.md item 2, 2026-07-12) — this is what list_corpora/
+# search_standards actually return to any live caller. The Python constant
+# NAME is left as MANAK_CORPUS_NAME (not renamed) — only the load-bearing
+# string value changed.
+MANAK_CORPUS_NAME = "codebook_structural"
 SITEMIND_CORPUS_NAME = "sitemind_existing_standards"
 
-# manak-dev is a separate, sibling project directory — NOT inside this repo.
-# This absolute path matches the one confirmed present via `find` before this
-# module was written (17 real `.md` files under it, one per digitised
-# standard). Read-only: this module only ever calls `Path.read_text()` on
-# files under this directory, never a write/move/delete.
-MANAK_LIB_DIR = Path("/home/awni/Documents/Project_hackathon/manak-dev/lib")
+# These 17 `.md` files were originally read live from manak-dev, a separate
+# sibling project directory OUTSIDE this repo
+# (/home/awni/Documents/Project_hackathon/manak-dev/lib) — which made
+# Codebook's "own product / self-contained service" story false: if that
+# external directory ever moved, this corpus would silently go empty (see
+# the `logger.warning` in `_manak_md_files()` below). Per
+# docs/codebook_changes.md item 4 (2026-07-12), the 17 files were copied
+# byte-for-byte into this repo, preserving the exact same
+# `lib/<doc_id>/<file>.md` nesting `_manak_md_files()`/
+# `build_manak_structural_corpus()` depend on. manak-dev/ itself was never
+# modified — read-only source, copy-in only. Computed relative to
+# `Path(__file__)`, matching `_REPO_ROOT`/`SITEMIND_STANDARDS_DIR` below,
+# rather than another hardcoded absolute path.
+MANAK_LIB_DIR = (
+    Path(__file__).resolve().parent.parent.parent / "data" / "structural_corpus"
+)
 
 # standards-service/app/retrieval/filesystem_corpora.py -> sitemind/backend/data/standards
 # RELOCATED (Codebook, docs/BUILD_PLAN_CODEBOOK.md step 2): the original
@@ -73,7 +90,7 @@ def _manak_md_files() -> list[Path]:
     if not MANAK_LIB_DIR.exists():
         logger.warning(
             "filesystem_corpora: MANAK_LIB_DIR %s does not exist; "
-            "manak_structural corpus will be built empty.",
+            "codebook_structural corpus will be built empty.",
             MANAK_LIB_DIR,
         )
         return []
@@ -102,7 +119,7 @@ def build_manak_structural_corpus() -> Corpus:
             c["document_id"] = doc_id
             c["corpus_name"] = MANAK_CORPUS_NAME
             c["filename"] = rel_name
-            c["provenance_tag"] = "manak_indexed"
+            c["provenance_tag"] = "codebook_verified"
         all_chunks.extend(chunks)
     corpus.build(all_chunks)
     return corpus

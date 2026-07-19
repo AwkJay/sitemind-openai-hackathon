@@ -126,7 +126,7 @@ def query(req: QueryRequest) -> QueryResult:
             # Phase 3b fix: reflect the chunk's OWN provenance tag rather than
             # hardcoding "company_uploaded" — that was correct for Phase 3
             # (only one corpus source existed) but would have mislabeled
-            # manak_indexed/sitemind_indexed chunks as company uploads.
+            # codebook_verified/sitemind_indexed chunks as company uploads.
             source_type=r.get("provenance_tag", "company_uploaded"),
             score=r["score"],
         )

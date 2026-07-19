@@ -14,7 +14,7 @@ export function CitedClauseBox({
   citation: Citation;
   advisory?: boolean;
 }) {
-  const st = sourceTypeMeta[citation.source_type ?? "manak_verified"];
+  const st = sourceTypeMeta[citation.source_type ?? "codebook_verified"];
   const accent = advisory ? "var(--info)" : st.color;
   const badgeBg = advisory ? "var(--info-bg)" : st.bg;
   return (
@@ -37,7 +37,7 @@ export function CitedClauseBox({
           ground truth · clauses.json
         </span>
       </div>
-      {citation.source_type && citation.source_type !== "manak_verified" && (
+      {citation.source_type && citation.source_type !== "codebook_verified" && (
         <p className="mt-1.5 text-[0.7rem] leading-snug text-text-lo">{st.caveat}</p>
       )}
 

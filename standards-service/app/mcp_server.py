@@ -274,7 +274,7 @@ re-ranks or re-scores, it calls straight into that index.
 Args:
     query: Keywords or a natural-language question.
     corpus_name: Optionally scope to one corpus (see list_corpora for
-        the exact names, e.g. "manak_structural",
+        the exact names, e.g. "codebook_structural",
         "sitemind_existing_standards"). Omit to search every loaded
         corpus and merge results by score.
     k: Max hits to return (default 5, capped at 50). When
@@ -328,7 +328,7 @@ ignored)."""
                 e.g. "is456_2000:0042".
 
         Returns the chunk's corpus, document, heading/breadcrumb, its full
-        verbatim text, and provenance tag (e.g. "manak_indexed",
+        verbatim text, and provenance tag (e.g. "codebook_verified",
         "sitemind_indexed", "company_uploaded"). Raises (hard error, not a
         best-guess substitute) if no chunk with that exact document_id +
         chunk_id is currently indexed.
@@ -375,7 +375,7 @@ ignored)."""
                 same-host, MCP-client-is-SiteMind's-own-backend design.)
             corpus_name: The corpus to check against (see list_corpora for
                 valid names, e.g. "sitemind_existing_standards",
-                "manak_structural").
+                "codebook_structural").
             k: How many candidate clauses to retrieve per sentence before
                 taking the top one as "the" matched clause (default 3,
                 capped at 20).

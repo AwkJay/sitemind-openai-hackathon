@@ -2,7 +2,8 @@
 corpora, relocated into Codebook/standards-service
 (docs/BUILD_PLAN_CODEBOOK.md step 2):
 
-  - `manak_structural`            (17 real `.md` files under manak-dev/lib/)
+  - `codebook_structural` (renamed from `manak_structural` — docs/codebook_changes.md
+                            item 2, 2026-07-12) (17 real `.md` files under manak-dev/lib/)
   - `sitemind_existing_standards` (`clauses.json` + `commissioning_clauses.json`)
 
 Byte-for-byte the same test logic as the original
@@ -36,11 +37,11 @@ Five groups:
       REAL file content read directly from disk (manak's `.md` files,
       `clauses.json`/`commissioning_clauses.json`) — proves every citable
       chunk is a true byte-for-byte slice, never paraphrased.
-  (e) manak_untouched          — building `manak_structural` never wrote,
+  (e) manak_untouched          — building `codebook_structural` never wrote,
       moved, or deleted anything under manak-dev/ (mtimes of every file this
       eval reads are unchanged after the build).
 
-NOTE: this eval genuinely builds `manak_structural` from ~6,200 real chunks
+NOTE: this eval genuinely builds `codebook_structural` from ~6,200 real chunks
 using the local sentence-transformers model — on this machine that took
 roughly 5 minutes end-to-end (CPU-only, no GPU). That cost is paid once per
 eval run (and once per backend process, lazily, only when
@@ -110,7 +111,7 @@ def main() -> None:
         },
         {
             "name": "manak_corpus_provenance_tag",
-            "expected": "manak_indexed",
+            "expected": "codebook_verified",
             "actual": manak.provenance_tag,
         },
         {
@@ -404,7 +405,7 @@ def main() -> None:
 
     print(f"cross-corpus eval: {n_pass}/{n_cases} passed (accuracy={report['accuracy']})")
     print(
-        f"  manak_structural: {manak.chunk_count} chunks / {len(manak.document_ids)} docs | "
+        f"  codebook_structural: {manak.chunk_count} chunks / {len(manak.document_ids)} docs | "
         f"sitemind_existing_standards: {sm.chunk_count} chunks / {len(sm.document_ids)} docs"
     )
     for c in all_cases:
