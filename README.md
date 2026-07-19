@@ -6,7 +6,7 @@ source sentence**, checks it against the **real, digitised Indian code clause** 
 and returns non-conformances, a cited project copilot, schedule-risk forecasting, supply-chain
 visibility, and commissioning QA — in seconds, with a measured zero-hallucination citation rate.
 
-**Live app:** _add deployed URL here_ · **Docs index:** [`docs/features.md`](docs/features.md) ·
+**Live app:** [AWNI.IN](https://sitemind.awni.in/) · **Docs index:** [`docs/features.md`](docs/features.md) ·
 **Architecture:** [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 
 ## Why it's different
