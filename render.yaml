@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: sitemind-backend
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.4
+      - key: LLM_PROVIDER
+        value: offline
+      - key: RETRIEVAL_ENABLED
+        value: "0"
+      - key: CODEBOOK_ENABLED
+        value: "0"
+      # Update after the frontend is deployed on Vercel — e.g.
+      # https://sitemind-openai-hackathon.vercel.app,http://localhost:3000
+      - key: ALLOWED_ORIGINS
+        value: http://localhost:3000
