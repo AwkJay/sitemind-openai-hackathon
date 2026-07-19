@@ -17,10 +17,8 @@ services:
         value: "0"
       - key: CODEBOOK_ENABLED
         value: "0"
-      # Update after the frontend is deployed on Vercel — e.g.
-      # https://sitemind-openai-hackathon.vercel.app,http://localhost:3000
       - key: ALLOWED_ORIGINS
-        value: http://localhost:3000
+        value: https://frontend-tau-indol-ucguhuklc7.vercel.app,http://localhost:3000
       # Free token from https://huggingface.co/settings/tokens (Read scope,
       # "Make calls to Inference Providers"). Fill in via the Render
       # Dashboard's Environment tab — not committed here.
