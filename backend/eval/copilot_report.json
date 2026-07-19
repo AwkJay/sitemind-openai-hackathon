@@ -261,9 +261,9 @@
   },
   "benchmark": {
     "corpus_size": 50,
-    "corpus_embed_ms": 2607.0,
-    "single_query_embed_ms": 51.2,
+    "corpus_embed_ms": 2194.3,
+    "single_query_embed_ms": 47.8,
     "note": "corpus_embed_ms is a one-time cost (cached via lru_cache in _index()); single_query_embed_ms is the per-question cost paid on every /copilot/ask call."
   },
-  "total_runtime_s": 19.04
+  "total_runtime_s": 16.1
 }
