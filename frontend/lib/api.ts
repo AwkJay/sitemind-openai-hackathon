@@ -23,6 +23,9 @@ import type {
   ActionBrief,
   CodebookCheckResult,
   CodebookClauseResult,
+  CodebookConsoleCorpus,
+  CodebookConsoleDocument,
+  CodebookConsoleUploadResult,
   CodebookCorporaResult,
   CodebookSearchResult,
   CommissioningIngestResult,
@@ -682,4 +685,149 @@ export async function checkDocumentAgainstCodebook(
     throw new Error(detail?.detail ?? `Check failed (HTTP ${res.status})`);
   }
   return (await res.json()) as CodebookCheckResult;
+}
+
+export async function checkDocumentAgainstCodebookUpload(
+  file: File,
+  corpusName: string,
+  k = 3,
+): Promise<CodebookCheckResult> {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("corpus_name", corpusName);
+  form.append("k", String(k));
+  let res: Response;
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    res = await fetch(`${API_URL}/api/codebook/check-upload`, {
+      method: "POST",
+      body: form,
+      signal: ctrl.signal,
+      cache: "no-store",
+    });
+    clearTimeout(t);
+  } catch {
+    throw new CodebookUnavailableError(
+      "Backend unreachable — checking a document needs the live SiteMind API, so there is no offline fallback for this action.",
+    );
+  }
+  if (res.status === 404) {
+    throw new CodebookUnavailableError(
+      "Codebook is not enabled on this backend (CODEBOOK_ENABLED is off).",
+    );
+  }
+  if (res.status === 503) {
+    const detail = await res.json().catch(() => null);
+    throw new CodebookUnavailableError(
+      detail?.detail ?? "Codebook's own service (standards-service) is unreachable.",
+    );
+  }
+  if (!res.ok) {
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail ?? `Check failed (HTTP ${res.status})`);
+  }
+  return (await res.json()) as CodebookCheckResult;
+}
+
+// ── Codebook Console (docs/codebook_console.md, backend/app/codebook_router.py
+// "/console/..." routes, backed by codebook_rest_client.py's httpx client
+// against standards-service's own REST retrieval API — NOT MCP) ───────────
+// Same two-distinct-"off"-states honesty as the Codebook functions above:
+// CODEBOOK_ENABLED=0 on this backend -> every route 404s ("disabled");
+// CODEBOOK_ENABLED=1 but standards-service itself is unreachable -> 503
+// ("unreachable"). Reuses CodebookUnavailableError/CodebookAvailability —
+// this is the same underlying service, just a different transport.
+
+export async function getCodebookConsoleCorpora(): Promise<{
+  corpora: CodebookConsoleCorpus[];
+  availability: CodebookAvailability;
+}> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    const res = await fetch(`${API_URL}/api/codebook/console/corpora`, {
+      signal: ctrl.signal,
+      cache: "no-store",
+    });
+    clearTimeout(t);
+    if (res.status === 404) return { corpora: [], availability: "disabled" };
+    if (res.status === 503) return { corpora: [], availability: "unreachable" };
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as CodebookConsoleCorpus[];
+    return { corpora: data, availability: "available" };
+  } catch {
+    return { corpora: [], availability: "unreachable" };
+  }
+}
+
+export async function getCodebookConsoleDocuments(
+  corpusName: string,
+): Promise<CodebookConsoleDocument[]> {
+  let res: Response;
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    res = await fetch(
+      `${API_URL}/api/codebook/console/corpora/${encodeURIComponent(corpusName)}/documents`,
+      { signal: ctrl.signal, cache: "no-store" },
+    );
+    clearTimeout(t);
+  } catch {
+    throw new CodebookUnavailableError(
+      "Backend unreachable — listing documents needs the live SiteMind API, so there is no offline fallback for this action.",
+    );
+  }
+  if (res.status === 404) {
+    throw new CodebookUnavailableError(
+      "Codebook is not enabled on this backend (CODEBOOK_ENABLED is off).",
+    );
+  }
+  if (res.status === 503) {
+    const detail = await res.json().catch(() => null);
+    throw new CodebookUnavailableError(
+      detail?.detail ?? "Codebook's own service (standards-service) is unreachable.",
+    );
+  }
+  if (!res.ok) {
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail ?? `Listing documents failed (HTTP ${res.status})`);
+  }
+  return (await res.json()) as CodebookConsoleDocument[];
+}
+
+export async function uploadToCodebookConsole(
+  file: File,
+  corpusName: string,
+): Promise<CodebookConsoleUploadResult> {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("corpus_name", corpusName);
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}/api/codebook/console/upload`, {
+      method: "POST",
+      body: form,
+    });
+  } catch {
+    throw new CodebookUnavailableError(
+      "Backend unreachable — Codebook Console upload needs the live SiteMind API, so there is no offline fallback for this action.",
+    );
+  }
+  if (res.status === 404) {
+    throw new CodebookUnavailableError(
+      "Codebook is not enabled on this backend (CODEBOOK_ENABLED is off).",
+    );
+  }
+  if (res.status === 503) {
+    const detail = await res.json().catch(() => null);
+    throw new CodebookUnavailableError(
+      detail?.detail ?? "Codebook's own service (standards-service) is unreachable.",
+    );
+  }
+  if (!res.ok) {
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail ?? `Upload failed (HTTP ${res.status})`);
+  }
+  return (await res.json()) as CodebookConsoleUploadResult;
 }

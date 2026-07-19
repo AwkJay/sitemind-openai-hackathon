@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, type ReactNode } from "react";
+import Link from "next/link";
 import {
   AlertTriangle,
   BookMarked,
@@ -8,6 +9,7 @@ import {
   ClipboardCheck,
   FileSearch,
   Info,
+  Library,
   Loader2,
   MinusCircle,
   RefreshCw,
@@ -15,7 +17,7 @@ import {
   WifiOff,
 } from "lucide-react";
 import {
-  checkDocumentAgainstCodebook,
+  checkDocumentAgainstCodebookUpload,
   CodebookUnavailableError,
   getCodebookClause,
   getCodebookCorpora,
@@ -31,15 +33,6 @@ import type {
 import { PageHeader } from "@/components/PageHeader";
 import { Button, Card, Overline, Skeleton } from "@/components/ui/primitives";
 
-// A real, on-disk example document worth checking against a corpus (see
-// backend/data/project_docs/live_upload_samples/ — the same live-upload demo
-// docs the rest of the app already uses). This is only ever a placeholder,
-// never auto-submitted: check_document_against_corpus reads a path off
-// Codebook's OWN host filesystem, not an uploaded file (see
-// standards-service/app/mcp_server.py's check_document_against_corpus
-// docstring for why it's a path, not a payload).
-const EXAMPLE_DOCUMENT_PATH =
-  "sitemind/backend/data/project_docs/live_upload_samples/DC1-16-DBR-0201-R0_Generator-Earthing-Addendum.docx";
 const EXAMPLE_CORPUS = "sitemind_existing_standards";
 
 // ── One rendered text block from a Codebook MCP tool call, styled to match
@@ -132,7 +125,7 @@ export default function CodebookPage() {
   const [clauseError, setClauseError] = useState<string | null>(null);
   const [clauseResult, setClauseResult] = useState<CodebookClauseResult | null>(null);
 
-  const [checkPath, setCheckPath] = useState("");
+  const [checkFile, setCheckFile] = useState<File | null>(null);
   const [checkCorpus, setCheckCorpus] = useState("");
   const [checking, setChecking] = useState(false);
   const [checkError, setCheckError] = useState<string | null>(null);
@@ -194,14 +187,13 @@ export default function CodebookPage() {
   }
 
   async function handleCheck() {
-    const path = checkPath.trim();
     const corpus = checkCorpus.trim();
-    if (!path || !corpus) return;
+    if (!checkFile || !corpus) return;
     setChecking(true);
     setCheckError(null);
     setCheckResult(null);
     try {
-      const result = await checkDocumentAgainstCodebook(path, corpus);
+      const result = await checkDocumentAgainstCodebookUpload(checkFile, corpus);
       setCheckResult(result);
       setAvailability("available");
     } catch (e) {
@@ -220,6 +212,15 @@ export default function CodebookPage() {
         eyebrow="Standards-serving layer (Codebook)"
         title="Codebook"
         subtitle="Codebook is a separate, MCP-serving process (standards-service) indexing digitised structural codes, SiteMind's own verified standards, and company-uploaded documents. SiteMind's backend is an MCP client of it — every result below is real, verbatim text Codebook returned, never re-typeset or reparsed client-side."
+        actions={
+          <Link
+            href="/codebook/console"
+            className="inline-flex items-center gap-2 rounded border border-line bg-bg-700 px-4 py-2 text-sm font-medium text-text-hi transition-colors hover:border-text-lo hover:bg-bg-600"
+          >
+            <Library size={15} />
+            Browse corpora & documents
+          </Link>
+        }
       />
 
       {availability === "checking" && (
@@ -393,11 +394,10 @@ export default function CodebookPage() {
             <p className="mt-2 flex items-start gap-1.5 text-[0.78rem] leading-snug text-text-lo">
               <Info size={12} className="mt-0.5 shrink-0" />
               <span>
-                <span className="font-mono text-text-hi">document_path</span> must be a file already readable on{" "}
-                <span className="font-mono text-text-hi">standards-service</span>&rsquo;s own host filesystem —
-                this is a path, not a browser file upload (Codebook is a same-host MCP server, not a document
-                store; see <span className="font-mono text-text-hi">check_document_against_corpus</span>&rsquo;s
-                own docstring). Example: <span className="font-mono text-text-hi">{EXAMPLE_DOCUMENT_PATH}</span>
+                Upload a .pdf/.docx/.txt/.md file from your own machine — SiteMind&rsquo;s backend stages it to a
+                temp file and hands that path to Codebook&rsquo;s{" "}
+                <span className="font-mono text-text-hi">check_document_against_corpus</span> tool, then deletes it
+                once the check returns.
               </span>
             </p>
             <form
@@ -408,10 +408,10 @@ export default function CodebookPage() {
               className="mt-3 flex flex-col gap-2"
             >
               <input
-                value={checkPath}
-                onChange={(e) => setCheckPath(e.target.value)}
-                placeholder={EXAMPLE_DOCUMENT_PATH}
-                className="w-full rounded border border-line bg-bg-900 px-4 py-2.5 font-mono text-sm text-text-hi placeholder:text-text-lo focus:border-accent focus:outline-none"
+                type="file"
+                accept=".pdf,.docx,.txt,.md"
+                onChange={(e) => setCheckFile(e.target.files?.[0] ?? null)}
+                className="w-full rounded border border-line bg-bg-900 px-4 py-2.5 text-sm text-text-hi file:mr-3 file:rounded file:border-0 file:bg-bg-700 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-text-hi focus:border-accent focus:outline-none"
               />
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <input
@@ -422,7 +422,7 @@ export default function CodebookPage() {
                 />
                 <Button
                   type="submit"
-                  disabled={checking || !checkPath.trim() || !checkCorpus.trim()}
+                  disabled={checking || !checkFile || !checkCorpus.trim()}
                 >
                   {checking ? <Loader2 size={15} className="animate-spin" /> : <ClipboardCheck size={15} />}
                   Run check

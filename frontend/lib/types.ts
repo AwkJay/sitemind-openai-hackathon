@@ -4,12 +4,12 @@ export type Severity = "LOW" | "MEDIUM" | "HIGH" | "ADVISORY";
 export type NcrStatus = "OPEN" | "CLOSED";
 
 // Mirrors backend/app/schemas.py Citation.source_type — the honest provenance
-// disclosure. "manak_verified" (displayed to users as "Codebook") is the
+// disclosure. "codebook_verified" (displayed to users as "Codebook") is the
 // default/gold standard; the other three are non-Codebook primary-source
 // extractions, each with a different reliability caveat, and must never be
 // presented as equivalent to a Codebook citation.
 export type SourceType =
-  | "manak_verified"
+  | "codebook_verified"
   | "cross_source_unverified"
   | "primary_scan_ocr"
   | "primary_native_pdf";
@@ -19,7 +19,7 @@ export interface Citation {
   clause: string; // e.g. "26.4.2.2"
   text: string; // exact clause text
   verify_url: string;
-  source_type?: SourceType; // defaults to "manak_verified" server-side
+  source_type?: SourceType; // defaults to "codebook_verified" server-side
 }
 
 export interface SourceSpan {
@@ -557,9 +557,44 @@ export interface CodebookClauseResult {
   text: string;
 }
 
+// Also the shape returned by POST /api/codebook/check-upload — document_path
+// there is a server-side temp path (staged from the real upload, deleted
+// after the call), never the browser's original filesystem path.
 export interface CodebookCheckResult {
   document_path: string;
   corpus_name: string;
   k: number;
   text: string;
+}
+
+// ── Codebook Console (docs/codebook_console.md) — 3 plain-REST proxies
+// under /api/codebook/console/..., backed by backend/app/codebook_rest_client.py
+// (httpx straight to standards-service's own retrieval REST API), NOT the MCP
+// client the 4 types above mirror. These return REAL structured JSON exactly
+// matching standards-service's own CorpusSummary / per-document dict shapes
+// (see standards-service/app/retrieval/models.py + router.py) — never the
+// prose "text" blob the MCP-backed Codebook*Result types above carry.
+export interface CodebookConsoleCorpus {
+  corpus_name: string;
+  document_count: number;
+  chunk_count: number;
+  source: string;
+  provenance_tag: string | null;
+}
+
+export interface CodebookConsoleDocument {
+  document_id: string;
+  filename: string | null;
+  chunk_count: number;
+  structured: boolean;
+  provenance_tag: string;
+}
+
+export interface CodebookConsoleUploadResult {
+  document_id: string;
+  corpus_name: string;
+  filename: string;
+  chunk_count: number;
+  structured: boolean;
+  provenance_tag: string;
 }

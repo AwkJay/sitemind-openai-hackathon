@@ -23,3 +23,10 @@ rank_bm25==0.2.2
 # backend's own app still imports/boots normally against it.
 mcp==1.9.4
 starlette==0.38.6
+
+# Codebook Console (docs/codebook_console.md) — app/codebook_rest_client.py
+# talks plain REST to standards-service's retrieval endpoints directly via
+# httpx, rather than the MCP client above. Already an installed transitive
+# dependency of mcp/anthropic (confirmed httpx==0.28.1 present); pinned here
+# explicitly now that it's a direct import, not just incidental.
+httpx==0.28.1

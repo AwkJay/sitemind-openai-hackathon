@@ -42,13 +42,13 @@ export const severityMeta: Record<
 };
 
 // Honest provenance disclosure for CitedClauseBox — see backend Citation.source_type.
-// manak_verified (displayed as "Codebook") is the gold standard; the other three
+// codebook_verified (displayed as "Codebook") is the gold standard; the other three
 // are real primary-source extractions with a stated reliability caveat, never presented as equivalent.
 export const sourceTypeMeta: Record<
   SourceType,
   { label: string; caveat: string; color: string; bg: string }
 > = {
-  manak_verified: {
+  codebook_verified: {
     label: "Verified · Codebook",
     caveat: "Fetched verbatim from Codebook's digitised-standards index.",
     color: "var(--accent)",
@@ -200,6 +200,46 @@ export function retrievalSourceTypeMetaFor(tag: string): {
       label: tag || "Unrecognized source",
       caveat:
         "Unrecognized provenance tag from the retrieval API — shown as-is rather than hidden or guessed at.",
+      color: "var(--text-lo)",
+      bg: "rgba(159,176,191,0.12)",
+    }
+  );
+}
+
+// ── Codebook Console provenance badges (docs/codebook_console.md's
+// "Provenance badge mapping" table, verbatim) — driven by the real
+// provenance_tag value returned by GET /api/codebook/console/corpora and
+// .../documents, never guessed or hardcoded per corpus name.
+export const codebookConsoleProvenanceMeta: Record<
+  string,
+  { label: string; color: string; bg: string }
+> = {
+  codebook_verified: {
+    label: "Internal verified standard",
+    color: "var(--pass)",
+    bg: "var(--pass-bg)",
+  },
+  sitemind_indexed: {
+    label: "Internal verified standard",
+    color: "var(--pass)",
+    bg: "var(--pass-bg)",
+  },
+  company_uploaded: {
+    label: "External / uploaded",
+    color: "var(--warning)",
+    bg: "var(--warning-bg)",
+  },
+};
+
+export function codebookConsoleProvenanceMetaFor(
+  tag: string | null | undefined,
+): { label: string; color: string; bg: string } {
+  if (!tag) {
+    return { label: "Unknown provenance", color: "var(--text-lo)", bg: "rgba(159,176,191,0.12)" };
+  }
+  return (
+    codebookConsoleProvenanceMeta[tag] ?? {
+      label: "Unknown provenance",
       color: "var(--text-lo)",
       bg: "rgba(159,176,191,0.12)",
     }
