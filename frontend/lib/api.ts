@@ -54,7 +54,11 @@ import type {
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:8000";
 
-const TIMEOUT_MS = 3500;
+// Render's free tier spins services down after ~15 min idle; a cold start can
+// take 10-60s to respond. 3.5s was too aggressive and misreported a live
+// backend as "unreachable" mid-cold-start. 20s gives cold starts room while
+// still failing fast enough for a genuinely dead backend.
+const TIMEOUT_MS = 20000;
 
 async function getJSON<T>(path: string, fallback: T): Promise<{ data: T; live: boolean }> {
   try {

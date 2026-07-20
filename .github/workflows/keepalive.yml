@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping backend health endpoint
-        run: curl -sf --max-time 60 https://sitemind-backend.onrender.com/api/health
+        run: curl -sf --max-time 90 --retry 3 --retry-delay 10 --retry-all-errors https://sitemind-backend.onrender.com/api/health
       - name: Ping codebook health endpoint
-        run: curl -sf --max-time 60 https://sitemind-codebook.onrender.com/health
+        run: curl -sf --max-time 90 --retry 3 --retry-delay 10 --retry-all-errors https://sitemind-codebook.onrender.com/health
