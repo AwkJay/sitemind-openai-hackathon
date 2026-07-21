@@ -54,11 +54,22 @@ import type {
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:8000";
 
-// Render's free tier spins services down after ~15 min idle; a cold start can
-// take 10-60s to respond. 3.5s was too aggressive and misreported a live
-// backend as "unreachable" mid-cold-start. 20s gives cold starts room while
-// still failing fast enough for a genuinely dead backend.
-const TIMEOUT_MS = 20000;
+// Render's free tier spins services down after ~15 min idle. Measured cold
+// starts directly: the backend itself took ~52s, Codebook (standards-service)
+// took ~72s to answer a health check from fully asleep. 20s was still far too
+// short (that's why "unreachable" kept recurring after the first bump) — 90s
+// gives the backend-only path real margin above the observed worst case while
+// still failing in reasonable time for a genuinely dead backend.
+const TIMEOUT_MS = 90000;
+
+// Codebook calls are a sequential double cold-start: the browser's request
+// has to wait for SiteMind's backend to wake up, and only THEN does the
+// backend make its own MCP call to Codebook — which may ALSO be cold. That
+// stacks to well over 90s in the worst case (both services asleep at once),
+// so Codebook-specific calls get a longer budget than plain backend calls.
+// Matches the explicit timeout now set on the backend's MCP client itself
+// (see codebook_client.py) so neither side gives up before the other.
+const CODEBOOK_TIMEOUT_MS = 180000;
 
 async function getJSON<T>(path: string, fallback: T): Promise<{ data: T; live: boolean }> {
   try {
@@ -560,7 +571,7 @@ export async function getCodebookCorpora(): Promise<{
 }> {
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    const t = setTimeout(() => ctrl.abort(), CODEBOOK_TIMEOUT_MS);
     const res = await fetch(`${API_URL}/api/codebook/corpora`, {
       signal: ctrl.signal,
       cache: "no-store",
@@ -586,7 +597,7 @@ export async function searchCodebook(
   let res: Response;
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    const t = setTimeout(() => ctrl.abort(), CODEBOOK_TIMEOUT_MS);
     res = await fetch(`${API_URL}/api/codebook/search?${params.toString()}`, {
       signal: ctrl.signal,
       cache: "no-store",
@@ -622,7 +633,7 @@ export async function getCodebookClause(
   let res: Response;
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    const t = setTimeout(() => ctrl.abort(), CODEBOOK_TIMEOUT_MS);
     res = await fetch(
       `${API_URL}/api/codebook/clause/${encodeURIComponent(docId)}/${encodeURIComponent(chunkId)}`,
       { signal: ctrl.signal, cache: "no-store" },
@@ -659,7 +670,7 @@ export async function checkDocumentAgainstCodebook(
   let res: Response;
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    const t = setTimeout(() => ctrl.abort(), CODEBOOK_TIMEOUT_MS);
     res = await fetch(`${API_URL}/api/codebook/check`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -703,7 +714,7 @@ export async function checkDocumentAgainstCodebookUpload(
   let res: Response;
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    const t = setTimeout(() => ctrl.abort(), CODEBOOK_TIMEOUT_MS);
     res = await fetch(`${API_URL}/api/codebook/check-upload`, {
       method: "POST",
       body: form,
@@ -749,7 +760,7 @@ export async function getCodebookConsoleCorpora(): Promise<{
 }> {
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    const t = setTimeout(() => ctrl.abort(), CODEBOOK_TIMEOUT_MS);
     const res = await fetch(`${API_URL}/api/codebook/console/corpora`, {
       signal: ctrl.signal,
       cache: "no-store",
@@ -771,7 +782,7 @@ export async function getCodebookConsoleDocuments(
   let res: Response;
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    const t = setTimeout(() => ctrl.abort(), CODEBOOK_TIMEOUT_MS);
     res = await fetch(
       `${API_URL}/api/codebook/console/corpora/${encodeURIComponent(corpusName)}/documents`,
       { signal: ctrl.signal, cache: "no-store" },

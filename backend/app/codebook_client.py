@@ -56,7 +56,15 @@ async def _call_tool(tool_name: str, arguments: dict[str, Any]) -> str:
     error (e.g. unknown corpus_name/chunk_id — see mcp_server.py, those are
     raised ValueErrors the SDK surfaces as `isError=True`)."""
     try:
-        async with streamablehttp_client(config.CODEBOOK_MCP_URL) as (read, write, _get_session_id):
+        # Explicit 100s timeout, not the SDK's 30s default: on Render's free
+        # tier Codebook (standards-service) can take 60-90s to answer from a
+        # cold start, and this backend only calls it on demand — the SDK
+        # default gave up on Codebook well before it finished waking.
+        async with streamablehttp_client(config.CODEBOOK_MCP_URL, timeout=100) as (
+            read,
+            write,
+            _get_session_id,
+        ):
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 result = await session.call_tool(tool_name, arguments)
