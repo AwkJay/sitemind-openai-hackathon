@@ -71,20 +71,22 @@ Thumbs.db
 .langfuse_traces/
 lru_cache/
 
-# Internal build/process docs — not for the public repo
-PROGRESS.md
-DEMO_STORY.md
-docs/TELEPROMPTER.md
-docs/DECK_OUTLINE.md
-docs/CODEX_SETUP.md
-docs/BUSINESS_IMPACT.md
-docs/codes.txt
-docs/archive/
-docs/deck/
+# Private / local-only — not for the public repo
+docs/
+.claude/
+.playwright-mcp/
 graphify-out/
 chat-history/
 current_project/
+CHECKPOINT.md
+Improvement_plan.md
+later_changes.md
+prev-session.txt
+problem_statement.txt
+ui_images/
+Black_&_Red_Elegant_Rose.pptx
 IMPROVEMENTS.md
+PROGRESS.md
+DEMO_STORY.md
 # Stray session-transcript exports (never meant to be committed)
 [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-*.txt
-docs/

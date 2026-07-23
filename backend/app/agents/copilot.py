@@ -1,8 +1,11 @@
 """Pillar 2 — Project & RFI Copilot (cited RAG).
 
-Retrieval is local sentence-transformer embeddings (all-MiniLM-L6-v2, CPU, fully
-offline — no external embedding service, no API key) over project docs +
-standards clauses. When a key is present Claude composes a cited answer
+Retrieval is dense embeddings (all-MiniLM-L6-v2) fused with BM25 keyword search.
+The embeddings are computed by `app/embeddings.py`, which calls the pretrained
+model over the Hugging Face Inference API (needs a free HF_TOKEN); the local
+torch/sentence-transformers path was dropped because it broke the 512 MB
+free-tier RAM ceiling on deploy. This is pretrained inference, not training, and
+needs no LLM/paid key. When an LLM key is present Claude composes a cited answer
 strictly from the retrieved chunks; offline we serve the deterministic fixture
 answer that best matches the question (each fixture row already carries real
 sources), falling back to embedding retrieval. The 'seen-before' RFI lookup

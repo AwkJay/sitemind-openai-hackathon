@@ -29,3 +29,14 @@ starlette==0.38.6
 # dependency of mcp/anthropic (confirmed httpx==0.28.1 present); pinned here
 # explicitly now that it's a direct import, not just incidental.
 httpx==0.28.1
+
+# --------------------------------------------------------------------------- #
+# OPTIONAL — LLM-powered compliance extraction (app/llm_extract.py).
+# NOT installed by default: the offline demo above is fully reproducible without
+# it, and LLM extraction only runs when LLM_EXTRACTION_ENABLED=1 AND a Claude
+# Code subscription token (CLAUDE_CODE_OAUTH_TOKEN from `claude setup-token`) is
+# present. Installing it transitively bumps pydantic (2.9.2 -> 2.13.x), mcp, and
+# uvicorn; the backend still imports and boots against those (verified). Enable
+# with:  uv pip install claude-agent-sdk   (needs the Claude Code CLI on PATH).
+#
+# claude-agent-sdk>=0.2.125

@@ -18,7 +18,7 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from .. import config, ingest, llm, trace
+from .. import config, ingest, llm, llm_extract, trace
 from ..data_loader import fixture, load_submittals, params_for
 from ..schemas import NCR, ComplianceResult, Citation, CoverageStat, OverlapNote, SourceSpan
 from ..standards import all_clauses, get_clause
@@ -369,7 +369,9 @@ async def ingest_document(file: UploadFile = File(...)) -> dict:
             "not supported by this text-first pipeline).",
         )
 
-    found, abstained = ingest.extract_params(text)
+    # PERCEIVE: LLM-first extraction behind a span-verification gate when enabled
+    # (app/llm_extract.py), else pure regex. Either way, DECIDE stays in checks.py.
+    found, abstained = await llm_extract.extract_params(text)
     param_dicts = ingest.to_param_dicts(found)
     document_id = ingest.register_upload(file.filename or "upload", param_dicts, abstained)
 

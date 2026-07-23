@@ -37,8 +37,15 @@ Cited hybrid-RAG Q&A over project docs/standards, plus "seen-before RFI" detecti
 - "Seen before" card when a semantically similar resolved RFI is found.
 - Suggestion chips (auto-asks the first on load), "try also" row, explicit abstention disclosure.
 - Backend: `POST /ask` — curated fixture match first (keyword + embedding confirm), else hybrid
-  BM25+dense retrieval with RRF fusion and an abstention floor; offline mode uses a deterministic
-  fallback composer instead of an LLM call.
+  BM25+dense retrieval with RRF fusion and an abstention floor; `OFFLINE_MODE` (no LLM key) uses a
+  deterministic fallback composer instead of an LLM call for the *prose*.
+- Retrieval reality (matters for the "offline" claim): the *dense* half embeds via
+  `app/embeddings.py`, which calls `all-MiniLM-L6-v2` on the **Hugging Face Inference API** and
+  **requires a free `HF_TOKEN`** — the local torch/sentence-transformers path was removed (512 MB
+  free-tier RAM ceiling). So `OFFLINE_MODE` governs only the LLM prose; Copilot/Knowledge Base/
+  Codebook *semantic search* (and their eval scripts) still need `HF_TOKEN` + network. The
+  deterministic pillars (Compliance, Commissioning, Schedule, Supply Chain, Timeline, Cost) need no
+  token at all. Extraction on upload is **regex/heuristic in `ingest.py`, not an LLM**.
 
 ## 4. Schedule & Risk (`/schedule`, `backend/app/schedule.py`)
 CPM + leading-indicator rules (not fabricated-data ML), weather/workforce risk factors.
@@ -254,3 +261,9 @@ script, repointed — see caveats). None are blended into one score; each pillar
 - `standards-service` has no on-disk embeddings cache — every process restart triggers a ~7 minute
   blocking rebuild of the 6,206-chunk structural corpus.
 - 13/24 citation `verify_url`s flagged as dead in `docs/PS_optimize.md`, not yet replaced.
+- "Runs offline, no API key" is true **only for the deterministic pillars** (the Compliance HERO,
+  Commissioning, Schedule, Supply Chain, Timeline, Cost). Any *semantic-retrieval* feature (Copilot,
+  Knowledge Base, Codebook search) needs a **free `HF_TOKEN`** for MiniLM embeddings via the HF
+  Inference API — a free, not paid, key, but a real external dependency. Don't claim the *whole* app
+  or *every* eval runs with zero keys. (`copilot.py`'s docstring was corrected 2026-07-22; it had
+  still claimed retrieval was "fully offline, no API key".)

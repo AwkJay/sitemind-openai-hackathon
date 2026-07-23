@@ -70,24 +70,31 @@ echo "NEXT_PUBLIC_API_URL=http://localhost:8001" > .env.local
 Restart the dev server after changing `.env.local`. Then check the top-bar status indicator on
 `http://localhost:3000`: green means the frontend reached the real backend; red means mock data.
 
-## One command: boot the full stack (Codebook + backend + frontend, both optional flags on)
+## Booting the full stack (Codebook + backend + frontend, both optional flags on)
 
 The manual two-terminal quick start runs with `CODEBOOK_ENABLED`/`RETRIEVAL_ENABLED` **off** (the
-checked-in default), so `/codebook` and `/knowledge-base` show "not enabled" banners. Use this
-instead whenever you intend to demo either:
+checked-in default), so `/codebook` and `/knowledge-base` show "not enabled" banners. There is no
+single-command launcher for this — start each of the three services separately, each in its own
+terminal:
 
 > First run after `RETRIEVAL_ENABLED=1` will feel stuck — it isn't. The first request to any
 > `/api/retrieval/*` route triggers a one-time CPU-bound embedding build of ~6,000+ chunks (several
 > minutes on a laptop, no progress bar). Happens once per backend process; other routes stay
 > responsive. Same one-time cost applies to Codebook's own model load at startup (~1–2 min).
 
-**macOS / Linux — one command:**
+**macOS / Linux — three terminals, in order:**
 ```bash
-npm run dev    # from the repo root — Codebook + backend (RETRIEVAL_ENABLED=1 CODEBOOK_ENABLED=1) + frontend
+# Terminal 1 — Codebook
+cd standards-service && ./run.sh
+
+# Terminal 2 — backend, with both optional flags on for this session
+cd backend && CODEBOOK_ENABLED=1 RETRIEVAL_ENABLED=1 ./run.sh
+
+# Terminal 3 — frontend
+cd frontend && npm install && npm run dev
 ```
 
-**Windows (PowerShell)** — `run-full.sh` won't run natively; do the same three steps by hand, in
-three separate PowerShell windows, in order:
+**Windows (PowerShell)** — do the same three steps by hand, in three separate PowerShell windows, in order:
 1. Codebook: `cd standards-service` → same venv steps as backend above → `uvicorn app.main:app --port 8010`. Wait for `curl.exe localhost:8010/health`.
 2. Backend, with both flags for *this* session: `$env:CODEBOOK_ENABLED = "1"; $env:RETRIEVAL_ENABLED = "1"` before `uvicorn app.main:app --port 8000`. Wait for `curl.exe localhost:8000/api/health`.
 3. Frontend: `cd frontend; npm run dev`.
@@ -134,6 +141,6 @@ Off by default (`RETRIEVAL_ENABLED=0` in `backend/.env`). Set to `1` and restart
 - `frontend/app/` — the Command Center UI: one page per pillar (`compliance/`, `copilot/`,
   `schedule/`, `timeline/`, `supply-chain/`, `commissioning/`, `graph/`), plus `codebook/` (and
   `codebook/console/`) and `knowledge-base/`
-- `CONTRACT.md` — the API contract · `docs/ARCHITECTURE.md` — full system diagram
-  (Codebook's architecture, corpora, and MCP interface included) · `docs/features.md` — every
-  page, feature, and eval script inventoried in detail, incl. known caveats
+- `docs/ARCHITECTURE.md` — full system diagram (Codebook's architecture, corpora, and MCP
+  interface included) · `docs/features.md` — every page, feature, and eval script inventoried in
+  detail, incl. known caveats, and the API endpoint truth (superseded the archived `docs/CONTRACT.md`)

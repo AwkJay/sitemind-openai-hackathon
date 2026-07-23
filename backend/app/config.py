@@ -20,7 +20,20 @@ FIXTURES_DIR = DATA_DIR / "fixtures"
 load_dotenv(BACKEND_DIR / ".env")
 
 ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "").strip()
-ANTHROPIC_MODEL_SMART: str = os.getenv("ANTHROPIC_MODEL_SMART", "claude-3-5-sonnet-latest").strip()
+ANTHROPIC_MODEL_SMART: str = os.getenv("ANTHROPIC_MODEL_SMART", "claude-sonnet-4-6").strip()
+
+# LLM-powered PERCEIVE step for compliance uploads (app/llm_extract.py). OFF by
+# default so the demo stays deterministic. When 1, POST /api/compliance/ingest
+# calls Claude (via the Claude Agent SDK, Claude Code subscription auth — a
+# CLAUDE_CODE_OAUTH_TOKEN from `claude setup-token`, NOT an API key) to extract
+# parameters, then a pure-Python span-verification gate keeps only values quoted
+# verbatim from the document. Regex stays as the floor + fallback, so this can
+# only ever add coverage, never regress. The pass/fail DECISION stays in
+# checks.py regardless — the LLM never decides.
+LLM_EXTRACTION_ENABLED: bool = os.getenv("LLM_EXTRACTION_ENABLED", "0").strip() == "1"
+# Read here only so load_dotenv() surfaces it into the environment the Agent SDK
+# subprocess inherits; the SDK itself consumes the env var directly.
+CLAUDE_CODE_OAUTH_TOKEN: str = os.getenv("CLAUDE_CODE_OAUTH_TOKEN", "").strip()
 
 OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "").strip()
 OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-5.1").strip()
